@@ -11,16 +11,16 @@ import org.json.JSONObject;
 
 /**
  * Created by guochang on 2015/8/8.
- * HTTP¹¤¾ßÀà
+ * HTTPå·¥å…·ç±»
  */
 public class HttpTool {
-    //ÇëÇóÀàÐÍ
+    //è¯·æ±‚ç±»åž‹
     public enum RequestType {
         Get, Post, Put, Delete
     }
     private AsyncHttpClient httpClient;
     private NetworkCallback callback;
-    //ÇëÇó»Øµ÷
+    //è¯·æ±‚å›žè°ƒ
     private JsonHttpResponseHandler jsonHttpResponseHandler = new JsonHttpResponseHandler(){
         @Override
         public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {

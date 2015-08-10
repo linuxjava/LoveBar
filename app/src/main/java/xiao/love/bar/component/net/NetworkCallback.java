@@ -5,7 +5,7 @@ import org.json.JSONObject;
 
 /**
  * Created by guochang on 2015/8/8.
- * ÍøÂç·ÃÎÊ»Øµ÷
+ * ç½‘ç»œè®¿é—®å›žè°ƒ
  */
 public interface NetworkCallback {
     void parseJson(int code, JSONObject respanse, String tag, int pos, Object data) throws JSONException;

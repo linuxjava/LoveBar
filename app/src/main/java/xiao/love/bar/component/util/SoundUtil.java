@@ -5,7 +5,6 @@ import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.Vibrator;
 
-import xiao.com.speechgame.R;
 
 /**
  * Created by guochang on 2015/4/17.

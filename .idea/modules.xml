@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/LoveBar.iml" filepath="$PROJECT_DIR$/LoveBar.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/loadingAlertDialog/loadingAlertDialog.iml" filepath="$PROJECT_DIR$/loadingAlertDialog/loadingAlertDialog.iml" />
     </modules>
   </component>
 </project>
