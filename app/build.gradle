@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "xiao.love.bar"
-        minSdkVersion 8
+        minSdkVersion 11
         targetSdkVersion 22
         versionCode 1
         versionName "1.0"
@@ -26,4 +26,24 @@ dependencies {
     compile files('libs/android-async-http-1.4.8.jar')
     compile files('libs/ormlite-android-4.43.jar')
     compile files('libs/ormlite-core-4.43.jar')
+    compile project(':loadingAlertDialog')
+    compile 'com.github.chrisbanes.photoview:library:1.2.3'
+    compile 'pl.droidsonroids.gif:android-gif-drawable:1.1.+'
+    compile 'com.github.lzyzsd:circleprogress:1.1.0@aar'
+}
+
+/*********************android注解配置***************************/
+apply plugin: 'android-apt'
+
+dependencies {
+    def AAVersion = '3.3.2'
+    apt "org.androidannotations:androidannotations:$AAVersion"
+    compile "org.androidannotations:androidannotations-api:$AAVersion"
+}
+
+apt {
+    arguments {
+        androidManifestFile variant.outputs[0].processResources.manifestFile
+        resourcePackageName 'xiao.love.bar'
+    }
 }

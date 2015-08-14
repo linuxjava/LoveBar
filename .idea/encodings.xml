@@ -2,13 +2,37 @@
 <project version="4">
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/app/libs/android-async-http-1.4.8.jar" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/app/libs/ormlite-android-4.9.jar" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/app/libs/ormlite-core-4.9.jar" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/libs/universal-image-loader-1.9.4.jar" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/xiao/love/bar/component" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/xiao/love/bar/component/dialog/DialogTool.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/xiao/love/bar/component/net/HttpTool.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/xiao/love/bar/component/net/NetworkCallback.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/xiao/love/bar/component/photopick/CameraPhotoUtil.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/xiao/love/bar/component/photopick/GridPhotoAdapter.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/xiao/love/bar/component/photopick/ImageInfo.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/java/xiao/love/bar/component/photopick/ImageInfoExtra.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/xiao/love/bar/component/toast/ToastTool.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/anim/listview_down.xml" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/anim/listview_fade_in.xml" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/anim/listview_fade_out.xml" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/anim/listview_top_down.xml" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/anim/listview_top_up.xml" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/anim/listview_up.xml" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/drawable-hdpi/ic_camera.png" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/drawable-hdpi/pick_image_list_item_bg.png" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/drawable-hdpi/pick_phone_bottom_3.png" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/drawable-hdpi/pick_photo_checkbox_check.png" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/drawable-hdpi/pick_photo_checkbox_normal.png" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/drawable-hdpi/pick_photo_list_checked.png" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/drawable/pick_photo_checkbox.xml" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_image_pager_item.xml" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_photo_pick.xml" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/layout/activity_photo_pick_detail.xml" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/layout/photopick_gridlist_item.xml" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/layout/photopick_gridlist_item_camera2.xml" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/layout/photopick_list_item.xml" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/menu/menu_photo_pick.xml" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/menu/menu_photo_pick_detail.xml" charset="GBK" />
     <file url="file://$PROJECT_DIR$/app/src/main/res/raw/ormlite_config.txt" charset="GBK" />
     <file url="file://$PROJECT_DIR$/settings.gradle" charset="UTF-8" />
     <file url="PROJECT" charset="UTF-8" />

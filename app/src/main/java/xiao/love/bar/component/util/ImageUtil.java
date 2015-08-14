@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -110,5 +111,38 @@ public class ImageUtil {
     public static byte[] getBytesFromFile(String path){
         Bitmap bitmap = getBitmapFromFile(path);
         return Bitmap2Bytes(bitmap);
+    }
+
+    // 通过文件头来判断是否gif
+    public static boolean isGifByFile(File file) {
+        try {
+            int length = 10;
+            InputStream is = new FileInputStream(file);
+            byte[] data = new byte[length];
+            is.read(data);
+            String type = getType(data);
+            is.close();
+
+            if (type.equals("gif")) {
+                return true;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    private static String getType(byte[] data) {
+        String type = "";
+        if (data[1] == 'P' && data[2] == 'N' && data[3] == 'G') {
+            type = "png";
+        } else if (data[0] == 'G' && data[1] == 'I' && data[2] == 'F') {
+            type = "gif";
+        } else if (data[6] == 'J' && data[7] == 'F' && data[8] == 'I'
+                && data[9] == 'F') {
+            type = "jpg";
+        }
+        return type;
     }
 }
