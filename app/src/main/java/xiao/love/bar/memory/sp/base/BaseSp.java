@@ -1,12 +1,17 @@
 package xiao.love.bar.memory.sp.base;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import java.util.Iterator;
 import java.util.Map;
 
+import xiao.love.bar.App;
+
 public class BaseSp {
+    protected Context mContext = App.sAppInstance;
+
     public void putString(SharedPreferences.Editor editor, String key, String value){
         if(editor == null || TextUtils.isEmpty(key)){
             return;

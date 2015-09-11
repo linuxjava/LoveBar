@@ -13,13 +13,13 @@ import xiao.love.bar.component.toast.ToastTool;
  * Created by guochang on 2015/8/12.
  */
 public abstract class BaseFragment extends Fragment implements NetworkCallback{
-    //ÌáÊ¾¶Ô»°¿òºÍloading¹¤¾ßÀà
+    //æç¤ºå¯¹è¯æ¡†å’Œloadingå·¥å…·ç±»
     protected DialogTool mDialogTool;
-    //toast¹¤¾ßÀà
+    //toastå·¥å…·ç±»
     protected ToastTool mToastTool;
-    //Í¼Æ¬¼ÓÔØ¹¤¾ßÀà
+    //å›¾ç‰‡åŠ è½½å·¥å…·ç±»
     protected ImageLoadTool mImageLoadTool;
-    //http¹¤¾ßÀà
+    //httpå·¥å…·ç±»
     protected HttpTool mHttpTool;
 
     @Override

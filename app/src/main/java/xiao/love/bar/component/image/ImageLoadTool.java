@@ -9,7 +9,9 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.assist.ImageSize;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import xiao.love.bar.R;
@@ -91,9 +93,12 @@ public class ImageLoadTool {
         imageLoader.loadImage(url, listener);
     }
 
+    public void loadImage(String url, int width, int height, SimpleImageLoadingListener listener){
+        imageLoader.loadImage(url, new ImageSize(width, height), listener);
+    }
+
     public void displayImage(ImageView imageView, String url, DisplayImageOptions displayImageOptions, SimpleImageLoadingListener listener) {
         imageLoader.displayImage(url, imageView, displayImageOptions, listener);
-
     }
 
     public void displayImageFromUrl(ImageView imageView, String url) {

@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import xiao.love.bar.R;
+import xiao.love.bar.memory.db.model.BlackList;
+import xiao.love.bar.memory.db.model.Contact;
 import xiao.love.bar.memory.db.model.NameValuePair;
 
 /**
@@ -47,7 +49,12 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase, ConnectionSource connectionSource) {
         try {
+            //创建键值对表
             TableUtils.createTable(connectionSource, NameValuePair.class);
+            //创建联系人表
+            TableUtils.createTable(connectionSource, Contact.class);
+            //黑名单
+            TableUtils.createTable(connectionSource, BlackList.class);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -57,6 +64,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, ConnectionSource connectionSource, int i, int i1) {
         try {
             TableUtils.dropTable(connectionSource, NameValuePair.class, true);
+            TableUtils.dropTable(connectionSource, Contact.class, true);
+            TableUtils.dropTable(connectionSource, BlackList.class, true);
         } catch (SQLException e) {
             e.printStackTrace();
         }

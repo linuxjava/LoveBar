@@ -18,19 +18,17 @@ public class LogSp extends BaseSp {
     public static final String KEY_IS_DEBUG = "is_debug";
     private SharedPreferences mSharedPreferences;
     private SharedPreferences.Editor mEditor;
-    private Context mContext;
     private static LogSp mInstatnce;
 
-    private LogSp(Context context) {
-        mContext = context;
+    private LogSp() {
         mSharedPreferences = mContext.getSharedPreferences(mContext.getPackageName() + "." +
                 FILE_NAME, FILE_MODE);
         mEditor = mSharedPreferences.edit();
     }
 
-    public synchronized static LogSp getInstance(Context context) {
+    public synchronized static LogSp getInstance() {
         if (mInstatnce == null) {
-            mInstatnce = new LogSp(context);
+            mInstatnce = new LogSp();
         }
         return mInstatnce;
     }
