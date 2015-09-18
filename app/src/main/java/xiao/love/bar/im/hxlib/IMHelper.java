@@ -30,6 +30,10 @@ public class IMHelper extends HXSDKHelper {
     //用来记录foreground Activity
     private List<Activity> mActivityList = new ArrayList<Activity>();
 
+    public IMHelper(){
+        super();
+    }
+
     @Override
     protected void initListener() {
         super.initListener();

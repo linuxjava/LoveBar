@@ -1,11 +1,77 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin" tools:context=".MainActivity">
+    style="@style/match_width_match_height">
 
-    <TextView android:text="@string/hello_world" android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <LinearLayout
+        android:id="@+id/main_bottom_ll"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/bottom_bar_normal_bg"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
+        <RelativeLayout
+            android:id="@+id/conversation_rl"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <Button
+                android:id="@+id/conversation_btn"
+                style="@style/main_tab_btn"
+                android:drawableTop="@drawable/tab_chat_bg"
+                android:text="会话" />
+
+            <TextView
+                android:id="@+id/unread_msg_number_tv"
+                style="@style/wrap_width_wrap_height"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="1dp"
+                android:background="@drawable/unread_count_bg"
+                android:gravity="center"
+                android:text="7"
+                android:textColor="@android:color/white"
+                android:textSize="12sp"
+                android:visibility="invisible" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/contact_rl"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <Button
+                android:id="@+id/contact_btn"
+                style="@style/main_tab_btn"
+                android:drawableTop="@drawable/tab_contact_list_bg"
+                android:text="朋友" />
+
+            <TextView
+                android:id="@+id/unread_contact_number_tv"
+                style="@style/wrap_width_wrap_height"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:background="@drawable/unread_dot"
+                android:visibility="invisible"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/setting_rl"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <Button
+                android:id="@+id/setting_btn"
+                style="@style/main_tab_btn"
+                android:text="设置" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/fragment_container"
+        style="@style/match_width_match_height"
+        android:layout_above="@id/main_bottom_ll" />
 </RelativeLayout>

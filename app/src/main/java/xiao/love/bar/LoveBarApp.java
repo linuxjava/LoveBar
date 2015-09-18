@@ -2,17 +2,15 @@ package xiao.love.bar;
 
 import android.app.Application;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-
 import xiao.love.bar.component.CommonInfo;
 import xiao.love.bar.component.image.ImageLoadTool;
+import xiao.love.bar.im.hxlib.IMHelper;
 
 /**
  * Created by guochang on 2015/8/9.
  */
-public class App extends Application{
-    public static App sAppInstance;
+public class LoveBarApp extends Application{
+    public static LoveBarApp sAppInstance;
 
     @Override
     public void onCreate() {
@@ -23,9 +21,11 @@ public class App extends Application{
 
     private void init(){
         sAppInstance = this;
-        //初始化通用信息
+        //初始化通用信息(必须放在最前面)
         CommonInfo.getInstance().init(this);
-        //初始化ImageLoad工具类
+        //初始化ImageLoad工具类（工具类其次）
         ImageLoadTool.getInstance().init(this);
+        //im初始化
+        new IMHelper().onInit(this);
     }
 }

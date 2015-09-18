@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import xiao.love.bar.component.util.L;
 import xiao.love.bar.im.hxlib.model.DefaultHXSDKModel;
 import xiao.love.bar.im.hxlib.model.HXNotifier;
 import xiao.love.bar.im.hxlib.model.HXSDKModel;
@@ -121,6 +122,8 @@ public abstract class HXSDKHelper {
         }
 
         appContext = context;
+        // create HX SDK model
+        hxModel = new DefaultHXSDKModel(context);
 
         int pid = android.os.Process.myPid();
         String processAppName = getAppName(pid);
@@ -133,8 +136,6 @@ public abstract class HXSDKHelper {
             return false;
         }
 
-        // create HX SDK model
-        hxModel = new DefaultHXSDKModel(context);
         //初始化通知
         notifier = createNotifier();
         notifier.init(appContext);

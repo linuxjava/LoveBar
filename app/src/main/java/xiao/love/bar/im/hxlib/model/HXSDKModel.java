@@ -90,12 +90,10 @@ public abstract class HXSDKModel {
     }
 
     /**
-     * 是否运行在sandbox测试环境. 默认是关掉的
-     * 设置sandbox 测试环境
-     * 建议开发者开发时设置此模式
+     * 不要开启此设置位，否者或登录失败
      */
     public boolean isSandboxMode() {
-        return true;
+        return false;
     }
 
     /**

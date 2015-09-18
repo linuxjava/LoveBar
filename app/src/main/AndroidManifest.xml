@@ -3,14 +3,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="xiao.love.bar">
 
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <!--环信所需权限-->
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
-        android:name=".App"
+        android:name=".LoveBarApp"
         android:allowBackup="true"
         tools:replace="android:icon, android:theme"
         android:icon="@drawable/ic_main_launcher"
@@ -26,6 +39,7 @@
             </intent-filter>
         </activity>
 
+        <!--图片选择器-->
         <activity
             android:name=".component.photopick.PhotoPickActivity"
             android:screenOrientation="portrait" />
@@ -34,7 +48,61 @@
             android:name=".component.photopick.PhotoPickDetailActivity"
             android:screenOrientation="portrait"/>
 
+        <!--IM相关-->
+        <!-- 地图 -->
+        <activity
+            android:name=".im.chat.BaiduMapActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/horizontal_slide"/>
+        <!-- 聊天页面 -->
+        <activity
+            android:name=".im.chat.ChatActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/horizontal_slide"
+            android:windowSoftInputMode="adjustResize"/>
+        <!-- 自定义的contextmenu -->
+        <activity
+            android:name=".im.chat.ContextMenuActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/MyDialogStyle"/>
+        <!-- 自定义的alertdialog -->
+        <activity
+            android:name=".im.chat.AlertDialogActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/MyDialogStyle"/>
+        <!-- 显示下载大图页面 -->
+        <activity
+            android:name=".im.chat.ShowBigImageActivity"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Black.NoTitleBar"/>
+
         <uses-library android:name="android.test.runner"/>
+
+        <!-- 设置环信应用的service、eceiver、appkey -->
+        <service android:name="com.easemob.chat.EMChatService" />
+
+        <receiver android:name="com.easemob.chat.EMMonitorReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+                <data android:scheme="package" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.USER_PRESENT" />
+            </intent-filter>
+        </receiver>
+
+        <meta-data android:name="EASEMOB_APPKEY"  android:value="xiao#sogoutest" />
+
+        <!-- 百度地图所需的service -->
+        <service
+            android:name="com.baidu.location.f"
+            android:enabled="true"
+            android:process=":remote" />
+        <meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="E5u4F5DLG0XrcEakBK1yVMLt" />
     </application>
 
     <instrumentation android:name="android.test.InstrumentationTestRunner"
