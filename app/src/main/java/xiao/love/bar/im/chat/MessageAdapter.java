@@ -59,10 +59,10 @@ import java.util.Timer;
 
 import xiao.love.bar.R;
 import xiao.love.bar.component.util.DateUtils;
+import xiao.love.bar.component.util.DensityUtils;
 import xiao.love.bar.component.util.L;
 import xiao.love.bar.im.chat.emoji.EmojiParse;
 import xiao.love.bar.im.hxlib.IMUtil;
-import xiao.love.bar.im.task.LoadImageTask;
 import xiao.love.bar.im.util.ImageCache;
 import xiao.love.bar.im.util.ImageUtils;
 import xiao.love.bar.im.util.UserUtils;
@@ -825,16 +825,17 @@ public class MessageAdapter extends BaseAdapter {
                 holder.pb.setVisibility(View.GONE);
                 holder.tv.setVisibility(View.GONE);
                 ImageMessageBody imgBody = (ImageMessageBody) message.getBody();
-                if (imgBody.getLocalUrl() != null) {
-                    String remotePath = imgBody.getRemoteUrl();
-                    String filePath = ImageUtils.getImagePath(remotePath);
-                    String thumbRemoteUrl = imgBody.getThumbnailUrl();
-                    if (TextUtils.isEmpty(thumbRemoteUrl) && !TextUtils.isEmpty(remotePath)) {
-                        thumbRemoteUrl = remotePath;
-                    }
-                    String thumbnailPath = ImageUtils.getThumbnailImagePath(thumbRemoteUrl);
-                    showImageView(thumbnailPath, holder.iv, filePath, remotePath, message);
-                }
+                showReceiveImageView(message, holder.iv);
+//                if (imgBody.getLocalUrl() != null) {
+//                    String remotePath = imgBody.getRemoteUrl();
+//                    String filePath = ImageUtils.getImagePath(remotePath);
+//                    String thumbRemoteUrl = imgBody.getThumbnailUrl();
+//                    if (TextUtils.isEmpty(thumbRemoteUrl) && !TextUtils.isEmpty(remotePath)) {
+//                        thumbRemoteUrl = remotePath;
+//                    }
+//                    String thumbnailPath = ImageUtils.getThumbnailImagePath(thumbRemoteUrl);
+//                    showImageView(thumbnailPath, holder.iv, filePath, remotePath, message);
+//                }
             }
         } else {
             // 发送
@@ -853,13 +854,104 @@ public class MessageAdapter extends BaseAdapter {
                     sendMsg(message, holder);
             }
             // 显示图片
-            ImageMessageBody imgBody = (ImageMessageBody) message.getBody();
-            String filePath = imgBody.getLocalUrl();
-            if (filePath != null && new File(filePath).exists()) {
-                showImageView(ImageUtils.getThumbnailImagePath(filePath), holder.iv, filePath, null, message);
+            holder.iv.setImageResource(R.drawable.default_image);
+            showSendImageView(message, holder.iv);
+//            ImageMessageBody imgBody = (ImageMessageBody) message.getBody();
+//            String filePath = imgBody.getLocalUrl();
+//            if (filePath != null && new File(filePath).exists()) {
+//                showImageView(ImageUtils.getThumbnailImagePath(filePath), holder.iv, filePath, null, message);
+//            } else {
+//                showImageView(ImageUtils.getThumbnailImagePath(filePath), holder.iv, filePath, IMAGE_DIR, message);
+//
+//            }
+        }
+    }
+
+    /**
+     * 发送端显示图片
+     * 1.发送端，本地只有大图，没有缩略图，缩略图需要利用大图裁剪
+     * 2.接收端，下载成功后本地只有缩略图，没有大图,大图需使用远程url下载
+     * @param message
+     * @param iv
+     */
+    private void showSendImageView(final EMMessage message, final ImageView iv) {
+        final ImageMessageBody imgBody = (ImageMessageBody) message.getBody();
+        //对发送端，本地只有原始图片的url
+        final String localUrl = imgBody.getLocalUrl();
+        if(TextUtils.isEmpty(localUrl)){
+            return;
+        }
+
+        String localThumbUrl = ImageUtils.getThumbnailImagePath(localUrl);
+        if(TextUtils.isEmpty(localThumbUrl)){
+            return;
+        }
+
+        Bitmap bitmap = ImageCache.getInstance().get(localThumbUrl);
+        if (bitmap == null) {//内存缓存中不存在缩略图
+            int thumbImageSize = DensityUtils.dp2px(activity, 70f);
+            //在图片缓存目录中，缩略图本地文件是否存在
+            if (new File(localThumbUrl).exists()) {
+                bitmap = com.easemob.util.ImageUtils.decodeScaleImage(localThumbUrl, thumbImageSize, thumbImageSize);
             } else {
-                showImageView(ImageUtils.getThumbnailImagePath(filePath), holder.iv, filePath, IMAGE_DIR, message);
+                bitmap = com.easemob.util.ImageUtils.decodeScaleImage(localUrl, thumbImageSize, thumbImageSize);
             }
+        }
+
+        if (bitmap != null) {
+            //内存缓存缩略图
+            ImageCache.getInstance().put(localThumbUrl, bitmap);
+            iv.setImageBitmap(bitmap);
+            iv.setClickable(true);
+            iv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    clickImage(message, localUrl, imgBody.getRemoteUrl());
+                }
+            });
+        }
+    }
+
+    /**
+     * 接收端显示图片
+     * 1.发送端，本地只有大图，没有缩略图，缩略图需要利用大图裁剪
+     * 2.接收端，下载成功后本地只有缩略图，没有大图,大图需使用远程url下载
+     * @param message
+     * @param iv
+     */
+    private void showReceiveImageView(final EMMessage message, final ImageView iv) {
+        final ImageMessageBody imgBody = (ImageMessageBody) message.getBody();
+        //对接收端，本地下载并存储了缩略图
+        final String remoteThumbUrl = imgBody.getThumbnailUrl();
+        if(TextUtils.isEmpty(remoteThumbUrl)){
+            return;
+        }
+
+        final String localThumbUrl = ImageUtils.getThumbnailImagePath(remoteThumbUrl);
+        if(TextUtils.isEmpty(localThumbUrl)){
+            return;
+        }
+
+        Bitmap bitmap = ImageCache.getInstance().get(localThumbUrl);
+        if (bitmap == null) {//内存缓存中不存在缩略图
+            int thumbImageSize = DensityUtils.dp2px(activity, 70f);
+            //在图片缓存目录中，缩略图本地文件是否存在
+            if (new File(localThumbUrl).exists()) {
+                bitmap = com.easemob.util.ImageUtils.decodeScaleImage(localThumbUrl, thumbImageSize, thumbImageSize);
+            }
+        }
+
+        if (bitmap != null) {
+            //内存缓存缩略图
+            ImageCache.getInstance().put(localThumbUrl, bitmap);
+            iv.setImageBitmap(bitmap);
+            iv.setClickable(true);
+            iv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    clickImage(message, localThumbUrl, imgBody.getRemoteUrl());
+                }
+            });
         }
     }
 
@@ -957,36 +1049,6 @@ public class MessageAdapter extends BaseAdapter {
 
             if (message.status == EMMessage.Status.INPROGRESS) {
                 downloadMsg(message, holder);
-//                holder.pb.setVisibility(View.VISIBLE);
-//                //下载语音
-//                ((FileMessageBody) message.getBody()).setDownloadCallback(new EMCallBack() {
-//
-//                    @Override
-//                    public void onSuccess() {
-//                        activity.runOnUiThread(new Runnable() {
-//
-//                            @Override
-//                            public void run() {
-//                                holder.pb.setVisibility(View.INVISIBLE);
-//                            }
-//                        });
-//                    }
-//
-//                    @Override
-//                    public void onProgress(int progress, String status) {
-//                    }
-//
-//                    @Override
-//                    public void onError(int code, String message) {
-//                        activity.runOnUiThread(new Runnable() {
-//
-//                            @Override
-//                            public void run() {
-//                                holder.pb.setVisibility(View.INVISIBLE);
-//                            }
-//                        });
-//                    }
-//                });
             } else {
                 holder.pb.setVisibility(View.INVISIBLE);
             }
@@ -1021,7 +1083,7 @@ public class MessageAdapter extends BaseAdapter {
         holder.staus_iv.setVisibility(View.GONE);
         holder.pb.setVisibility(View.VISIBLE);
 
-        if(message.getType() == EMMessage.Type.IMAGE) {
+        if (message.getType() == EMMessage.Type.IMAGE) {
             holder.tv.setVisibility(View.VISIBLE);
             holder.tv.setText("0%");
         }
@@ -1034,7 +1096,7 @@ public class MessageAdapter extends BaseAdapter {
                     @Override
                     public void run() {
                         holder.pb.setVisibility(View.GONE);
-                        if(message.getType() == EMMessage.Type.IMAGE) {
+                        if (message.getType() == EMMessage.Type.IMAGE) {
                             holder.tv.setVisibility(View.GONE);
                         }
                     }
@@ -1048,7 +1110,7 @@ public class MessageAdapter extends BaseAdapter {
                     public void run() {
                         holder.pb.setVisibility(View.GONE);
                         holder.staus_iv.setVisibility(View.VISIBLE);
-                        if(message.getType() == EMMessage.Type.IMAGE) {
+                        if (message.getType() == EMMessage.Type.IMAGE) {
                             holder.tv.setVisibility(View.GONE);
                         }
                     }
@@ -1057,7 +1119,7 @@ public class MessageAdapter extends BaseAdapter {
 
             @Override
             public void onProgress(final int progress, String status) {
-                if(message.getType() == EMMessage.Type.IMAGE) {
+                if (message.getType() == EMMessage.Type.IMAGE) {
                     activity.runOnUiThread(new Runnable() {
                         public void run() {
                             holder.tv.setText(progress + "%");
@@ -1079,7 +1141,7 @@ public class MessageAdapter extends BaseAdapter {
         final FileMessageBody msgbody = (FileMessageBody) message.getBody();
 
         holder.pb.setVisibility(View.VISIBLE);
-        if(message.getType() == Type.IMAGE){
+        if (message.getType() == Type.IMAGE) {
             holder.iv.setImageResource(R.drawable.default_image);
             holder.tv.setVisibility(View.VISIBLE);
         }
@@ -1096,15 +1158,16 @@ public class MessageAdapter extends BaseAdapter {
                         holder.pb.setVisibility(View.GONE);
                         if (message.getType() == EMMessage.Type.IMAGE) {
                             holder.tv.setVisibility(View.GONE);
+                            showReceiveImageView(message, holder.iv);
                             //设置缩略图
-                            String thumbRemoteUrl = ((ImageMessageBody)message.getBody()).getThumbnailUrl();
-                            if (! TextUtils.isEmpty(thumbRemoteUrl)) {
-                                String thumbnailPath = ImageUtils.getThumbnailImagePath(thumbRemoteUrl);
-                                Bitmap bitmap = BitmapFactory.decodeFile(thumbnailPath);
-                                if(bitmap != null){
-                                    holder.iv.setImageBitmap(bitmap);
-                                }
-                            }
+//                            String thumbRemoteUrl = ((ImageMessageBody) message.getBody()).getThumbnailUrl();
+//                            if (!TextUtils.isEmpty(thumbRemoteUrl)) {
+//                                String thumbnailPath = ImageUtils.getThumbnailImagePath(thumbRemoteUrl);
+//                                Bitmap bitmap = BitmapFactory.decodeFile(thumbnailPath);
+//                                if (bitmap != null) {
+//                                    holder.iv.setImageBitmap(bitmap);
+//                                }
+//                            }
                         }
                     }
                 });
@@ -1247,24 +1310,56 @@ public class MessageAdapter extends BaseAdapter {
      * @param message
      * @return
      */
-    private boolean showImageView(final String thumbernailPath, final ImageView iv, final String localFullSizePath,
-                                  final String remote, final EMMessage message) {
-        Bitmap bitmap = ImageCache.getInstance().get(thumbernailPath);
-        if (bitmap != null) {//内存缓存中存在缩略图
-            iv.setImageBitmap(bitmap);
-            iv.setClickable(true);
-            iv.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    clickImage(message, localFullSizePath, remote);
-                }
-            });
-            return true;
-        } else {
-            new LoadImageTask().execute(thumbernailPath, localFullSizePath, remote, message.getChatType(), iv, activity, message);
-            return true;
-        }
-    }
+//    private boolean showImageView(final String thumbernailPath, final ImageView iv, final String localFullSizePath,
+//                                  final String remote, final EMMessage message) {
+//        Bitmap bitmap = ImageCache.getInstance().get(thumbernailPath);
+//        if (bitmap != null) {//内存缓存中存在缩略图
+//            iv.setImageBitmap(bitmap);
+//            iv.setClickable(true);
+//            iv.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    clickImage(message, localFullSizePath, remote);
+//                }
+//            });
+//            return true;
+//        } else {
+//            new LoadImageTask().execute(thumbernailPath, localFullSizePath, remote, message.getChatType(), iv, activity, message);
+//            return true;
+//        }
+//    }
+
+    /**
+     * 1.发送端，本地只有大图，没有缩略图
+     * 2.接收端，下载成功后本地只有缩略图，没有大图
+     */
+//    private void showImageView(final String thumbernailPath, final ImageView iv, final String localFullSizePath,
+//                               final String remote, final EMMessage message) {
+//        Bitmap bitmap = ImageCache.getInstance().get(thumbernailPath);
+//        if (bitmap == null) {//内存缓存中不存在缩略图
+//            File file = new File(thumbernailPath);
+//            int thumbImageSize = DensityUtils.dp2px(activity, 70f);
+//            //在图片缓存目录中，缩略图本地文件是否存在
+//            if (file.exists()) {
+//                bitmap = com.easemob.util.ImageUtils.decodeScaleImage(thumbernailPath, thumbImageSize, thumbImageSize);
+//            } else {
+//                if (message.direct == EMMessage.Direct.SEND) {
+//                    bitmap = com.easemob.util.ImageUtils.decodeScaleImage(localFullSizePath, thumbImageSize, thumbImageSize);
+//                }
+//            }
+//        }
+//
+//        if (bitmap != null) {
+//            iv.setImageBitmap(bitmap);
+//            iv.setClickable(true);
+//            iv.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    clickImage(message, localFullSizePath, remote);
+//                }
+//            });
+//        }
+//    }
 
     /**
      * 图片点击
@@ -1285,18 +1380,6 @@ public class MessageAdapter extends BaseAdapter {
             ImageMessageBody body = (ImageMessageBody) message.getBody();
             intent.putExtra("secret", body.getSecret());
             intent.putExtra("remotepath", remote);
-        }
-
-        if (message.getChatType() != ChatType.GroupChat && message.getChatType() != ChatType.ChatRoom) {
-            //设置图片已读
-            if (message != null && message.direct == EMMessage.Direct.RECEIVE && !message.isAcked) {
-                try {
-                    EMChatManager.getInstance().ackMessageRead(message.getFrom(), message.getMsgId());
-                    message.isAcked = true;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
         }
 
         activity.startActivity(intent);
