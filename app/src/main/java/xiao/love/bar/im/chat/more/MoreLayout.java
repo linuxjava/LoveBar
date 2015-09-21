@@ -39,10 +39,12 @@ public class MoreLayout implements View.OnClickListener {
     //拍照文件
     private File mTakePicture;
     private EMConversation mConversation;
+    private String mChatUserName;
 
     public MoreLayout(ChatActivity activity, EMConversation conversation) {
         mActivity = activity;
         mConversation = conversation;
+        mChatUserName = activity.getToChatUsername();
         mMoreLL = (LinearLayout) activity.findViewById(R.id.ll_btn_container);
         mTakePictureBtn = (ImageView) activity.findViewById(R.id.btn_take_picture);
         mImageBtn = (ImageView) activity.findViewById(R.id.btn_picture);
@@ -113,16 +115,15 @@ public class MoreLayout implements View.OnClickListener {
     /**
      * 发送图片
      *
-     * @param toChatUsername 聊天对象id
      */
-    public void sendImage(String toChatUsername) {
+    public void sendImage() {
         if (mTakePicture == null || !mTakePicture.exists()) {
             return;
         }
 
         final EMMessage message = EMMessage.createSendMessage(EMMessage.Type.IMAGE);
         message.setChatType(EMMessage.ChatType.Chat);
-        message.setReceipt(toChatUsername);
+        message.setReceipt(mChatUserName);
         ImageMessageBody body = new ImageMessageBody(mTakePicture);
         // 默认超过100k的图片会压缩后发给对方，可以设置成发送原图
         //body.setSendOriginalImage(true);
@@ -132,10 +133,9 @@ public class MoreLayout implements View.OnClickListener {
 
     /**
      * 根据图库图片uri发送图片
-     * @param toChatUsername
      * @param intent
      */
-    public void sendImageByUri(String toChatUsername, Intent intent) {
+    public void sendImageByUri(Intent intent) {
         if (intent == null && intent.getData() == null) {
             return;
         }
@@ -157,7 +157,7 @@ public class MoreLayout implements View.OnClickListener {
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
             } else {
-                sendImage(toChatUsername);
+                sendImage();
             }
         } else {
             mTakePicture = new File(selectedImage.getPath());
@@ -166,17 +166,16 @@ public class MoreLayout implements View.OnClickListener {
                 toast.setGravity(Gravity.CENTER, 0, 0);
                 toast.show();
             } else {
-                sendImage(toChatUsername);
+                sendImage();
             }
         }
     }
 
     /**
      * 发送点位信息
-     * @param toChatUsername
      * @param intent
      */
-    public void sendLocation(String toChatUsername, Intent intent) {
+    public void sendLocation(Intent intent) {
         if(intent == null){
             return;
         }
@@ -193,7 +192,7 @@ public class MoreLayout implements View.OnClickListener {
         EMMessage message = EMMessage.createSendMessage(EMMessage.Type.LOCATION);
         LocationMessageBody locBody = new LocationMessageBody(locationAddress, latitude, longitude);
         message.addBody(locBody);
-        message.setReceipt(toChatUsername);
+        message.setReceipt(mChatUserName);
         mConversation.addMessage(message);
     }
 }

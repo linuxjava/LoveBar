@@ -17,26 +17,16 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.media.ThumbnailUtils;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.PowerManager;
-import android.provider.MediaStore;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.text.ClipboardManager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -46,7 +36,6 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -54,7 +43,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.easemob.EMChatRoomChangeListener;
-import com.easemob.EMError;
 import com.easemob.EMEventListener;
 import com.easemob.EMNotifierEvent;
 import com.easemob.EMValueCallBack;
@@ -68,29 +56,22 @@ import com.easemob.chat.EMGroupManager;
 import com.easemob.chat.EMMessage;
 import com.easemob.chat.EMMessage.ChatType;
 import com.easemob.chat.ImageMessageBody;
-import com.easemob.chat.LocationMessageBody;
-import com.easemob.chat.NormalFileMessageBody;
 import com.easemob.chat.TextMessageBody;
-import com.easemob.chat.VideoMessageBody;
-import com.easemob.chat.VoiceMessageBody;
 import com.easemob.exceptions.EaseMobException;
 import com.easemob.util.EMLog;
-import com.easemob.util.PathUtil;
 import com.easemob.util.VoiceRecorder;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.List;
 
 import xiao.love.bar.R;
 import xiao.love.bar.component.BaseActivity;
-import xiao.love.bar.component.util.SDCardUtils;
 import xiao.love.bar.im.chat.emoji.EmojiLayout;
 import xiao.love.bar.im.chat.more.MoreLayout;
+import xiao.love.bar.im.chat.voice.SpeakLayout;
 import xiao.love.bar.im.hxlib.IMHelper;
 import xiao.love.bar.im.hxlib.model.GroupRemoveListener;
 import xiao.love.bar.im.util.IMImageUtils;
@@ -149,9 +130,9 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
     private View buttonSetModeKeyboard;
     private View buttonSetModeVoice;
     private View buttonSend;
-    private View buttonPressToSpeak;
+    //private View buttonPressToSpeak;
     //private LinearLayout emojiIconContainer;
-    private LinearLayout btnContainer;
+    //private LinearLayout btnContainer;
     private ImageView locationImgview;
     private View more;
     private int position;
@@ -191,7 +172,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
         @Override
         public void handleMessage(android.os.Message msg) {
             // 切换msg切换图片
-            micImage.setImageDrawable(micImages[msg.what]);
+            mVoiceLayout.setMicImg(msg.what);
         }
     };
     public EMGroup group;
@@ -201,6 +182,8 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
     private EmojiLayout mEmojiLayout;
     //更多布局(发送图片、位置)
     private MoreLayout mMoreLayout;
+    //录音布局
+    private SpeakLayout mVoiceLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -212,26 +195,19 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 
         mEmojiLayout = new EmojiLayout(this, mEditTextContent);
         mMoreLayout = new MoreLayout(this, conversation);
+        mVoiceLayout = new SpeakLayout(this, conversation, micImageHandler);
     }
 
     /**
      * initView
      */
     protected void initView() {
-        recordingContainer = findViewById(R.id.recording_container);
-        micImage = (ImageView) findViewById(R.id.mic_image);
-        recordingHint = (TextView) findViewById(R.id.recording_hint);
         listView = (ListView) findViewById(R.id.list);
         mEditTextContent = (PasteEditText) findViewById(R.id.et_sendmessage);
         buttonSetModeKeyboard = findViewById(R.id.btn_set_mode_keyboard);
         edittext_layout = (RelativeLayout) findViewById(R.id.edittext_layout);
         buttonSetModeVoice = findViewById(R.id.btn_set_mode_voice);
         buttonSend = findViewById(R.id.btn_send);
-        buttonPressToSpeak = findViewById(R.id.btn_press_to_speak);
-        //expressionViewpager = (ViewPager) findViewById(R.id.vPager);
-        //emojiIconContainer = (LinearLayout) findViewById(R.id.ll_face_container);
-        btnContainer = (LinearLayout) findViewById(R.id.ll_btn_container);
-        locationImgview = (ImageView) findViewById(R.id.btn_location);
         iv_emoticons_normal = (ImageView) findViewById(R.id.iv_emoticons_normal);
         iv_emoticons_checked = (ImageView) findViewById(R.id.iv_emoticons_checked);
         loadmorePB = (ProgressBar) findViewById(R.id.pb_load_more);
@@ -243,25 +219,6 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
         voiceCallBtn = (ImageView) findViewById(R.id.btn_voice_call);
         videoCallBtn = (ImageView) findViewById(R.id.btn_video_call);
 
-        // 动画资源文件,用于录制语音时
-        micImages = new Drawable[]{getResources().getDrawable(R.drawable.record_animate_01),
-                getResources().getDrawable(R.drawable.record_animate_02),
-                getResources().getDrawable(R.drawable.record_animate_03),
-                getResources().getDrawable(R.drawable.record_animate_04),
-                getResources().getDrawable(R.drawable.record_animate_05),
-                getResources().getDrawable(R.drawable.record_animate_06),
-                getResources().getDrawable(R.drawable.record_animate_07),
-                getResources().getDrawable(R.drawable.record_animate_08),
-                getResources().getDrawable(R.drawable.record_animate_09),
-                getResources().getDrawable(R.drawable.record_animate_10),
-                getResources().getDrawable(R.drawable.record_animate_11),
-                getResources().getDrawable(R.drawable.record_animate_12),
-                getResources().getDrawable(R.drawable.record_animate_13),
-                getResources().getDrawable(R.drawable.record_animate_14)};
-
-        //发送语音相关
-        voiceRecorder = new VoiceRecorder(micImageHandler);
-        buttonPressToSpeak.setOnTouchListener(new PressToSpeakListen());
         //文本框输入相关
         mEditTextContent.setOnFocusChangeListener(new OnFocusChangeListener() {
             @Override
@@ -284,7 +241,8 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
                 iv_emoticons_checked.setVisibility(View.INVISIBLE);
                 //emojiIconContainer.setVisibility(View.GONE);
                 mEmojiLayout.hideEmojiLayout();
-                btnContainer.setVisibility(View.GONE);
+                //btnContainer.setVisibility(View.GONE);
+                mMoreLayout.hideMoreLayout();
             }
         });
         // 监听文字框
@@ -497,7 +455,8 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
                 iv_emoticons_checked.setVisibility(View.INVISIBLE);
                 //emojiIconContainer.setVisibility(View.GONE);
                 mEmojiLayout.hideEmojiLayout();
-                btnContainer.setVisibility(View.GONE);
+                //btnContainer.setVisibility(View.GONE);
+                mMoreLayout.hideMoreLayout();
                 return false;
             }
         });
@@ -610,11 +569,11 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
                 EMChatManager.getInstance().clearConversation(toChatUsername);
                 adapter.refresh();
             } else if (requestCode == REQUEST_CODE_CAMERA) { // 发送照片
-                mMoreLayout.sendImage(toChatUsername);
+                mMoreLayout.sendImage();
             } else if (requestCode == REQUEST_CODE_LOCAL) { // 发送本地图片
-                mMoreLayout.sendImageByUri(toChatUsername, data);
+                mMoreLayout.sendImageByUri(data);
             } else if (requestCode == REQUEST_CODE_MAP) { // 地图
-                mMoreLayout.sendLocation(toChatUsername, data);
+                mMoreLayout.sendLocation(data);
             } else if (requestCode == REQUEST_CODE_TEXT || requestCode == REQUEST_CODE_VOICE
                     || requestCode == REQUEST_CODE_PICTURE || requestCode == REQUEST_CODE_LOCATION
                     || requestCode == REQUEST_CODE_VIDEO || requestCode == REQUEST_CODE_FILE) {// 重发消息
@@ -648,7 +607,6 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
      */
     @Override
     public void onClick(View view) {
-        String st1 = getResources().getString(R.string.not_connect_to_server);
         int id = view.getId();
         if (id == R.id.btn_send) {// 点击发送按钮(发文字和表情)
             String s = mEditTextContent.getText().toString();
@@ -657,17 +615,18 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
             more.setVisibility(View.VISIBLE);
             iv_emoticons_normal.setVisibility(View.INVISIBLE);
             iv_emoticons_checked.setVisibility(View.VISIBLE);
-            btnContainer.setVisibility(View.GONE);
+            //btnContainer.setVisibility(View.GONE);
+            mMoreLayout.hideMoreLayout();
             mEmojiLayout.showEmojiLayout();
             hideKeyboard();
         } else if (id == R.id.iv_emoticons_checked) { // 点击隐藏表情框
             iv_emoticons_normal.setVisibility(View.VISIBLE);
             iv_emoticons_checked.setVisibility(View.INVISIBLE);
-            btnContainer.setVisibility(View.VISIBLE);
+            //btnContainer.setVisibility(View.VISIBLE);
+            mMoreLayout.showMoreLayout();
             mEmojiLayout.hideEmojiLayout();
             more.setVisibility(View.GONE);
             showKeyboard();
-
         }
     }
 
@@ -754,56 +713,6 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
     }
 
     /**
-     * 照相获取图片
-     */
-//    public void selectPicFromCamera() {
-//        if (!SDCardUtils.isSDCardEnable()) {
-//            String st = getResources().getString(R.string.sd_card_does_not_exist);
-//            Toast.makeText(getApplicationContext(), st, Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-//
-//        cameraFile = new File(PathUtil.getInstance().getImagePath(), UserUtils.getUserName()
-//                + System.currentTimeMillis() + ".jpg");
-//
-//        cameraFile.getParentFile().mkdirs();
-//        startActivityForResult(
-//                new Intent(MediaStore.ACTION_IMAGE_CAPTURE).putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(cameraFile)),
-//                REQUEST_CODE_CAMERA);
-//    }
-
-    /**
-     * 选择文件
-     */
-//    private void selectFileFromLocal() {
-//        Intent intent = null;
-//        if (Build.VERSION.SDK_INT < 19) {
-//            intent = new Intent(Intent.ACTION_GET_CONTENT);
-//            intent.setType("*/*");
-//            intent.addCategory(Intent.CATEGORY_OPENABLE);
-//
-//        } else {
-//            intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-//        }
-//        startActivityForResult(intent, REQUEST_CODE_SELECT_FILE);
-//    }
-
-    /**
-     * 从图库获取图片
-     */
-//    public void selectPicFromLocal() {
-//        Intent intent;
-//        if (Build.VERSION.SDK_INT < 19) {
-//            intent = new Intent(Intent.ACTION_GET_CONTENT);
-//            intent.setType("image/*");
-//
-//        } else {
-//            intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-//        }
-//        startActivityForResult(intent, REQUEST_CODE_LOCAL);
-//    }
-
-    /**
      * 发送文本消息
      *
      * @param content
@@ -835,43 +744,6 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 
             setResult(RESULT_OK);
 
-        }
-    }
-
-    /**
-     * 发送语音
-     *
-     * @param filePath
-     * @param fileName
-     * @param length
-     * @param isResend
-     */
-    private void sendVoice(String filePath, String fileName, String length, boolean isResend) {
-        if (!(new File(filePath).exists())) {
-            return;
-        }
-        try {
-            final EMMessage message = EMMessage.createSendMessage(EMMessage.Type.VOICE);
-            // 如果是群聊，设置chattype,默认是单聊
-            if (chatType == CHATTYPE_GROUP) {
-                message.setChatType(ChatType.GroupChat);
-            } else if (chatType == CHATTYPE_CHATROOM) {
-                message.setChatType(ChatType.ChatRoom);
-            }
-            message.setReceipt(toChatUsername);
-            int len = Integer.parseInt(length);
-            VoiceMessageBody body = new VoiceMessageBody(new File(filePath), len);
-            message.addBody(body);
-            if (isRobot) {
-                message.setAttribute("em_robot_message", true);
-            }
-            conversation.addMessage(message);
-            adapter.refreshSelectLast();
-            setResult(RESULT_OK);
-            // send file
-            // sendVoiceSub(filePath, fileName, message);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 
@@ -908,105 +780,6 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
     }
 
     /**
-     * 发送视频消息
-     */
-//    private void sendVideo(final String filePath, final String thumbPath, final int length) {
-//        final File videoFile = new File(filePath);
-//        if (!videoFile.exists()) {
-//            return;
-//        }
-//        try {
-//            EMMessage message = EMMessage.createSendMessage(EMMessage.Type.VIDEO);
-//            // 如果是群聊，设置chattype,默认是单聊
-//            if (chatType == CHATTYPE_GROUP) {
-//                message.setChatType(ChatType.GroupChat);
-//            } else if (chatType == CHATTYPE_CHATROOM) {
-//                message.setChatType(ChatType.ChatRoom);
-//            }
-//            String to = toChatUsername;
-//            message.setReceipt(to);
-//            VideoMessageBody body = new VideoMessageBody(videoFile, thumbPath, length, videoFile.length());
-//            message.addBody(body);
-//            if (isRobot) {
-//                message.setAttribute("em_robot_message", true);
-//            }
-//            conversation.addMessage(message);
-//            listView.setAdapter(adapter);
-//            adapter.refreshSelectLast();
-//            setResult(RESULT_OK);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
-
-    /**
-     * 根据图库图片uri发送图片
-     *
-     * @param selectedImage
-     */
-//    private void sendPicByUri(Uri selectedImage) {
-//        String[] filePathColumn = {MediaStore.Images.Media.DATA};
-//        Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
-//        String st8 = getResources().getString(R.string.cant_find_pictures);
-//        if (cursor != null) {
-//            cursor.moveToFirst();
-//            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-//            String picturePath = cursor.getString(columnIndex);
-//            cursor.close();
-//            cursor = null;
-//
-//            if (picturePath == null || picturePath.equals("null")) {
-//                Toast toast = Toast.makeText(this, st8, Toast.LENGTH_SHORT);
-//                toast.setGravity(Gravity.CENTER, 0, 0);
-//                toast.show();
-//                return;
-//            }
-//            sendPicture(picturePath);
-//        } else {
-//            File file = new File(selectedImage.getPath());
-//            if (!file.exists()) {
-//                Toast toast = Toast.makeText(this, st8, Toast.LENGTH_SHORT);
-//                toast.setGravity(Gravity.CENTER, 0, 0);
-//                toast.show();
-//                return;
-//
-//            }
-//            sendPicture(file.getAbsolutePath());
-//        }
-//
-//    }
-//
-//    /**
-//     * 发送位置信息
-//     *
-//     * @param latitude
-//     * @param longitude
-//     * @param imagePath
-//     * @param locationAddress
-//     */
-//    private void sendLocationMsg(double latitude, double longitude, String imagePath, String locationAddress) {
-//        EMMessage message = EMMessage.createSendMessage(EMMessage.Type.LOCATION);
-//        // 如果是群聊，设置chattype,默认是单聊
-//        if (chatType == CHATTYPE_GROUP) {
-//            message.setChatType(ChatType.GroupChat);
-//        } else if (chatType == CHATTYPE_CHATROOM) {
-//            message.setChatType(ChatType.ChatRoom);
-//        }
-//        LocationMessageBody locBody = new LocationMessageBody(locationAddress, latitude, longitude);
-//        message.addBody(locBody);
-//        message.setReceipt(toChatUsername);
-//        if (isRobot) {
-//            message.setAttribute("em_robot_message", true);
-//        }
-//        conversation.addMessage(message);
-//        listView.setAdapter(adapter);
-//        adapter.refreshSelectLast();
-//        setResult(RESULT_OK);
-//
-//    }
-
-    /**
      * 重发消息
      */
     private void resendMessage() {
@@ -1031,11 +804,13 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
         buttonSetModeKeyboard.setVisibility(View.VISIBLE);
         buttonSend.setVisibility(View.GONE);
         btnMore.setVisibility(View.VISIBLE);
-        buttonPressToSpeak.setVisibility(View.VISIBLE);
         iv_emoticons_normal.setVisibility(View.VISIBLE);
         iv_emoticons_checked.setVisibility(View.INVISIBLE);
-        btnContainer.setVisibility(View.VISIBLE);
+        //btnContainer.setVisibility(View.VISIBLE);
+        mMoreLayout.showMoreLayout();
+
         mEmojiLayout.hideEmojiLayout();
+        mVoiceLayout.showVoiceLayout();
     }
 
     /**
@@ -1057,10 +832,8 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
         more.setVisibility(View.GONE);
         view.setVisibility(View.GONE);
         buttonSetModeVoice.setVisibility(View.VISIBLE);
-        // mEditTextContent.setVisibility(View.VISIBLE);
         mEditTextContent.requestFocus();
-        // buttonSend.setVisibility(View.VISIBLE);
-        buttonPressToSpeak.setVisibility(View.GONE);
+        mVoiceLayout.hideVoiceLayout();
         if (TextUtils.isEmpty(mEditTextContent.getText())) {
             btnMore.setVisibility(View.VISIBLE);
             buttonSend.setVisibility(View.GONE);
@@ -1111,14 +884,16 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
             EMLog.d(TAG, "more gone");
             hideKeyboard();
             more.setVisibility(View.VISIBLE);
-            btnContainer.setVisibility(View.VISIBLE);
+            //btnContainer.setVisibility(View.VISIBLE);
+            mMoreLayout.showMoreLayout();
             //emojiIconContainer.setVisibility(View.GONE);
             mEmojiLayout.hideEmojiLayout();
         } else {
             if (mEmojiLayout.getEmojiLayoutVisibility() == View.VISIBLE) {
                 //emojiIconContainer.setVisibility(View.GONE);
                 mEmojiLayout.hideEmojiLayout();
-                btnContainer.setVisibility(View.VISIBLE);
+                //btnContainer.setVisibility(View.VISIBLE);
+                mMoreLayout.showMoreLayout();
                 iv_emoticons_normal.setVisibility(View.VISIBLE);
                 iv_emoticons_checked.setVisibility(View.INVISIBLE);
             } else {
@@ -1156,93 +931,6 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
     @Override
     public void getNetwork(String uri, String tag) {
 
-    }
-
-    /**
-     * 按住说话listener
-     *
-     */
-    class PressToSpeakListen implements View.OnTouchListener {
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    if (!SDCardUtils.isSDCardEnable()) {
-                        String st4 = getResources().getString(R.string.Send_voice_need_sdcard_support);
-                        Toast.makeText(ChatActivity.this, st4, Toast.LENGTH_SHORT).show();
-                        return false;
-                    }
-                    try {
-                        v.setPressed(true);
-                        wakeLock.acquire();
-                        //如果录音时有语音正在播放，立刻停止
-                        if (VoiceClickListener.isPlaying)
-                            VoiceClickListener.currentPlayListener.stopPlayVoice();
-                        recordingContainer.setVisibility(View.VISIBLE);
-                        recordingHint.setText(getString(R.string.move_up_to_cancel));
-                        recordingHint.setBackgroundColor(Color.TRANSPARENT);
-                        voiceRecorder.startRecording(null, toChatUsername, getApplicationContext());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        v.setPressed(false);
-                        if (wakeLock.isHeld())
-                            wakeLock.release();
-                        if (voiceRecorder != null)
-                            voiceRecorder.discardRecording();
-                        recordingContainer.setVisibility(View.INVISIBLE);
-                        Toast.makeText(ChatActivity.this, R.string.recoding_fail, Toast.LENGTH_SHORT).show();
-                        return false;
-                    }
-
-                    return true;
-                case MotionEvent.ACTION_MOVE: {
-                    if (event.getY() < 0) {
-                        recordingHint.setText(getString(R.string.release_to_cancel));
-                        recordingHint.setBackgroundResource(R.drawable.recording_text_hint_bg);
-                    } else {
-                        recordingHint.setText(getString(R.string.move_up_to_cancel));
-                        recordingHint.setBackgroundColor(Color.TRANSPARENT);
-                    }
-                    return true;
-                }
-                case MotionEvent.ACTION_UP:
-                    v.setPressed(false);
-                    recordingContainer.setVisibility(View.INVISIBLE);
-                    if (wakeLock.isHeld())
-                        wakeLock.release();
-                    if (event.getY() < 0) {
-                        // discard the recorded audio.
-                        voiceRecorder.discardRecording();
-
-                    } else {
-                        // stop recording and send voice file
-                        String st1 = getResources().getString(R.string.Recording_without_permission);
-                        String st2 = getResources().getString(R.string.The_recording_time_is_too_short);
-                        String st3 = getResources().getString(R.string.send_failure_please);
-                        try {
-                            int length = voiceRecorder.stopRecoding();
-                            if (length > 0) {
-                                sendVoice(voiceRecorder.getVoiceFilePath(), voiceRecorder.getVoiceFileName(toChatUsername),
-                                        Integer.toString(length), false);
-                            } else if (length == EMError.INVALID_FILE) {
-                                Toast.makeText(getApplicationContext(), st1, Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(getApplicationContext(), st2, Toast.LENGTH_SHORT).show();
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            Toast.makeText(ChatActivity.this, st3, Toast.LENGTH_SHORT).show();
-                        }
-
-                    }
-                    return true;
-                default:
-                    recordingContainer.setVisibility(View.INVISIBLE);
-                    if (voiceRecorder != null)
-                        voiceRecorder.discardRecording();
-                    return false;
-            }
-        }
     }
 
     @Override
@@ -1389,62 +1077,6 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
         }
     }
 
-    /**
-     * listview滑动监听listener
-     *
-     */
-//	private class ListScrollListener implements OnScrollListener {
-//
-//		@Override
-//		public void onScrollStateChanged(AbsListView view, int scrollState) {
-//			switch (scrollState) {
-//			case OnScrollListener.SCROLL_STATE_IDLE:
-//				/*if (view.getFirstVisiblePosition() == 0 && !isloading && haveMoreData && conversation.getAllMessages().size() != 0) {
-//					isloading = true;
-//					loadmorePB.setVisibility(View.VISIBLE);
-//					// sdk初始化加载的聊天记录为20条，到顶时去db里获取更多
-//					List<EMMessage> messages;
-//					EMMessage firstMsg = conversation.getAllMessages().get(0);
-//					try {
-//						// 获取更多messges，调用此方法的时候从db获取的messages
-//						// sdk会自动存入到此conversation中
-//						if (chatType == CHATTYPE_SINGLE)
-//							messages = conversation.loadMoreMsgFromDB(firstMsg.getMsgId(), pagesize);
-//						else
-//							messages = conversation.loadMoreGroupMsgFromDB(firstMsg.getMsgId(), pagesize);
-//					} catch (Exception e1) {
-//						loadmorePB.setVisibility(View.GONE);
-//						return;
-//					}
-//					try {
-//						Thread.sleep(300);
-//					} catch (InterruptedException e) {
-//					}
-//					if (messages.size() != 0) {
-//						// 刷新ui
-//						if (messages.size() > 0) {
-//							adapter.refreshSeekTo(messages.size() - 1);
-//						}
-//
-//						if (messages.size() != pagesize)
-//							haveMoreData = false;
-//					} else {
-//						haveMoreData = false;
-//					}
-//					loadmorePB.setVisibility(View.GONE);
-//					isloading = false;
-//
-//				}*/
-//				break;
-//			}
-//		}
-//
-//		@Override
-//		public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-//
-//		}
-//
-//	}
     @Override
     protected void onNewIntent(Intent intent) {
         // 点击notification bar进入聊天页面，保证只有一个聊天页面
@@ -1546,4 +1178,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
         return listView;
     }
 
+    public MessageAdapter getAdapter(){
+        return adapter;
+    }
 }
