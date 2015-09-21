@@ -24,7 +24,7 @@ import com.easemob.util.ImageUtils;
 
 import xiao.love.bar.R;
 import xiao.love.bar.component.widget.photoview.PhotoView;
-import xiao.love.bar.im.util.ImageCache;
+import xiao.love.bar.im.util.IMImageCache;
 
 public class LoadLocalBigImgTask extends AsyncTask<Void, Void, Bitmap> {
 
@@ -71,7 +71,7 @@ public class LoadLocalBigImgTask extends AsyncTask<Void, Void, Bitmap> {
 		pb.setVisibility(View.INVISIBLE);
 		photoView.setVisibility(View.VISIBLE);
 		if (result != null)
-			ImageCache.getInstance().put(path, result);
+			IMImageCache.getInstance().put(path, result);
 		else
 			result = BitmapFactory.decodeResource(context.getResources(),
 					R.drawable.signin_local_gallry);

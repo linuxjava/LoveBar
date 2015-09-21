@@ -18,7 +18,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Handler;
 import android.text.Spannable;
@@ -49,6 +48,7 @@ import com.easemob.chat.ImageMessageBody;
 import com.easemob.chat.LocationMessageBody;
 import com.easemob.chat.TextMessageBody;
 import com.easemob.chat.VoiceMessageBody;
+import com.easemob.util.ImageUtils;
 import com.easemob.util.LatLng;
 
 import java.io.File;
@@ -60,11 +60,10 @@ import java.util.Timer;
 import xiao.love.bar.R;
 import xiao.love.bar.component.util.DateUtils;
 import xiao.love.bar.component.util.DensityUtils;
-import xiao.love.bar.component.util.L;
 import xiao.love.bar.im.chat.emoji.EmojiParse;
 import xiao.love.bar.im.hxlib.IMUtil;
-import xiao.love.bar.im.util.ImageCache;
-import xiao.love.bar.im.util.ImageUtils;
+import xiao.love.bar.im.util.IMImageCache;
+import xiao.love.bar.im.util.IMImageUtils;
 import xiao.love.bar.im.util.UserUtils;
 
 public class MessageAdapter extends BaseAdapter {
@@ -882,25 +881,25 @@ public class MessageAdapter extends BaseAdapter {
             return;
         }
 
-        String localThumbUrl = ImageUtils.getThumbnailImagePath(localUrl);
+        String localThumbUrl = IMImageUtils.getThumbnailImagePath(localUrl);
         if(TextUtils.isEmpty(localThumbUrl)){
             return;
         }
 
-        Bitmap bitmap = ImageCache.getInstance().get(localThumbUrl);
+        Bitmap bitmap = IMImageCache.getInstance().get(localThumbUrl);
         if (bitmap == null) {//内存缓存中不存在缩略图
             int thumbImageSize = DensityUtils.dp2px(activity, 70f);
             //在图片缓存目录中，缩略图本地文件是否存在
             if (new File(localThumbUrl).exists()) {
-                bitmap = com.easemob.util.ImageUtils.decodeScaleImage(localThumbUrl, thumbImageSize, thumbImageSize);
+                bitmap = ImageUtils.decodeScaleImage(localThumbUrl, thumbImageSize, thumbImageSize);
             } else {
-                bitmap = com.easemob.util.ImageUtils.decodeScaleImage(localUrl, thumbImageSize, thumbImageSize);
+                bitmap = ImageUtils.decodeScaleImage(localUrl, thumbImageSize, thumbImageSize);
             }
         }
 
         if (bitmap != null) {
             //内存缓存缩略图
-            ImageCache.getInstance().put(localThumbUrl, bitmap);
+            IMImageCache.getInstance().put(localThumbUrl, bitmap);
             iv.setImageBitmap(bitmap);
             iv.setClickable(true);
             iv.setOnClickListener(new View.OnClickListener() {
@@ -927,23 +926,23 @@ public class MessageAdapter extends BaseAdapter {
             return;
         }
 
-        final String localThumbUrl = ImageUtils.getThumbnailImagePath(remoteThumbUrl);
+        final String localThumbUrl = IMImageUtils.getThumbnailImagePath(remoteThumbUrl);
         if(TextUtils.isEmpty(localThumbUrl)){
             return;
         }
 
-        Bitmap bitmap = ImageCache.getInstance().get(localThumbUrl);
+        Bitmap bitmap = IMImageCache.getInstance().get(localThumbUrl);
         if (bitmap == null) {//内存缓存中不存在缩略图
             int thumbImageSize = DensityUtils.dp2px(activity, 70f);
             //在图片缓存目录中，缩略图本地文件是否存在
             if (new File(localThumbUrl).exists()) {
-                bitmap = com.easemob.util.ImageUtils.decodeScaleImage(localThumbUrl, thumbImageSize, thumbImageSize);
+                bitmap = ImageUtils.decodeScaleImage(localThumbUrl, thumbImageSize, thumbImageSize);
             }
         }
 
         if (bitmap != null) {
             //内存缓存缩略图
-            ImageCache.getInstance().put(localThumbUrl, bitmap);
+            IMImageCache.getInstance().put(localThumbUrl, bitmap);
             iv.setImageBitmap(bitmap);
             iv.setClickable(true);
             iv.setOnClickListener(new View.OnClickListener() {

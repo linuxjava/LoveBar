@@ -31,7 +31,7 @@ import java.io.File;
 import xiao.love.bar.component.util.DensityUtils;
 import xiao.love.bar.component.util.NetUtils;
 import xiao.love.bar.im.chat.ShowBigImageActivity;
-import xiao.love.bar.im.util.ImageCache;
+import xiao.love.bar.im.util.IMImageCache;
 
 public class LoadImageTask extends AsyncTask<Object, Void, Bitmap> {
 	private ImageView iv = null;
@@ -94,7 +94,7 @@ public class LoadImageTask extends AsyncTask<Object, Void, Bitmap> {
 	protected void onPostExecute(Bitmap image) {
 		if (image != null) {
 			iv.setImageBitmap(image);
-			ImageCache.getInstance().put(thumbnailPath, image);
+			IMImageCache.getInstance().put(thumbnailPath, image);
 			iv.setClickable(true);
 			iv.setTag(thumbnailPath);
 			iv.setOnClickListener(new View.OnClickListener() {

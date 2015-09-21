@@ -19,9 +19,9 @@ import android.support.v4.util.LruCache;
 /**
  * 图片内存缓存
  */
-public class ImageCache {
+public class IMImageCache {
 	
-	private ImageCache() {
+	private IMImageCache() {
 		// use 1/8 of available heap size
 		cache = new LruCache<String, Bitmap>((int) (Runtime.getRuntime().maxMemory() / 8)) {
               @Override
@@ -31,11 +31,11 @@ public class ImageCache {
           };
 	}
 
-	private static ImageCache imageCache = null;
+	private static IMImageCache imageCache = null;
 
-	public static synchronized ImageCache getInstance() {
+	public static synchronized IMImageCache getInstance() {
 		if (imageCache == null) {
-			imageCache = new ImageCache();
+			imageCache = new IMImageCache();
 		}
 		return imageCache;
 

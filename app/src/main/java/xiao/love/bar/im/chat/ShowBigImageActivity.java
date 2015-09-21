@@ -32,18 +32,14 @@ import com.easemob.util.EMLog;
 import com.easemob.util.ImageUtils;
 import com.easemob.util.PathUtil;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
 import xiao.love.bar.R;
-import xiao.love.bar.component.BaseActivity;
 import xiao.love.bar.component.widget.photoview.PhotoView;
 import xiao.love.bar.im.task.LoadLocalBigImgTask;
-import xiao.love.bar.im.util.ImageCache;
+import xiao.love.bar.im.util.IMImageCache;
 
 /**
  * 下载显示大图
@@ -80,7 +76,7 @@ public class ShowBigImageActivity extends Activity {
 			getWindowManager().getDefaultDisplay().getMetrics(metrics);
 			// int screenWidth = metrics.widthPixels;
 			// int screenHeight =metrics.heightPixels;
-			bitmap = ImageCache.getInstance().get(uri.getPath());
+			bitmap = IMImageCache.getInstance().get(uri.getPath());
 			if (bitmap == null) {
 				LoadLocalBigImgTask task = new LoadLocalBigImgTask(this, uri.getPath(), image, loadLocalPb, ImageUtils.SCALE_IMAGE_WIDTH,
 						ImageUtils.SCALE_IMAGE_HEIGHT);
@@ -156,7 +152,7 @@ public class ShowBigImageActivity extends Activity {
 							image.setImageResource(default_res);
 						} else {
 							image.setImageBitmap(bitmap);
-							ImageCache.getInstance().put(localFilePath, bitmap);
+							IMImageCache.getInstance().put(localFilePath, bitmap);
 							isDownloaded = true;
 						}
 						if (pd != null) {

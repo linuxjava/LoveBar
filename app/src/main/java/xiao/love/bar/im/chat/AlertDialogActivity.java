@@ -26,14 +26,11 @@ import android.widget.TextView;
 
 import com.easemob.util.ImageUtils;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.File;
 
 import xiao.love.bar.R;
 import xiao.love.bar.im.task.DownloadImageTask;
-import xiao.love.bar.im.util.ImageCache;
+import xiao.love.bar.im.util.IMImageCache;
 
 public class AlertDialogActivity extends Activity {
 	private TextView mTextView;
@@ -82,12 +79,12 @@ public class AlertDialogActivity extends Activity {
 				path = DownloadImageTask.getThumbnailImagePath(path);
 		    imageView.setVisibility(View.VISIBLE);
 		    ((TextView)findViewById(R.id.alert_message)).setVisibility(View.GONE);
-		    if(ImageCache.getInstance().get(path) != null){
-		        imageView.setImageBitmap(ImageCache.getInstance().get(path));
+		    if(IMImageCache.getInstance().get(path) != null){
+		        imageView.setImageBitmap(IMImageCache.getInstance().get(path));
 		    }else{
 		        Bitmap bm = ImageUtils.decodeScaleImage(path, 150, 150);
 		        imageView.setImageBitmap(bm);
-		        ImageCache.getInstance().put(path, bm);
+		        IMImageCache.getInstance().put(path, bm);
 		    }
 		    
 		}
