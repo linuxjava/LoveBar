@@ -133,7 +133,7 @@ public class MessageAdapter extends BaseAdapter {
                     break;
                 case HANDLER_MESSAGE_SELECT_LAST:
                     if (activity instanceof ChatActivity) {
-                        ListView listView = ((ChatActivity) activity).getListView();
+                        ListView listView = ((ChatActivity) activity).getmListView();
                         if (messages.length > 0) {
                             listView.setSelection(messages.length - 1);
                         }
@@ -142,7 +142,7 @@ public class MessageAdapter extends BaseAdapter {
                 case HANDLER_MESSAGE_SEEK_TO:
                     int position = message.arg1;
                     if (activity instanceof ChatActivity) {
-                        ListView listView = ((ChatActivity) activity).getListView();
+                        ListView listView = ((ChatActivity) activity).getmListView();
                         listView.setSelection(position);
                     }
                     break;

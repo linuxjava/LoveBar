@@ -119,6 +119,10 @@ public class SpeakLayout {
         mVoiceLL.setVisibility(View.GONE);
     }
 
+    public int getVoiceLayoutVisibility() {
+        return mVoiceLL.getVisibility();
+    }
+
     public void showRecordHintLayout() {
         mRecordHintRL.setVisibility(View.VISIBLE);
     }

@@ -13,6 +13,7 @@
  */
 package xiao.love.bar.im.chat;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -20,7 +21,6 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.PowerManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.text.ClipboardManager;
@@ -36,6 +36,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -55,11 +56,9 @@ import com.easemob.chat.EMGroup;
 import com.easemob.chat.EMGroupManager;
 import com.easemob.chat.EMMessage;
 import com.easemob.chat.EMMessage.ChatType;
-import com.easemob.chat.ImageMessageBody;
 import com.easemob.chat.TextMessageBody;
 import com.easemob.exceptions.EaseMobException;
 import com.easemob.util.EMLog;
-import com.easemob.util.VoiceRecorder;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -69,18 +68,18 @@ import java.util.List;
 
 import xiao.love.bar.R;
 import xiao.love.bar.component.BaseActivity;
+import xiao.love.bar.component.util.KeyBoardUtils;
 import xiao.love.bar.im.chat.emoji.EmojiLayout;
+import xiao.love.bar.im.chat.emoji.EmojiParse;
 import xiao.love.bar.im.chat.more.MoreLayout;
 import xiao.love.bar.im.chat.voice.SpeakLayout;
 import xiao.love.bar.im.hxlib.IMHelper;
 import xiao.love.bar.im.hxlib.model.GroupRemoveListener;
-import xiao.love.bar.im.util.IMImageUtils;
 import xiao.love.bar.im.util.UserUtils;
 import xiao.love.bar.im.widget.PasteEditText;
 
 /**
  * 聊天页面
- *
  */
 public class ChatActivity extends BaseActivity implements OnClickListener, EMEventListener {
     private static final String TAG = "ChatActivity";
@@ -120,49 +119,23 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
     public static final int CHATTYPE_GROUP = 2;
     public static final int CHATTYPE_CHATROOM = 3;
 
-    public static final String COPY_IMAGE = "EASEMOBIMG";
-    private View recordingContainer;
-    //录音时音量图片
-    private ImageView micImage;
-    private TextView recordingHint;
-    private ListView listView;
-    private PasteEditText mEditTextContent;
-    private View buttonSetModeKeyboard;
-    private View buttonSetModeVoice;
-    private View buttonSend;
-    //private View buttonPressToSpeak;
-    //private LinearLayout emojiIconContainer;
-    //private LinearLayout btnContainer;
-    private ImageView locationImgview;
-    private View more;
-    private int position;
     private ClipboardManager clipboard;
-    //private ViewPager expressionViewpager;
-    private InputMethodManager manager;
-    //private List<String> reslist;
-    private Drawable[] micImages;
+    //private InputMethodManager manager;
     private int chatType;
     private EMConversation conversation;
     public static ChatActivity activityInstance = null;
     // 给谁发送消息
     private String toChatUsername;
-    //private VoiceRecorder voiceRecorder;
     private MessageAdapter adapter;
-    private File cameraFile;
     //重发的消息所在的位置
     static int resendPos;
 
     private GroupListener groupListener;
 
-    private ImageView iv_emoticons_normal;
-    private ImageView iv_emoticons_checked;
-    private RelativeLayout edittext_layout;
-    private ProgressBar loadmorePB;
     //swipeRefreshLayout是否正在刷新
     private boolean isloading;
     private final int pagesize = 20;
     private boolean haveMoreData = true;
-    private Button btnMore;
     //当前播放语音的消息id
     public String playMsgId;
 
@@ -177,13 +150,73 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
     };
     public EMGroup group;
     public EMChatRoom room;
-    public boolean isRobot;
+
+
+    private Activity mContext;
+    private ListView mListView;
+    private PasteEditText mEditText;
+    //键盘图标
+    private Button mKeyboardBtn;
+    //语音图标
+    private Button mVoiceBtn;
+    //发送按钮
+    private Button mSendBtn;
+    //更多按钮
+    private Button mMoreBtn;
+    //输入框布局
+    private RelativeLayout mEditTextlayout;
+    //更多和表情布局
+    private LinearLayout mMoreLL;
+    private ProgressBar mLoadMorePB;
+
+    private ImageView mEmojiNormalImg;
+    private ImageView mEmojiCheckedImg;
+
     //表情布局
     private EmojiLayout mEmojiLayout;
     //更多布局(发送图片、位置)
     private MoreLayout mMoreLayout;
     //录音布局
     private SpeakLayout mVoiceLayout;
+    //输入框获取焦点监听
+    private OnFocusChangeListener mFocusChangeListener = new OnFocusChangeListener() {
+        @Override
+        public void onFocusChange(View v, boolean hasFocus) {
+            if (hasFocus) {
+                mEditTextlayout.setBackgroundResource(R.drawable.input_bar_bg_active);
+            } else {
+                mEditTextlayout.setBackgroundResource(R.drawable.input_bar_bg_normal);
+            }
+
+            mMoreLL.setVisibility(View.GONE);
+            mEmojiLayout.hideEmojiLayout();
+            mMoreLayout.hideMoreLayout();
+        }
+    };
+    //输入框输入监听
+
+    private TextWatcher mTextWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            if (!TextUtils.isEmpty(s)) {
+                mMoreBtn.setVisibility(View.GONE);
+                mSendBtn.setVisibility(View.VISIBLE);
+            } else {
+                mMoreBtn.setVisibility(View.VISIBLE);
+                mSendBtn.setVisibility(View.GONE);
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -193,7 +226,8 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
         initView();
         setUpView();
 
-        mEmojiLayout = new EmojiLayout(this, mEditTextContent);
+        mContext = this;
+        mEmojiLayout = new EmojiLayout(this, mEditText);
         mMoreLayout = new MoreLayout(this, conversation);
         mVoiceLayout = new SpeakLayout(this, conversation, micImageHandler);
     }
@@ -202,72 +236,23 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
      * initView
      */
     protected void initView() {
-        listView = (ListView) findViewById(R.id.list);
-        mEditTextContent = (PasteEditText) findViewById(R.id.et_sendmessage);
-        buttonSetModeKeyboard = findViewById(R.id.btn_set_mode_keyboard);
-        edittext_layout = (RelativeLayout) findViewById(R.id.edittext_layout);
-        buttonSetModeVoice = findViewById(R.id.btn_set_mode_voice);
-        buttonSend = findViewById(R.id.btn_send);
-        iv_emoticons_normal = (ImageView) findViewById(R.id.iv_emoticons_normal);
-        iv_emoticons_checked = (ImageView) findViewById(R.id.iv_emoticons_checked);
-        loadmorePB = (ProgressBar) findViewById(R.id.pb_load_more);
-        btnMore = (Button) findViewById(R.id.btn_more);
-        iv_emoticons_normal.setVisibility(View.VISIBLE);
-        iv_emoticons_checked.setVisibility(View.INVISIBLE);
-        more = findViewById(R.id.more);
-        edittext_layout.setBackgroundResource(R.drawable.input_bar_bg_normal);
-//        voiceCallBtn = (ImageView) findViewById(R.id.btn_voice_call);
-//        videoCallBtn = (ImageView) findViewById(R.id.btn_video_call);
+        mListView = (ListView) findViewById(R.id.list);
+        mEditText = (PasteEditText) findViewById(R.id.et_sendmessage);
+        mKeyboardBtn = (Button) findViewById(R.id.btn_set_mode_keyboard);
+        mEditTextlayout = (RelativeLayout) findViewById(R.id.edittext_layout);
+        mVoiceBtn = (Button) findViewById(R.id.btn_set_mode_voice);
+        mSendBtn = (Button) findViewById(R.id.btn_send);
+
+        mEmojiNormalImg = (ImageView) findViewById(R.id.iv_emoticons_normal);
+        mEmojiCheckedImg = (ImageView) findViewById(R.id.iv_emoticons_checked);
+        mLoadMorePB = (ProgressBar) findViewById(R.id.pb_load_more);
+        mMoreBtn = (Button) findViewById(R.id.btn_more);
+        mMoreLL = (LinearLayout) findViewById(R.id.more);
 
         //文本框输入相关
-        mEditTextContent.setOnFocusChangeListener(new OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    edittext_layout.setBackgroundResource(R.drawable.input_bar_bg_active);
-                } else {
-                    edittext_layout.setBackgroundResource(R.drawable.input_bar_bg_normal);
-                }
-
-            }
-        });
-        mEditTextContent.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                edittext_layout.setBackgroundResource(R.drawable.input_bar_bg_active);
-                more.setVisibility(View.GONE);
-                iv_emoticons_normal.setVisibility(View.VISIBLE);
-                iv_emoticons_checked.setVisibility(View.INVISIBLE);
-                //emojiIconContainer.setVisibility(View.GONE);
-                mEmojiLayout.hideEmojiLayout();
-                //btnContainer.setVisibility(View.GONE);
-                mMoreLayout.hideMoreLayout();
-            }
-        });
-        // 监听文字框
-        mEditTextContent.addTextChangedListener(new TextWatcher() {
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (!TextUtils.isEmpty(s)) {
-                    btnMore.setVisibility(View.GONE);
-                    buttonSend.setVisibility(View.VISIBLE);
-                } else {
-                    btnMore.setVisibility(View.VISIBLE);
-                    buttonSend.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
+        mEditText.setOnFocusChangeListener(mFocusChangeListener);
+        mEditText.setOnClickListener(this);
+        mEditText.addTextChangedListener(mTextWatcher);
 
         //下拉加载聊天记录
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.chat_swipe_layout);
@@ -281,7 +266,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 
                     @Override
                     public void run() {
-                        if (listView.getFirstVisiblePosition() == 0 && !isloading && haveMoreData) {
+                        if (mListView.getFirstVisiblePosition() == 0 && !isloading && haveMoreData) {
                             List<EMMessage> messages;
                             try {
                                 if (chatType == CHATTYPE_SINGLE) {
@@ -317,12 +302,12 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
     }
 
     private void setUpView() {
-        iv_emoticons_normal.setOnClickListener(this);
-        iv_emoticons_checked.setOnClickListener(this);
+        mEmojiNormalImg.setOnClickListener(this);
+        mEmojiCheckedImg.setOnClickListener(this);
         // position = getIntent().getIntExtra("position", -1);
         clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-        manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        //manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        //getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         // 判断单聊还是群聊
         chatType = getIntent().getIntExtra("chatType", CHATTYPE_SINGLE);
 
@@ -429,24 +414,23 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
     protected void onListViewCreation() {
         adapter = new MessageAdapter(ChatActivity.this, toChatUsername, chatType);
         // 显示消息
-        listView.setAdapter(adapter);
+        mListView.setAdapter(adapter);
 
-        //listView.setOnScrollListener(new ListScrollListener());
+        //mListView.setOnScrollListener(new ListScrollListener());
         adapter.refreshSelectLast();
 
-        listView.setOnTouchListener(new OnTouchListener() {
+        mListView.setOnTouchListener(new OnTouchListener() {
 
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 //隐藏键盘
-                hideKeyboard();
-                //隐藏表情
-                more.setVisibility(View.GONE);
-                iv_emoticons_normal.setVisibility(View.VISIBLE);
-                iv_emoticons_checked.setVisibility(View.INVISIBLE);
-                //emojiIconContainer.setVisibility(View.GONE);
+                KeyBoardUtils.hideKeyboard(mContext);
+                mEmojiNormalImg.setVisibility(View.VISIBLE);
+                mEmojiCheckedImg.setVisibility(View.INVISIBLE);
+
+                //隐藏更多和表情
+                mMoreLL.setVisibility(View.GONE);
                 mEmojiLayout.hideEmojiLayout();
-                //btnContainer.setVisibility(View.GONE);
                 mMoreLayout.hideMoreLayout();
                 return false;
             }
@@ -525,13 +509,14 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
             switch (resultCode) {
                 case RESULT_CODE_COPY: // 复制消息
                     EMMessage copyMsg = ((EMMessage) adapter.getItem(data.getIntExtra("position", -1)));
-                    clipboard.setText(((TextMessageBody) copyMsg.getBody()).getMessage());
-                    mEditTextContent.append(((TextMessageBody) copyMsg.getBody()).getMessage());
-                    break;
-                default:
+                    String copystr = ((TextMessageBody) copyMsg.getBody()).getMessage();
+                    if(!TextUtils.isEmpty(copystr)) {
+                        clipboard.setText(copystr);
+                        mEditText.append(EmojiParse.parseString(mContext, copystr));
+                    }
                     break;
             }
-        }else if (resultCode == RESULT_OK) {
+        } else if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_CODE_EMPTY_HISTORY) {// 清空会话
                 EMChatManager.getInstance().clearConversation(toChatUsername);
                 adapter.refresh();
@@ -558,38 +543,8 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
     }
 
     /**
-     * 消息图标点击事件
-     *
-     * @param view
-     */
-    @Override
-    public void onClick(View view) {
-        int id = view.getId();
-        if (id == R.id.btn_send) {// 点击发送按钮(发文字和表情)
-            mMoreLayout.sendText(mEditTextContent.getText().toString());
-            mEditTextContent.setText("");
-        } else if (id == R.id.iv_emoticons_normal) { // 点击显示表情框
-            more.setVisibility(View.VISIBLE);
-            iv_emoticons_normal.setVisibility(View.INVISIBLE);
-            iv_emoticons_checked.setVisibility(View.VISIBLE);
-            //btnContainer.setVisibility(View.GONE);
-            mMoreLayout.hideMoreLayout();
-            mEmojiLayout.showEmojiLayout();
-            hideKeyboard();
-        } else if (id == R.id.iv_emoticons_checked) { // 点击隐藏表情框
-            iv_emoticons_normal.setVisibility(View.VISIBLE);
-            iv_emoticons_checked.setVisibility(View.INVISIBLE);
-            //btnContainer.setVisibility(View.VISIBLE);
-            mMoreLayout.showMoreLayout();
-            mEmojiLayout.hideEmojiLayout();
-            more.setVisibility(View.GONE);
-            showKeyboard();
-        }
-    }
-
-    /**
      * 事件监听
-     *
+     * <p/>
      * see {@link EMNotifierEvent}
      */
     @Override
@@ -669,58 +624,6 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
         });
     }
 
-    /**
-     * 显示语音图标按钮
-     *
-     * @param view
-     */
-    public void setModeVoice(View view) {
-        hideKeyboard();
-        edittext_layout.setVisibility(View.GONE);
-        more.setVisibility(View.GONE);
-        view.setVisibility(View.GONE);
-        buttonSetModeKeyboard.setVisibility(View.VISIBLE);
-        buttonSend.setVisibility(View.GONE);
-        btnMore.setVisibility(View.VISIBLE);
-        iv_emoticons_normal.setVisibility(View.VISIBLE);
-        iv_emoticons_checked.setVisibility(View.INVISIBLE);
-        //btnContainer.setVisibility(View.VISIBLE);
-        mMoreLayout.showMoreLayout();
-
-        mEmojiLayout.hideEmojiLayout();
-        mVoiceLayout.showVoiceLayout();
-    }
-
-    /**
-     * 显示键盘图标
-     *
-     * @param view
-     */
-    public void setModeKeyboard(View view) {
-        // mEditTextContent.setOnFocusChangeListener(new OnFocusChangeListener()
-        // {
-        // @Override
-        // public void onFocusChange(View v, boolean hasFocus) {
-        // if(hasFocus){
-        // getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-        // }
-        // }
-        // });
-        edittext_layout.setVisibility(View.VISIBLE);
-        more.setVisibility(View.GONE);
-        view.setVisibility(View.GONE);
-        buttonSetModeVoice.setVisibility(View.VISIBLE);
-        mEditTextContent.requestFocus();
-        mVoiceLayout.hideVoiceLayout();
-        if (TextUtils.isEmpty(mEditTextContent.getText())) {
-            btnMore.setVisibility(View.VISIBLE);
-            buttonSend.setVisibility(View.GONE);
-        } else {
-            btnMore.setVisibility(View.GONE);
-            buttonSend.setVisibility(View.VISIBLE);
-        }
-        showKeyboard();
-    }
 
     /**
      * 点击清空聊天记录
@@ -753,46 +656,125 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
     }
 
     /**
-     * 显示或隐藏图标按钮页
+     * 消息图标点击事件
      *
      * @param view
      */
-    public void toggleMore(View view) {
-        if (more.getVisibility() == View.GONE) {
-            EMLog.d(TAG, "more gone");
-            hideKeyboard();
-            more.setVisibility(View.VISIBLE);
-            //btnContainer.setVisibility(View.VISIBLE);
-            mMoreLayout.showMoreLayout();
-            //emojiIconContainer.setVisibility(View.GONE);
+    @Override
+    public void onClick(View view) {
+        int id = view.getId();
+        if (id == R.id.btn_send) {// 点击发送按钮(发文字和表情)
+            mMoreLayout.sendText(mEditText.getText().toString());
+            mEditText.setText("");
+        } else if (id == R.id.iv_emoticons_normal) { // 点击显示表情框
+            mEmojiNormalImg.setVisibility(View.INVISIBLE);
+            mEmojiCheckedImg.setVisibility(View.VISIBLE);
+            //btnContainer.setVisibility(View.GONE);
+            mMoreLL.setVisibility(View.VISIBLE);
+            mMoreLayout.hideMoreLayout();
+            mEmojiLayout.showEmojiLayout();
+            KeyBoardUtils.hideKeyboard(mContext);
+        } else if (id == R.id.iv_emoticons_checked) { // 点击隐藏表情框
+            mEmojiNormalImg.setVisibility(View.VISIBLE);
+            mEmojiCheckedImg.setVisibility(View.INVISIBLE);
+            mMoreLayout.hideMoreLayout();
             mEmojiLayout.hideEmojiLayout();
-        } else {
-            if (mEmojiLayout.getEmojiLayoutVisibility() == View.VISIBLE) {
-                //emojiIconContainer.setVisibility(View.GONE);
-                mEmojiLayout.hideEmojiLayout();
-                //btnContainer.setVisibility(View.VISIBLE);
-                mMoreLayout.showMoreLayout();
-                iv_emoticons_normal.setVisibility(View.VISIBLE);
-                iv_emoticons_checked.setVisibility(View.INVISIBLE);
-            } else {
-                more.setVisibility(View.GONE);
-            }
+            mMoreLL.setVisibility(View.GONE);
+            KeyBoardUtils.showKeyboard(mContext);
+        }else if(id == R.id.et_sendmessage){//输入框点击
+            mEditTextlayout.setBackgroundResource(R.drawable.input_bar_bg_active);
+            mEmojiNormalImg.setVisibility(View.VISIBLE);
+            mEmojiCheckedImg.setVisibility(View.INVISIBLE);
 
+            mMoreLL.setVisibility(View.GONE);
+            mEmojiLayout.hideEmojiLayout();
+            mMoreLayout.hideMoreLayout();
         }
-
     }
 
     /**
-     * 点击文字输入框
+     * 点击语音图标按钮
      *
-     * @param v
+     * @param view
      */
-    public void editClick(View v) {
-        listView.setSelection(listView.getCount() - 1);
-        if (more.getVisibility() == View.VISIBLE) {
-            more.setVisibility(View.GONE);
-            iv_emoticons_normal.setVisibility(View.VISIBLE);
-            iv_emoticons_checked.setVisibility(View.INVISIBLE);
+    public void onClickVoice(View view) {
+        KeyBoardUtils.hideKeyboard(mContext);
+
+        mMoreLL.setVisibility(View.GONE);
+        mEmojiLayout.hideEmojiLayout();
+        mMoreLayout.hideMoreLayout();
+
+        mEditTextlayout.setVisibility(View.GONE);
+        view.setVisibility(View.GONE);
+        mSendBtn.setVisibility(View.GONE);
+        mEmojiCheckedImg.setVisibility(View.GONE);
+
+        mVoiceLayout.showVoiceLayout();
+        mKeyboardBtn.setVisibility(View.VISIBLE);
+        mMoreBtn.setVisibility(View.VISIBLE);
+        mEmojiNormalImg.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * 点击键盘按钮
+     *
+     * @param view
+     */
+    public void onClickKeyboard(View view) {
+        KeyBoardUtils.showKeyboard(mContext);
+
+        mMoreLL.setVisibility(View.GONE);
+        mEmojiLayout.hideEmojiLayout();
+        mMoreLayout.hideMoreLayout();
+
+        //隐藏语音输入布局
+        mVoiceLayout.hideVoiceLayout();
+        //显示输入框布局
+        mEditTextlayout.setVisibility(View.VISIBLE);
+        //隐藏键盘图标
+        mKeyboardBtn.setVisibility(View.GONE);
+        //显示语音图标
+        mVoiceBtn.setVisibility(View.VISIBLE);
+        //输入框请求焦点
+        mEditText.requestFocus();
+
+        if (TextUtils.isEmpty(mEditText.getText())) {
+            mMoreBtn.setVisibility(View.VISIBLE);
+            mSendBtn.setVisibility(View.GONE);
+        } else {
+            mMoreBtn.setVisibility(View.GONE);
+            mSendBtn.setVisibility(View.VISIBLE);
+        }
+    }
+
+    /**
+     * 点击更多按钮
+     *
+     * @param view
+     */
+    public void onClickMore(View view) {
+        if (mMoreLL.getVisibility() == View.VISIBLE) {
+            if (mEmojiLayout.getEmojiLayoutVisibility() == View.VISIBLE) {
+                mEmojiLayout.hideEmojiLayout();
+                mMoreLayout.showMoreLayout();
+            } else {
+                mMoreLayout.hideMoreLayout();
+            }
+        } else {
+            mMoreLL.setVisibility(View.VISIBLE);
+            KeyBoardUtils.hideKeyboard(mContext);
+            mEmojiLayout.hideEmojiLayout();
+            mMoreLayout.showMoreLayout();
+
+            if (mVoiceLayout.getVoiceLayoutVisibility() == View.VISIBLE) {
+                mVoiceLayout.hideVoiceLayout();
+                mEditTextlayout.setVisibility(View.VISIBLE);
+
+                //隐藏键盘图标
+                mKeyboardBtn.setVisibility(View.GONE);
+                //显示语音图标
+                mVoiceBtn.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -855,35 +837,19 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
             VoiceClickListener.currentPlayListener.stopPlayVoice();
         }
         //是否正在录音
-        if(mVoiceLayout.isRecording()){
+        if (mVoiceLayout.isRecording()) {
             mVoiceLayout.discardRecording();
             mVoiceLayout.hideRecordHintLayout();
         }
     }
 
     /**
-     * 隐藏软键盘
-     */
-    private void hideKeyboard() {
-        if (getWindow().getAttributes().softInputMode != WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN) {
-            if (getCurrentFocus() != null)
-                manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-        }
-    }
-
-    /**
-     * 显示软键盘
-     */
-    private void showKeyboard() {
-        manager.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
-    }
-
-    /**
      * 加入到黑名单
+     *
      * @param data
      */
     private void addUserToBlacklist(Intent data) {
-        if(data == null){
+        if (data == null) {
             return;
         }
 
@@ -934,10 +900,12 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
      */
     @Override
     public void onBackPressed() {
-        if (more.getVisibility() == View.VISIBLE) {
-            more.setVisibility(View.GONE);
-            iv_emoticons_normal.setVisibility(View.VISIBLE);
-            iv_emoticons_checked.setVisibility(View.INVISIBLE);
+        if (mMoreLL.getVisibility() == View.VISIBLE) {
+            mMoreLL.setVisibility(View.GONE);
+            mEmojiLayout.hideEmojiLayout();
+            mMoreLayout.hideMoreLayout();
+            mEmojiNormalImg.setVisibility(View.VISIBLE);
+            mEmojiCheckedImg.setVisibility(View.INVISIBLE);
         } else {
             super.onBackPressed();
             if (chatType == CHATTYPE_CHATROOM) {
@@ -958,12 +926,10 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
             finish();
             startActivity(intent);
         }
-
     }
 
     /**
      * 监测群组解散或者被T事件
-     *
      */
     class GroupListener extends GroupRemoveListener {
 
@@ -1008,11 +974,11 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
         return toChatUsername;
     }
 
-    public ListView getListView() {
-        return listView;
+    public ListView getmListView() {
+        return mListView;
     }
 
-    public MessageAdapter getAdapter(){
+    public MessageAdapter getAdapter() {
         return adapter;
     }
 }

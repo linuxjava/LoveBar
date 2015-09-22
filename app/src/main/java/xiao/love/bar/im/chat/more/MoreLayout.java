@@ -64,6 +64,10 @@ public class MoreLayout implements View.OnClickListener {
         mMoreLL.setVisibility(View.GONE);
     }
 
+    public int getMoreLayoutVisibility(){
+        return mMoreLL.getVisibility();
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
