@@ -37,7 +37,7 @@ public class SpeakLayout {
     //语音按住布局
     private LinearLayout mVoiceLL;
     //录音提示布局
-    private RelativeLayout mRecordRL;
+    private RelativeLayout mRecordHintRL;
     //音量图片
     private ImageView mMicImg;
     //录音问题提示
@@ -53,7 +53,7 @@ public class SpeakLayout {
         mChatUserName = activity.getToChatUsername();
 
         mVoiceLL = (LinearLayout)mActivity.findViewById(R.id.btn_press_to_speak);
-        mRecordRL = (RelativeLayout) mActivity.findViewById(R.id.recording_container);
+        mRecordHintRL = (RelativeLayout) mActivity.findViewById(R.id.recording_container);
         mMicImg = (ImageView) mActivity.findViewById(R.id.mic_image);
         mRecordHintTv = (TextView) mActivity.findViewById(R.id.recording_hint);
 
@@ -90,6 +90,27 @@ public class SpeakLayout {
         }
     }
 
+    public void releaseWakeLock(){
+        if (mWakeLock.isHeld()) {
+            mWakeLock.release();
+        }
+    }
+
+    /**
+     * 是否正在录音
+     * @return
+     */
+    public boolean isRecording(){
+        return mVoiceRecorder.isRecording();
+    }
+
+    /**
+     * 丢弃录音
+     */
+    public void discardRecording(){
+        mVoiceRecorder.discardRecording();
+    }
+
     public void showVoiceLayout() {
         mVoiceLL.setVisibility(View.VISIBLE);
     }
@@ -97,6 +118,15 @@ public class SpeakLayout {
     public void hideVoiceLayout() {
         mVoiceLL.setVisibility(View.GONE);
     }
+
+    public void showRecordHintLayout() {
+        mRecordHintRL.setVisibility(View.VISIBLE);
+    }
+
+    public void hideRecordHintLayout() {
+        mRecordHintRL.setVisibility(View.GONE);
+    }
+
 
     private void sendVoice(String filePath, int length) {
         if (!(new File(filePath).exists())) {
@@ -131,7 +161,7 @@ public class SpeakLayout {
                         if (VoiceClickListener.isPlaying) {
                             VoiceClickListener.currentPlayListener.stopPlayVoice();
                         }
-                        mRecordRL.setVisibility(View.VISIBLE);
+                        mRecordHintRL.setVisibility(View.VISIBLE);
                         mRecordHintTv.setText(mActivity.getString(R.string.move_up_to_cancel));
                         mRecordHintTv.setBackgroundColor(Color.TRANSPARENT);
                         mVoiceRecorder.startRecording(null, mChatUserName, mActivity);
@@ -142,7 +172,7 @@ public class SpeakLayout {
                             mWakeLock.release();
                         if (mVoiceRecorder != null)
                             mVoiceRecorder.discardRecording();
-                        mRecordRL.setVisibility(View.INVISIBLE);
+                        mRecordHintRL.setVisibility(View.INVISIBLE);
                         Toast.makeText(mActivity, R.string.recoding_fail, Toast.LENGTH_SHORT).show();
                         return false;
                     }
@@ -160,7 +190,7 @@ public class SpeakLayout {
                 }
                 case MotionEvent.ACTION_UP:
                     v.setPressed(false);
-                    mRecordRL.setVisibility(View.INVISIBLE);
+                    mRecordHintRL.setVisibility(View.INVISIBLE);
                     if (mWakeLock.isHeld())
                         mWakeLock.release();
                     if (event.getY() < 0) {
@@ -185,7 +215,7 @@ public class SpeakLayout {
                     }
                     return true;
                 default:
-                    mRecordRL.setVisibility(View.INVISIBLE);
+                    mRecordHintRL.setVisibility(View.INVISIBLE);
                     if (mVoiceRecorder != null)
                         mVoiceRecorder.discardRecording();
                     return false;

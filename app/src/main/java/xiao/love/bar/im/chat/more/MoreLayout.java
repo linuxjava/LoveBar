@@ -17,6 +17,7 @@ import com.easemob.chat.EMConversation;
 import com.easemob.chat.EMMessage;
 import com.easemob.chat.ImageMessageBody;
 import com.easemob.chat.LocationMessageBody;
+import com.easemob.chat.TextMessageBody;
 import com.easemob.util.PathUtil;
 
 import java.io.File;
@@ -110,6 +111,25 @@ public class MoreLayout implements View.OnClickListener {
             intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         }
         mActivity.startActivityForResult(intent, ChatActivity.REQUEST_CODE_LOCAL);
+    }
+
+    /**
+     * 发送文字和表情
+     * @param content
+     */
+    public void sendText(String content) {
+        if (content.length() > 0) {
+            EMMessage message = EMMessage.createSendMessage(EMMessage.Type.TXT);
+            message.setChatType(EMMessage.ChatType.Chat);
+            TextMessageBody txtBody = new TextMessageBody(content);
+            message.addBody(txtBody);
+            message.setReceipt(mChatUserName);
+            mConversation.addMessage(message);
+
+            if(mActivity.getAdapter() != null) {
+                mActivity.getAdapter().refreshSelectLast();
+            }
+        }
     }
 
     /**

@@ -146,7 +146,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
     public static ChatActivity activityInstance = null;
     // 给谁发送消息
     private String toChatUsername;
-    private VoiceRecorder voiceRecorder;
+    //private VoiceRecorder voiceRecorder;
     private MessageAdapter adapter;
     private File cameraFile;
     //重发的消息所在的位置
@@ -216,8 +216,8 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
         iv_emoticons_checked.setVisibility(View.INVISIBLE);
         more = findViewById(R.id.more);
         edittext_layout.setBackgroundResource(R.drawable.input_bar_bg_normal);
-        voiceCallBtn = (ImageView) findViewById(R.id.btn_voice_call);
-        videoCallBtn = (ImageView) findViewById(R.id.btn_video_call);
+//        voiceCallBtn = (ImageView) findViewById(R.id.btn_voice_call);
+//        videoCallBtn = (ImageView) findViewById(R.id.btn_video_call);
 
         //文本框输入相关
         mEditTextContent.setOnFocusChangeListener(new OnFocusChangeListener() {
@@ -323,8 +323,6 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
         clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
         manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-        wakeLock = ((PowerManager) getSystemService(Context.POWER_SERVICE)).newWakeLock(
-                PowerManager.SCREEN_DIM_WAKE_LOCK, "demo");
         // 判断单聊还是群聊
         chatType = getIntent().getIntExtra("chatType", CHATTYPE_SINGLE);
 
@@ -356,13 +354,6 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
         if (chatType != CHATTYPE_CHATROOM) {
             onConversationInit();
             onListViewCreation();
-
-            // show forward message if the message is not null
-            String forward_msg_id = getIntent().getStringExtra("forward_msg_id");
-            if (forward_msg_id != null) {
-                // 显示发送要转发的消息
-                forwardMessage(forward_msg_id);
-            }
         }
     }
 
@@ -526,46 +517,22 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
         });
     }
 
-    /**
-     * onActivityResult
-     */
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_CODE_EXIT_GROUP) {
-            setResult(RESULT_OK);
-            finish();
-            return;
-        }
+
         if (requestCode == REQUEST_CODE_CONTEXT_MENU) {
+            //菜单返回
             switch (resultCode) {
                 case RESULT_CODE_COPY: // 复制消息
                     EMMessage copyMsg = ((EMMessage) adapter.getItem(data.getIntExtra("position", -1)));
-                    // clipboard.setText(SmileUtils.getSmiledText(ChatActivity.this,
-                    // ((TextMessageBody) copyMsg.getBody()).getMessage()));
                     clipboard.setText(((TextMessageBody) copyMsg.getBody()).getMessage());
+                    mEditTextContent.append(((TextMessageBody) copyMsg.getBody()).getMessage());
                     break;
-                case RESULT_CODE_DELETE: // 删除消息
-                    EMMessage deleteMsg = (EMMessage) adapter.getItem(data.getIntExtra("position", -1));
-                    conversation.removeMessage(deleteMsg.getMsgId());
-                    adapter.refreshSeekTo(data.getIntExtra("position", adapter.getCount()) - 1);
-                    break;
-//
-//                case RESULT_CODE_FORWARD: // 转发消息
-//                    EMMessage forwardMsg = (EMMessage) adapter.getItem(data.getIntExtra("position", 0));
-//                    Intent intent = new Intent(this, ForwardMessageActivity.class);
-//                    intent.putExtra("forward_msg_id", forwardMsg.getMsgId());
-//                    startActivity(intent);
-//
-//                    break;
-
                 default:
                     break;
             }
-        }
-
-        if (resultCode == RESULT_OK) { // 清空消息
-            if (requestCode == REQUEST_CODE_EMPTY_HISTORY) {
-                // 清空会话
+        }else if (resultCode == RESULT_OK) {
+            if (requestCode == REQUEST_CODE_EMPTY_HISTORY) {// 清空会话
                 EMChatManager.getInstance().clearConversation(toChatUsername);
                 adapter.refresh();
             } else if (requestCode == REQUEST_CODE_CAMERA) { // 发送照片
@@ -575,22 +542,12 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
             } else if (requestCode == REQUEST_CODE_MAP) { // 地图
                 mMoreLayout.sendLocation(data);
             } else if (requestCode == REQUEST_CODE_TEXT || requestCode == REQUEST_CODE_VOICE
-                    || requestCode == REQUEST_CODE_PICTURE || requestCode == REQUEST_CODE_LOCATION
-                    || requestCode == REQUEST_CODE_VIDEO || requestCode == REQUEST_CODE_FILE) {// 重发消息
-                resendMessage();
-            } else if (requestCode == REQUEST_CODE_COPY_AND_PASTE) {
-                // 粘贴
-                if (!TextUtils.isEmpty(clipboard.getText())) {
-                    String pasteText = clipboard.getText().toString();
-                    if (pasteText.startsWith(COPY_IMAGE)) {
-                        // 把图片前缀去掉，还原成正常的path
-                        sendPicture(pasteText.replace(COPY_IMAGE, ""));
-                    }
-
-                }
+                    || requestCode == REQUEST_CODE_PICTURE || requestCode == REQUEST_CODE_LOCATION) {
+                // 重发消息
+                conversation.getMessage(resendPos).status = EMMessage.Status.CREATE;
+                adapter.refreshSeekTo(resendPos);
             } else if (requestCode == REQUEST_CODE_ADD_TO_BLACKLIST) { // 移入黑名单
-                EMMessage deleteMsg = (EMMessage) adapter.getItem(data.getIntExtra("position", -1));
-                addUserToBlacklist(deleteMsg.getFrom());
+                addUserToBlacklist(data);
             } else if (conversation.getMsgCount() > 0) {
                 adapter.refresh();
                 setResult(RESULT_OK);
@@ -609,8 +566,8 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
     public void onClick(View view) {
         int id = view.getId();
         if (id == R.id.btn_send) {// 点击发送按钮(发文字和表情)
-            String s = mEditTextContent.getText().toString();
-            sendText(s);
+            mMoreLayout.sendText(mEditTextContent.getText().toString());
+            mEditTextContent.setText("");
         } else if (id == R.id.iv_emoticons_normal) { // 点击显示表情框
             more.setVisibility(View.VISIBLE);
             iv_emoticons_normal.setVisibility(View.INVISIBLE);
@@ -710,85 +667,6 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
                 adapter.refresh();
             }
         });
-    }
-
-    /**
-     * 发送文本消息
-     *
-     * @param content
-     *            message content
-     */
-    public void sendText(String content) {
-
-        if (content.length() > 0) {
-            EMMessage message = EMMessage.createSendMessage(EMMessage.Type.TXT);
-            // 如果是群聊，设置chattype,默认是单聊
-            if (chatType == CHATTYPE_GROUP) {
-                message.setChatType(ChatType.GroupChat);
-            } else if (chatType == CHATTYPE_CHATROOM) {
-                message.setChatType(ChatType.ChatRoom);
-            }
-            if (isRobot) {
-                message.setAttribute("em_robot_message", true);
-            }
-            TextMessageBody txtBody = new TextMessageBody(content);
-            // 设置消息body
-            message.addBody(txtBody);
-            // 设置要发给谁,用户username或者群聊groupid
-            message.setReceipt(toChatUsername);
-            // 把messgage加到conversation中
-            conversation.addMessage(message);
-            // 通知adapter有消息变动，adapter会根据加入的这条message显示消息和调用sdk的发送方法
-            adapter.refreshSelectLast();
-            mEditTextContent.setText("");
-
-            setResult(RESULT_OK);
-
-        }
-    }
-
-    /**
-     * 发送图片
-     *
-     * @param filePath
-     */
-    private void sendPicture(final String filePath) {
-        String to = toChatUsername;
-        // create and add image message in view
-        final EMMessage message = EMMessage.createSendMessage(EMMessage.Type.IMAGE);
-        // 如果是群聊，设置chattype,默认是单聊
-        if (chatType == CHATTYPE_GROUP) {
-            message.setChatType(ChatType.GroupChat);
-        } else if (chatType == CHATTYPE_CHATROOM) {
-            message.setChatType(ChatType.ChatRoom);
-        }
-
-        message.setReceipt(to);
-        ImageMessageBody body = new ImageMessageBody(new File(filePath));
-        // 默认超过100k的图片会压缩后发给对方，可以设置成发送原图
-        //body.setSendOriginalImage(true);
-        message.addBody(body);
-        if (isRobot) {
-            message.setAttribute("em_robot_message", true);
-        }
-        conversation.addMessage(message);
-
-        listView.setAdapter(adapter);
-        adapter.refreshSelectLast();
-        setResult(RESULT_OK);
-        // more(more);
-    }
-
-    /**
-     * 重发消息
-     */
-    private void resendMessage() {
-        EMMessage msg = null;
-        msg = conversation.getMessage(resendPos);
-        // msg.setBackSend(true);
-        msg.status = EMMessage.Status.CREATE;
-
-        adapter.refreshSeekTo(resendPos);
     }
 
     /**
@@ -916,12 +794,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
             iv_emoticons_normal.setVisibility(View.VISIBLE);
             iv_emoticons_checked.setVisibility(View.INVISIBLE);
         }
-
     }
-
-    private PowerManager.WakeLock wakeLock;
-    private ImageView voiceCallBtn;
-    private ImageView videoCallBtn;
 
     @Override
     public void parseJson(int code, JSONObject respanse, String tag, int pos, Object data) throws JSONException {
@@ -945,11 +818,6 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
     @Override
     protected void onResume() {
         super.onResume();
-        if (group != null)
-            ((TextView) findViewById(R.id.name)).setText(group.getGroupName());
-        voiceCallBtn.setEnabled(true);
-        videoCallBtn.setEnabled(true);
-
         if (adapter != null) {
             adapter.refresh();
         }
@@ -980,20 +848,16 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
     @Override
     protected void onPause() {
         super.onPause();
-        if (wakeLock.isHeld())
-            wakeLock.release();
+        //释放WakeLock
+        mVoiceLayout.releaseWakeLock();
+        //停止正在播放的语音
         if (VoiceClickListener.isPlaying && VoiceClickListener.currentPlayListener != null) {
-            // 停止语音播放
             VoiceClickListener.currentPlayListener.stopPlayVoice();
         }
-
-        try {
-            // 停止录音
-            if (voiceRecorder.isRecording()) {
-                voiceRecorder.discardRecording();
-                recordingContainer.setVisibility(View.INVISIBLE);
-            }
-        } catch (Exception e) {
+        //是否正在录音
+        if(mVoiceLayout.isRecording()){
+            mVoiceLayout.discardRecording();
+            mVoiceLayout.hideRecordHintLayout();
         }
     }
 
@@ -1016,10 +880,15 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 
     /**
      * 加入到黑名单
-     *
-     * @param username
+     * @param data
      */
-    private void addUserToBlacklist(final String username) {
+    private void addUserToBlacklist(Intent data) {
+        if(data == null){
+            return;
+        }
+
+        EMMessage deleteMsg = adapter.getItem(data.getIntExtra("position", -1));
+        final String username = deleteMsg.getFrom();
         final ProgressDialog pd = new ProgressDialog(this);
         pd.setMessage(getString(R.string.Is_moved_into_blacklist));
         pd.setCanceledOnTouchOutside(false);
@@ -1090,41 +959,6 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
             startActivity(intent);
         }
 
-    }
-
-    /**
-     * 转发消息
-     *
-     * @param forward_msg_id
-     */
-    protected void forwardMessage(String forward_msg_id) {
-        final EMMessage forward_msg = EMChatManager.getInstance().getMessage(forward_msg_id);
-        EMMessage.Type type = forward_msg.getType();
-        switch (type) {
-            case TXT:
-                // 获取消息内容，发送消息
-                String content = ((TextMessageBody) forward_msg.getBody()).getMessage();
-                sendText(content);
-                break;
-            case IMAGE:
-                // 发送图片
-                String filePath = ((ImageMessageBody) forward_msg.getBody()).getLocalUrl();
-                if (filePath != null) {
-                    File file = new File(filePath);
-                    if (!file.exists()) {
-                        // 不存在大图发送缩略图
-                        filePath = IMImageUtils.getThumbnailImagePath(filePath);
-                    }
-                    sendPicture(filePath);
-                }
-                break;
-            default:
-                break;
-        }
-
-        if (forward_msg.getChatType() == EMMessage.ChatType.ChatRoom) {
-            EMChatManager.getInstance().leaveChatRoom(forward_msg.getTo());
-        }
     }
 
     /**

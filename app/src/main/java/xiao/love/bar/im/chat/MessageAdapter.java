@@ -705,10 +705,6 @@ public class MessageAdapter extends BaseAdapter {
             activity.startActivityForResult(intent, ChatActivity.REQUEST_CODE_PICTURE);
         else if (message.getType() == EMMessage.Type.LOCATION)
             activity.startActivityForResult(intent, ChatActivity.REQUEST_CODE_LOCATION);
-        else if (message.getType() == EMMessage.Type.FILE)
-            activity.startActivityForResult(intent, ChatActivity.REQUEST_CODE_FILE);
-        else if (message.getType() == EMMessage.Type.VIDEO)
-            activity.startActivityForResult(intent, ChatActivity.REQUEST_CODE_VIDEO);
     }
 
     /**
@@ -803,16 +799,6 @@ public class MessageAdapter extends BaseAdapter {
      */
     private void handleImageMessage(final EMMessage message, final ViewHolder holder, final int position) {
         holder.pb.setTag(position);
-        holder.iv.setOnLongClickListener(new OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                activity.startActivityForResult(
-                        (new Intent(activity, ContextMenuActivity.class)).putExtra("position", position).putExtra("type",
-                                EMMessage.Type.IMAGE.ordinal()), ChatActivity.REQUEST_CODE_CONTEXT_MENU);
-                return true;
-            }
-        });
-
 
         if (message.direct == EMMessage.Direct.RECEIVE) {
             // 接收
@@ -825,16 +811,6 @@ public class MessageAdapter extends BaseAdapter {
                 holder.tv.setVisibility(View.GONE);
                 ImageMessageBody imgBody = (ImageMessageBody) message.getBody();
                 showReceiveImageView(message, holder.iv);
-//                if (imgBody.getLocalUrl() != null) {
-//                    String remotePath = imgBody.getRemoteUrl();
-//                    String filePath = ImageUtils.getImagePath(remotePath);
-//                    String thumbRemoteUrl = imgBody.getThumbnailUrl();
-//                    if (TextUtils.isEmpty(thumbRemoteUrl) && !TextUtils.isEmpty(remotePath)) {
-//                        thumbRemoteUrl = remotePath;
-//                    }
-//                    String thumbnailPath = ImageUtils.getThumbnailImagePath(thumbRemoteUrl);
-//                    showImageView(thumbnailPath, holder.iv, filePath, remotePath, message);
-//                }
             }
         } else {
             // 发送
@@ -855,14 +831,6 @@ public class MessageAdapter extends BaseAdapter {
             // 显示图片
             holder.iv.setImageResource(R.drawable.default_image);
             showSendImageView(message, holder.iv);
-//            ImageMessageBody imgBody = (ImageMessageBody) message.getBody();
-//            String filePath = imgBody.getLocalUrl();
-//            if (filePath != null && new File(filePath).exists()) {
-//                showImageView(ImageUtils.getThumbnailImagePath(filePath), holder.iv, filePath, null, message);
-//            } else {
-//                showImageView(ImageUtils.getThumbnailImagePath(filePath), holder.iv, filePath, IMAGE_DIR, message);
-//
-//            }
         }
     }
 
@@ -968,15 +936,6 @@ public class MessageAdapter extends BaseAdapter {
         locationView.setText(locBody.getAddress());
         LatLng loc = new LatLng(locBody.getLatitude(), locBody.getLongitude());
         locationView.setOnClickListener(new MapClickListener(loc, locBody.getAddress()));
-        locationView.setOnLongClickListener(new OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                activity.startActivityForResult(
-                        (new Intent(activity, ContextMenuActivity.class)).putExtra("position", position).putExtra("type",
-                                EMMessage.Type.LOCATION.ordinal()), ChatActivity.REQUEST_CODE_CONTEXT_MENU);
-                return false;
-            }
-        });
 
         if (message.direct == Direct.SEND) {
             switch (message.status) {
@@ -1016,15 +975,6 @@ public class MessageAdapter extends BaseAdapter {
 
         VoiceClickListener listener = new VoiceClickListener(message, holder.iv, holder.iv_read_status, this, activity);
         holder.iv_voice_rl.setOnClickListener(listener);
-        holder.iv_voice_rl.setOnLongClickListener(new OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                activity.startActivityForResult(
-                        (new Intent(activity, ContextMenuActivity.class)).putExtra("position", position).putExtra("type",
-                                EMMessage.Type.VOICE.ordinal()), ChatActivity.REQUEST_CODE_CONTEXT_MENU);
-                return true;
-            }
-        });
 
         if (VoiceClickListener.isPlaying) {//如果有语音正在播放
             if (((ChatActivity) activity).playMsgId != null
@@ -1198,169 +1148,6 @@ public class MessageAdapter extends BaseAdapter {
     }
 
     /**
-     * 发送图片
-     *
-     * @param message
-     * @param holder
-     */
-//    private void sendPictureMessage(final EMMessage message, final ViewHolder holder) {
-//        try {
-//            holder.staus_iv.setVisibility(View.GONE);
-//            holder.pb.setVisibility(View.VISIBLE);
-//            holder.tv.setVisibility(View.VISIBLE);
-//            holder.tv.setText("0%");
-//
-//            EMChatManager.getInstance().sendMessage(message, new EMCallBack() {
-//
-//                @Override
-//                public void onSuccess() {
-//                    activity.runOnUiThread(new Runnable() {
-//                        public void run() {
-//                            // send success
-//                            holder.pb.setVisibility(View.GONE);
-//                            holder.tv.setVisibility(View.GONE);
-//                        }
-//                    });
-//                }
-//
-//                @Override
-//                public void onError(int code, String error) {
-//
-//                    activity.runOnUiThread(new Runnable() {
-//                        public void run() {
-//                            holder.pb.setVisibility(View.GONE);
-//                            holder.tv.setVisibility(View.GONE);
-//                            holder.staus_iv.setVisibility(View.VISIBLE);
-//                        }
-//                    });
-//                }
-//
-//                @Override
-//                public void onProgress(final int progress, String status) {
-//                    activity.runOnUiThread(new Runnable() {
-//                        public void run() {
-//                            holder.tv.setText(progress + "%");
-//                        }
-//                    });
-//                }
-//
-//            });
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
-
-    /**
-     * 更新ui上消息发送状态
-     *
-     * @param message
-     * @param holder
-     */
-//    private void updateSendedView(final EMMessage message, final ViewHolder holder) {
-//        activity.runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                // send success
-//                if (message.getType() == EMMessage.Type.VIDEO) {
-//                    holder.tv.setVisibility(View.GONE);
-//                }
-//
-//                if (message.status == EMMessage.Status.SUCCESS) {
-//                    // if (message.getType() == EMMessage.Type.FILE) {
-//                    // holder.pb.setVisibility(View.INVISIBLE);
-//                    // holder.staus_iv.setVisibility(View.INVISIBLE);
-//                    // } else {
-//                    // holder.pb.setVisibility(View.GONE);
-//                    // holder.staus_iv.setVisibility(View.GONE);
-//                    // }
-//
-//                } else if (message.status == EMMessage.Status.FAIL) {
-//                    // if (message.getType() == EMMessage.Type.FILE) {
-//                    // holder.pb.setVisibility(View.INVISIBLE);
-//                    // } else {
-//                    // holder.pb.setVisibility(View.GONE);
-//                    // }
-//                    // holder.staus_iv.setVisibility(View.VISIBLE);
-//
-//                    if (message.getError() == EMError.MESSAGE_SEND_INVALID_CONTENT) {
-//                        Toast.makeText(activity, activity.getString(R.string.send_fail) + activity.getString(R.string.error_send_invalid_content), Toast.LENGTH_SHORT)
-//                                .show();
-//                    } else if (message.getError() == EMError.MESSAGE_SEND_NOT_IN_THE_GROUP) {
-//                        Toast.makeText(activity, activity.getString(R.string.send_fail) + activity.getString(R.string.error_send_not_in_the_group), Toast.LENGTH_SHORT)
-//                                .show();
-//                    } else {
-//                        Toast.makeText(activity, activity.getString(R.string.send_fail) + activity.getString(R.string.connect_failuer_toast), Toast.LENGTH_SHORT)
-//                                .show();
-//                    }
-//                }
-//
-//                notifyDataSetChanged();
-//            }
-//        });
-//    }
-
-    /**
-     * load image into image view
-     *
-     * @param thumbernailPath   缩略土本地路径
-     * @param iv                ImageView
-     * @param localFullSizePath 本地图片路径
-     * @param remote            远程图片路径
-     * @param message
-     * @return
-     */
-//    private boolean showImageView(final String thumbernailPath, final ImageView iv, final String localFullSizePath,
-//                                  final String remote, final EMMessage message) {
-//        Bitmap bitmap = ImageCache.getInstance().get(thumbernailPath);
-//        if (bitmap != null) {//内存缓存中存在缩略图
-//            iv.setImageBitmap(bitmap);
-//            iv.setClickable(true);
-//            iv.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    clickImage(message, localFullSizePath, remote);
-//                }
-//            });
-//            return true;
-//        } else {
-//            new LoadImageTask().execute(thumbernailPath, localFullSizePath, remote, message.getChatType(), iv, activity, message);
-//            return true;
-//        }
-//    }
-
-    /**
-     * 1.发送端，本地只有大图，没有缩略图
-     * 2.接收端，下载成功后本地只有缩略图，没有大图
-     */
-//    private void showImageView(final String thumbernailPath, final ImageView iv, final String localFullSizePath,
-//                               final String remote, final EMMessage message) {
-//        Bitmap bitmap = ImageCache.getInstance().get(thumbernailPath);
-//        if (bitmap == null) {//内存缓存中不存在缩略图
-//            File file = new File(thumbernailPath);
-//            int thumbImageSize = DensityUtils.dp2px(activity, 70f);
-//            //在图片缓存目录中，缩略图本地文件是否存在
-//            if (file.exists()) {
-//                bitmap = com.easemob.util.ImageUtils.decodeScaleImage(thumbernailPath, thumbImageSize, thumbImageSize);
-//            } else {
-//                if (message.direct == EMMessage.Direct.SEND) {
-//                    bitmap = com.easemob.util.ImageUtils.decodeScaleImage(localFullSizePath, thumbImageSize, thumbImageSize);
-//                }
-//            }
-//        }
-//
-//        if (bitmap != null) {
-//            iv.setImageBitmap(bitmap);
-//            iv.setClickable(true);
-//            iv.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    clickImage(message, localFullSizePath, remote);
-//                }
-//            });
-//        }
-//    }
-
-    /**
      * 图片点击
      *
      * @param message
@@ -1438,7 +1225,6 @@ public class MessageAdapter extends BaseAdapter {
         public MapClickListener(LatLng loc, String address) {
             location = loc;
             this.address = address;
-
         }
 
         @Override
