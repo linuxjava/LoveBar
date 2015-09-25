@@ -21,11 +21,7 @@ import android.view.View;
 
 import com.easemob.chat.EMMessage;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import xiao.love.bar.R;
-import xiao.love.bar.component.BaseActivity;
 
 public class ContextMenuActivity extends Activity {
 	private int position;

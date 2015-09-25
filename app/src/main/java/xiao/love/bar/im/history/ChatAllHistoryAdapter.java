@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xiao.love.bar.im;
+package xiao.love.bar.im.history;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -50,28 +50,21 @@ import xiao.love.bar.im.hxlib.IMUtil;
  * 
  */
 public class ChatAllHistoryAdapter extends ArrayAdapter<EMConversation> {
-	private static final String TAG = "ChatAllHistoryAdapter";
 	private LayoutInflater inflater;
 	private List<EMConversation> conversationList;
-	private List<EMConversation> copyConversationList;
-	private ConversationFilter conversationFilter;
-    private boolean notiyfyByFilter;
 
 	public ChatAllHistoryAdapter(Context context, int textViewResourceId, List<EMConversation> objects) {
 		super(context, textViewResourceId, objects);
 		this.conversationList = objects;
-		copyConversationList = new ArrayList<EMConversation>();
-		copyConversationList.addAll(objects);
 		inflater = LayoutInflater.from(context);
 	}
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
+		ViewHolder holder = null;
+
 		if (convertView == null) {
 			convertView = inflater.inflate(R.layout.row_chat_history, parent, false);
-		}
-		ViewHolder holder = (ViewHolder) convertView.getTag();
-		if (holder == null) {
 			holder = new ViewHolder();
 			holder.name = (TextView) convertView.findViewById(R.id.name);
 			holder.unreadLabel = (TextView) convertView.findViewById(R.id.unread_msg_number);
@@ -81,26 +74,17 @@ public class ChatAllHistoryAdapter extends ArrayAdapter<EMConversation> {
 			holder.msgState = convertView.findViewById(R.id.msg_state);
 			holder.list_item_layout = (RelativeLayout) convertView.findViewById(R.id.list_item_layout);
 			convertView.setTag(holder);
+		}else {
+			holder = (ViewHolder) convertView.getTag();
 		}
 
 		// 获取与此用户/群组的会话
 		EMConversation conversation = getItem(position);
 		// 获取用户username或者群组groupid
 		String username = conversation.getUserName();
-		if (conversation.getType() == EMConversationType.GroupChat) {
-			// 群聊消息，显示群聊头像
-			holder.avatar.setImageResource(R.drawable.group_icon);
-			EMGroup group = EMGroupManager.getInstance().getGroup(username);
-			holder.name.setText(group != null ? group.getGroupName() : username);
-		} else if(conversation.getType() == EMConversationType.ChatRoom){
-		    holder.avatar.setImageResource(R.drawable.group_icon);
-            EMChatRoom room = EMChatManager.getInstance().getChatRoom(username);
-            holder.name.setText(room != null && !TextUtils.isEmpty(room.getName()) ? room.getName() : username);
-		}else {
-			//暂时加载缺省的资源图片
-			holder.avatar.setImageResource(R.drawable.default_avatar);
-			holder.name.setText(username);
-		}
+
+		holder.avatar.setImageResource(R.drawable.default_avatar);
+		holder.name.setText(username);
 
 		if (conversation.getUnreadMsgCount() > 0) {
 			// 显示与此用户的消息未读数
@@ -115,7 +99,6 @@ public class ChatAllHistoryAdapter extends ArrayAdapter<EMConversation> {
 			EMMessage lastMessage = conversation.getLastMessage();
 			holder.message.setText(EmojiParse.parseString(getContext(), getMessageDigest(lastMessage, (this.getContext()))),
 					BufferType.SPANNABLE);
-
 
 			holder.time.setText(DateUtils.getTimestampString(new Date(lastMessage.getMsgTime())));
 			if (lastMessage.direct == EMMessage.Direct.SEND && lastMessage.status == EMMessage.Status.FAIL) {
@@ -159,28 +142,14 @@ public class ChatAllHistoryAdapter extends ArrayAdapter<EMConversation> {
 		case VOICE:// 语音消息
 			digest = getStrng(context, R.string.voice);
 			break;
-		case VIDEO: // 视频消息
-			digest = getStrng(context, R.string.video);
-			break;
 		case TXT: // 文本消息
-			
-//			if(((DemoHXSDKHelper)HXSDKHelper.getInstance()).isRobotMenuMessage(message)){
-//				digest = ((DemoHXSDKHelper)HXSDKHelper.getInstance()).getRobotMenuMessageDigest(message);
-//			}else
 			if(message.getBooleanAttribute(IMUtil.MESSAGE_ATTR_IS_VOICE_CALL, false)){
-				TextMessageBody txtBody = (TextMessageBody) message.getBody();
-				digest = getStrng(context, R.string.voice_call) + txtBody.getMessage();
+
 			}else{
 				TextMessageBody txtBody = (TextMessageBody) message.getBody();
 				digest = txtBody.getMessage();
 			}
 			break;
-		case FILE: // 普通文件消息
-			digest = getStrng(context, R.string.file);
-			break;
-		default:
-			EMLog.e(TAG, "unknow type");
-			return "";
 		}
 
 		return digest;
@@ -207,95 +176,5 @@ public class ChatAllHistoryAdapter extends ArrayAdapter<EMConversation> {
 	String getStrng(Context context, int resId) {
 		return context.getResources().getString(resId);
 	}
-	
-	
 
-	@Override
-	public Filter getFilter() {
-		if (conversationFilter == null) {
-			conversationFilter = new ConversationFilter(conversationList);
-		}
-		return conversationFilter;
-	}
-	
-	private class ConversationFilter extends Filter {
-		List<EMConversation> mOriginalValues = null;
-
-		public ConversationFilter(List<EMConversation> mList) {
-			mOriginalValues = mList;
-		}
-
-		@Override
-		protected FilterResults performFiltering(CharSequence prefix) {
-			FilterResults results = new FilterResults();
-
-			if (mOriginalValues == null) {
-				mOriginalValues = new ArrayList<EMConversation>();
-			}
-			if (prefix == null || prefix.length() == 0) {
-				results.values = copyConversationList;
-				results.count = copyConversationList.size();
-			} else {
-				String prefixString = prefix.toString();
-				final int count = mOriginalValues.size();
-				final ArrayList<EMConversation> newValues = new ArrayList<EMConversation>();
-
-				for (int i = 0; i < count; i++) {
-					final EMConversation value = mOriginalValues.get(i);
-					String username = value.getUserName();
-
-					//如果是"群聊"则，获取群聊的名称
-					EMGroup group = EMGroupManager.getInstance().getGroup(username);
-					if(group != null){
-						username = group.getGroupName();
-					}
-
-					// First match against the whole ,non-splitted value
-					if (username.startsWith(prefixString)) {
-						newValues.add(value);
-					} else{
-						  final String[] words = username.split(" ");
-	                        final int wordCount = words.length;
-
-	                        // Start at index 0, in case valueText starts with space(s)
-	                        for (int k = 0; k < wordCount; k++) {
-	                            if (words[k].startsWith(prefixString)) {
-	                                newValues.add(value);
-	                                break;
-	                            }
-	                        }
-					}
-				}
-
-				results.values = newValues;
-				results.count = newValues.size();
-			}
-			return results;
-		}
-
-		@Override
-		protected void publishResults(CharSequence constraint, FilterResults results) {
-			conversationList.clear();
-			conversationList.addAll((List<EMConversation>) results.values);
-			if (results.count > 0) {
-			    notiyfyByFilter = true;
-				notifyDataSetChanged();
-			} else {
-				notifyDataSetInvalidated();
-			}
-
-		}
-
-	}
-	
-	@Override
-	public void notifyDataSetChanged() {
-	    super.notifyDataSetChanged();
-	    if(!notiyfyByFilter){
-            copyConversationList.clear();
-            copyConversationList.addAll(conversationList);
-        }else {
-			notiyfyByFilter = false;
-		}
-	}
 }

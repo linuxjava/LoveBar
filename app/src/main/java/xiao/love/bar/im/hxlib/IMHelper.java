@@ -100,6 +100,12 @@ public class IMHelper extends HXSDKHelper {
                         HXSDKHelper.getInstance().getNotifier().onNewMesg(messages);
                     }
                     break;
+                case EventDeliveryAck:
+                    message.setDelivered(true);
+                    break;
+                case EventReadAck:
+                    message.setAcked(true);
+                    break;
                 // below is just giving a example to show a cmd toast, the app should not follow this
                 // so be careful of this
                 case EventNewCMDMessage: {
@@ -130,18 +136,8 @@ public class IMHelper extends HXSDKHelper {
                     Intent broadcastIntent = new Intent(CMD_TOAST_BROADCAST);
                     broadcastIntent.putExtra("cmd_value", str + action);
                     appContext.sendBroadcast(broadcastIntent, null);
-
                     break;
                 }
-                case EventDeliveryAck:
-                    message.setDelivered(true);
-                    break;
-                case EventReadAck:
-                    message.setAcked(true);
-                    break;
-                // add other events in case you are interested in
-                default:
-                    break;
             }
 
         }

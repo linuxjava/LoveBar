@@ -1,19 +1,19 @@
 package xiao.love.bar.component;
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import xiao.love.bar.component.dialog.DialogTool;
 import xiao.love.bar.component.image.ImageLoadTool;
 import xiao.love.bar.component.net.HttpTool;
-import xiao.love.bar.component.net.NetworkCallback;
 import xiao.love.bar.component.toast.ToastTool;
 
 /**
- * Created by guochang on 2015/8/13.
+ * Created by guochang on 2015/9/23.
  */
-public abstract class BaseActivity extends AppCompatActivity implements NetworkCallback {
+public class BaseActivity extends AbstractActivity{
     //提示对话框和loading工具类
     protected DialogTool mDialogTool;
     //toast工具类
@@ -34,4 +34,5 @@ public abstract class BaseActivity extends AppCompatActivity implements NetworkC
         mImageLoadTool = ImageLoadTool.getInstance();
         mHttpTool = new HttpTool(this,this);
     }
+
 }

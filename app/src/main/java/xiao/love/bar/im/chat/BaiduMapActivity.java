@@ -49,11 +49,7 @@ import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.utils.CoordinateConverter;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import xiao.love.bar.R;
-import xiao.love.bar.component.BaseActivity;
 
 public class BaiduMapActivity extends Activity {
 

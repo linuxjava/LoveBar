@@ -143,8 +143,8 @@ public class SpeakLayout {
         message.addBody(body);
         mConversation.addMessage(message);
         //刷新listview
-        if(mActivity.getAdapter() != null) {
-            mActivity.getAdapter().refreshSelectLast();
+        if(mActivity.getMessageAdapter() != null) {
+            mActivity.getMessageAdapter().refreshSelectLast();
         }
     }
 

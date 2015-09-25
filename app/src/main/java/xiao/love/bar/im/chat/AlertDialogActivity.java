@@ -99,7 +99,7 @@ public class AlertDialogActivity extends Activity {
 				putExtra("edittext", editText.getText().toString())
 				/*.putExtra("voicePath", voicePath)*/);
 		if(position != -1)
-			ChatActivity.resendPos = position;
+			ChatActivity.mResendPos = position;
 		finish();
 		
 	}

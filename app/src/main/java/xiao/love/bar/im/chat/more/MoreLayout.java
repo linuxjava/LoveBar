@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
-import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
@@ -130,8 +129,8 @@ public class MoreLayout implements View.OnClickListener {
             message.setReceipt(mChatUserName);
             mConversation.addMessage(message);
 
-            if(mActivity.getAdapter() != null) {
-                mActivity.getAdapter().refreshSelectLast();
+            if(mActivity.getMessageAdapter() != null) {
+                mActivity.getMessageAdapter().refreshSelectLast();
             }
         }
     }

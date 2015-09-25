@@ -105,7 +105,7 @@ public class MessageAdapter extends BaseAdapter {
 
     private Map<String, Timer> timers = new Hashtable<String, Timer>();
 
-    public MessageAdapter(Context context, String username, int chatType) {
+    public MessageAdapter(Context context, String username) {
         this.username = username;
         this.context = context;
         inflater = LayoutInflater.from(context);
@@ -133,7 +133,7 @@ public class MessageAdapter extends BaseAdapter {
                     break;
                 case HANDLER_MESSAGE_SELECT_LAST:
                     if (activity instanceof ChatActivity) {
-                        ListView listView = ((ChatActivity) activity).getmListView();
+                        ListView listView = ((ChatActivity) activity).getListView();
                         if (messages.length > 0) {
                             listView.setSelection(messages.length - 1);
                         }
@@ -142,7 +142,7 @@ public class MessageAdapter extends BaseAdapter {
                 case HANDLER_MESSAGE_SEEK_TO:
                     int position = message.arg1;
                     if (activity instanceof ChatActivity) {
-                        ListView listView = ((ChatActivity) activity).getmListView();
+                        ListView listView = ((ChatActivity) activity).getListView();
                         listView.setSelection(position);
                     }
                     break;
@@ -193,6 +193,7 @@ public class MessageAdapter extends BaseAdapter {
         if (messages != null && position < messages.length) {
             return messages[position];
         }
+
         return null;
     }
 
