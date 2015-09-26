@@ -2,16 +2,25 @@ package xiao.love.bar.im.history;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.text.TextUtils;
 import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.BounceInterpolator;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.baoyz.swipemenulistview.SwipeMenu;
+import com.baoyz.swipemenulistview.SwipeMenuCreator;
+import com.baoyz.swipemenulistview.SwipeMenuItem;
+import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMConversation;
+import com.easemob.chat.EMMessage;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
@@ -25,6 +34,7 @@ import java.util.List;
 
 import xiao.love.bar.R;
 import xiao.love.bar.component.BaseFragment;
+import xiao.love.bar.component.util.DensityUtils;
 import xiao.love.bar.component.util.KeyBoardUtils;
 import xiao.love.bar.im.chat.ChatActivity;
 
@@ -34,11 +44,11 @@ import xiao.love.bar.im.chat.ChatActivity;
 @EFragment(R.layout.fragment_conversation_history)
 public class ChatHistoryFragment extends BaseFragment {
     @ViewById(R.id.list)
-    ListView mListView;
+    public SwipeMenuListView mListView;
     @ViewById(R.id.rl_error_item)
-    RelativeLayout mErrorItem;
+    public RelativeLayout mErrorItem;
     @ViewById(R.id.tv_connect_errormsg)
-    TextView mErrorText;
+    public TextView mErrorText;
 
     private Activity mContext;
     private List<EMConversation> mConversationList;
@@ -46,12 +56,46 @@ public class ChatHistoryFragment extends BaseFragment {
     private AdapterView.OnItemClickListener mItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            if(position == 0){//点击收藏
+                return;
+            }
             EMConversation conversation = mAdapter.getItem(position);
             String username = conversation.getUserName();
 
             Intent intent = new Intent(getActivity(), ChatActivity.class);
             intent.putExtra("userId", username);
             startActivity(intent);
+        }
+    };
+    //滑动菜单点击
+    private SwipeMenuListView.OnMenuItemClickListener mMenuItemClickListener = new SwipeMenuListView.OnMenuItemClickListener() {
+        @Override
+        public boolean onMenuItemClick(int position, SwipeMenu swipeMenu, int index) {
+            //删除会话
+            EMConversation conversation = mAdapter.getItem(position);
+            if(conversation != null && !TextUtils.isEmpty(conversation.getUserName())) {
+                EMChatManager.getInstance().deleteConversation(conversation.getUserName(), conversation.isGroup(), true);
+                //删除listview中的item, remove会自动notifyDataSetChanged
+                mAdapter.remove(conversation);
+            }
+            return false;
+        }
+    };
+    //创建滑动菜单
+    private SwipeMenuCreator mSwipeMenuCreator = new SwipeMenuCreator() {
+        @Override
+        public void create(SwipeMenu swipeMenu) {
+            switch (swipeMenu.getViewType()) {
+                case 0://不创建滑动菜单
+                    break;
+                case 1://创建包含"删除"按钮的菜单
+                    SwipeMenuItem deleteItem = new SwipeMenuItem(mContext);
+                    deleteItem.setBackground(R.color.history_item_del_bg);
+                    deleteItem.setWidth(DensityUtils.dp2px(mContext, 70f));
+                    deleteItem.setIcon(R.drawable.ic_delete);
+                    swipeMenu.addMenuItem(deleteItem);
+                    break;
+            }
         }
     };
 
@@ -63,6 +107,10 @@ public class ChatHistoryFragment extends BaseFragment {
 
         mAdapter = new ChatAllHistoryAdapter(getActivity(), 1, mConversationList);
 
+        mListView.setSwipeDirection(SwipeMenuListView.DIRECTION_LEFT);
+        mListView.setCloseInterpolator(new BounceInterpolator());
+        mListView.setMenuCreator(mSwipeMenuCreator);
+        mListView.setOnMenuItemClickListener(mMenuItemClickListener);
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(mItemClickListener);
         mListView.setOnTouchListener(new View.OnTouchListener() {
@@ -135,17 +183,19 @@ public class ChatHistoryFragment extends BaseFragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         List<EMConversation> list = new ArrayList<EMConversation>();
+        list.add(new EMConversation("收藏"));
         for (Pair<Long, EMConversation> sortItem : sortList) {
             list.add(sortItem.second);
         }
+
         return list;
     }
 
     /**
      * 根据最后一条消息的时间排序
-     *
-     * @param usernames
+     * @param conversationList
      */
     private void sortConversationByLastChatTime(List<Pair<Long, EMConversation>> conversationList) {
         Collections.sort(conversationList, new Comparator<Pair<Long, EMConversation>>() {
@@ -163,4 +213,16 @@ public class ChatHistoryFragment extends BaseFragment {
 
         });
     }
+
+//    public class Conversation{
+//        //
+//        public int type;
+//        public String name;
+//        public String avatar;
+//        public String lastMessage;
+//        public String time;
+//        public int msgCount;
+//        public int unreadCount;
+//        public EMMessage.Status lastMessageStatus;
+//    }
 }

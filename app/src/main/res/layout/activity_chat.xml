@@ -76,7 +76,7 @@
         <LinearLayout
             android:id="@+id/rl_bottom"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="46.0dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingTop="5dp"
@@ -103,7 +103,7 @@
             <LinearLayout
                 android:id="@+id/btn_press_to_speak"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="36dp"
                 android:layout_marginLeft="6dp"
                 android:layout_marginRight="6dp"
                 android:layout_weight="1"

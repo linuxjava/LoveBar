@@ -11,6 +11,7 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.ImageSize;
 import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
+import com.nostra13.universalimageloader.core.download.ImageDownloader;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
@@ -107,5 +108,15 @@ public class ImageLoadTool {
 
     public void displayImageFromUrl(ImageView imageView, String url, DisplayImageOptions displayImageOptions) {
         imageLoader.displayImage(url, imageView, displayImageOptions);
+    }
+
+    public void displayImageFromFile(ImageView imageView, String imagePath, DisplayImageOptions displayImageOptions){
+        String imageUrl = ImageDownloader.Scheme.FILE.wrap(imagePath);
+        imageLoader.displayImage(imageUrl, imageView, displayImageOptions);
+    }
+
+    public void displayImageFromDrawable(ImageView imageView, String id, DisplayImageOptions displayImageOptions){
+        String drawableUrl = ImageDownloader.Scheme.DRAWABLE.wrap(id);
+        imageLoader.displayImage(drawableUrl, imageView, displayImageOptions);
     }
 }

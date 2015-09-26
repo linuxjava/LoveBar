@@ -2,16 +2,19 @@ package xiao.love.bar;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.easemob.EMConnectionListener;
+import com.easemob.EMError;
 import com.easemob.EMEventListener;
 import com.easemob.EMNotifierEvent;
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMConversation;
 import com.easemob.chat.EMMessage;
+import com.easemob.util.NetUtils;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EActivity;
@@ -42,11 +45,36 @@ public class MainActivity extends BaseActivity implements EMEventListener {
     private EMConnectionListener mConnectionListener = new EMConnectionListener() {
         @Override
         public void onConnected() {
-
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mChatHistoryFragment.mErrorItem.setVisibility(View.GONE);
+                }
+            });
         }
 
         @Override
-        public void onDisconnected(int i) {
+        public void onDisconnected(final int error) {
+            final String st1 = getResources().getString(R.string.can_not_connect_chat_server_connection);
+            final String st2 = getResources().getString(R.string.the_current_network);
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (error == EMError.USER_REMOVED) {
+                        // 显示帐号已经被移除
+                    } else if (error == EMError.CONNECTION_CONFLICT) {
+                        // 显示帐号在其他设备登陆dialog
+                    } else {
+                        mChatHistoryFragment.mErrorItem.setVisibility(View.VISIBLE);
+                        if (NetUtils.hasNetwork(MainActivity.this))
+                            mChatHistoryFragment.mErrorText.setText(st1);
+                        else
+                            mChatHistoryFragment.mErrorText.setText(st2);
+                    }
+                }
+            });
+
 
         }
     };
@@ -75,6 +103,13 @@ public class MainActivity extends BaseActivity implements EMEventListener {
         EMChatManager.getInstance().unregisterEventListener(this);
         // 把此activity 从foreground activity 列表里移除
         ((IMHelper) IMHelper.getInstance()).popActivity(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        EMChatManager.getInstance().removeConnectionListener(mConnectionListener);
     }
 
     /**

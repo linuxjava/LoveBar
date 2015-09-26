@@ -558,6 +558,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
                 mMoreLayout.showMoreLayout();
             } else {
                 mMoreLayout.hideMoreLayout();
+                mMoreLL.setVisibility(View.INVISIBLE);
             }
         } else {
             mMoreLL.setVisibility(View.VISIBLE);

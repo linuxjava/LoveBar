@@ -2,76 +2,113 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/list_item_layout"
     android:layout_width="match_parent"
-    android:layout_height="59dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/history_item_selector"
     android:gravity="center_vertical">
 
     <RelativeLayout
         android:id="@+id/avatar_container"
-        android:layout_width="59dp"
-        android:layout_height="match_parent"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:layout_alignParentLeft="true">
 
-        <ImageView
+        <com.github.siyamed.shapeimageview.CircularImageView
             android:id="@+id/avatar"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
+            android:layout_width="54dp"
+            android:layout_height="54dp"
+            android:layout_centerInParent="true"
             android:scaleType="fitXY"
             android:src="@drawable/default_avatar" />
 
-        <TextView
-            android:id="@+id/unread_msg_number"
-            style="@style/wrap_width_wrap_height"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="2dp"
-            android:layout_marginTop="3dp"
-            android:background="@drawable/unread_count_bg"
-            android:gravity="center"
-            android:text="7"
-            android:textColor="@android:color/white"
-            android:textSize="12sp" />
     </RelativeLayout>
 
-    <TextView
-        android:id="@+id/name"
-        style="@style/wrap_width_wrap_height"
-        android:layout_marginLeft="7dp"
-        android:layout_marginTop="6dp"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_marginLeft="8dp"
         android:layout_toRightOf="@id/avatar_container"
-        android:textColor="#000"
-        android:textSize="16sp" />
+        android:gravity="center_vertical"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/time"
-        style="@style/wrap_width_wrap_height"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="7dp"
-        android:layout_marginTop="6dp"
-        android:textColor="#888888"
-        android:textSize="13sp" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="3.0dp">
 
-    <ImageView
-        android:id="@+id/msg_state"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+            <TextView
+                android:id="@+id/name"
+                style="@style/wrap_width_wrap_height"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="7.0dp"
+                android:layout_toLeftOf="@id/time"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text="asdfasdf"
+                android:textColor="#000"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/time"
+                style="@style/wrap_width_wrap_height"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="7dp"
+                android:text="12:00"
+                android:textColor="#888888"
+                android:textSize="13sp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3.0dp">
+
+            <ImageView
+                android:id="@+id/msg_state"
+                android:layout_width="19dp"
+                android:layout_height="19dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/msg_state_fail_resend"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="22.0dp"
+                android:layout_toLeftOf="@+id/unread_msg_number"
+                android:layout_toRightOf="@+id/msg_state"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text="12341sdlfkfasdf4"
+                android:textColor="#888888"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/unread_msg_number"
+                android:layout_width="19dp"
+                android:layout_height="19dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_gravity="right"
+                android:layout_marginRight="7dp"
+                android:background="@drawable/unread_count_bg"
+                android:gravity="center"
+                android:text="7"
+                android:textColor="@android:color/white"
+                android:textSize="12sp" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.8dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="5dp"
-        android:layout_marginLeft="7dp"
+        android:layout_marginLeft="8dp"
         android:layout_toRightOf="@id/avatar_container"
-        android:src="@drawable/msg_state_fail_resend"
-        android:visibility="gone" />
-
-    <TextView
-        android:id="@+id/message"
-        style="@style/wrap_width_wrap_height"
-        android:layout_alignParentBottom="true"
-        android:layout_toLeftOf="@id/time"
-        android:layout_toRightOf="@id/msg_state"
-        android:ellipsize="end"
-        android:padding="7dp"
-        android:singleLine="true"
-        android:textColor="#888888"
-        android:textSize="14sp" />
+        android:background="#FFEDEAEA" />
 
 </RelativeLayout>

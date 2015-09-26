@@ -17,21 +17,21 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_chat_activity" >
 
-        <ImageView
+        <com.github.siyamed.shapeimageview.CircularImageView
             android:id="@+id/iv_userhead"
             android:layout_width="@dimen/size_avatar"
             android:layout_height="@dimen/size_avatar"
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:layout_marginLeft="@dimen/margin_chat_activity"
-            android:background="@drawable/mini_avatar_shadow"
+            android:src="@drawable/mini_avatar_shadow"
             android:scaleType="fitXY" />
 
         <RelativeLayout
             android:id="@+id/iv_voice_rl"
             android:layout_width="70.0dp"
             android:layout_height="50dp"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="@dimen/margin_chat_activity"
             android:layout_toRightOf="@id/iv_userhead"
             android:background="@drawable/chatfrom_bg"
             android:clickable="true">

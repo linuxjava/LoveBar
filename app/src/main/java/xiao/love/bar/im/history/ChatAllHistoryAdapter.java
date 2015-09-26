@@ -42,6 +42,7 @@ import java.util.Date;
 import java.util.List;
 
 import xiao.love.bar.R;
+import xiao.love.bar.component.image.ImageLoadTool;
 import xiao.love.bar.im.chat.emoji.EmojiParse;
 import xiao.love.bar.im.hxlib.IMUtil;
 
@@ -50,13 +51,29 @@ import xiao.love.bar.im.hxlib.IMUtil;
  * 
  */
 public class ChatAllHistoryAdapter extends ArrayAdapter<EMConversation> {
+	//SwipeMenu的类型数（0：表示没有滑动菜单;1：表示包含"删除"的滑动菜单）
+	private static final int MENU_TYPE_COUNT = 2;
 	private LayoutInflater inflater;
-	private List<EMConversation> conversationList;
 
 	public ChatAllHistoryAdapter(Context context, int textViewResourceId, List<EMConversation> objects) {
 		super(context, textViewResourceId, objects);
-		this.conversationList = objects;
 		inflater = LayoutInflater.from(context);
+	}
+
+	@Override
+	public int getViewTypeCount() {
+		// menu type count
+		return MENU_TYPE_COUNT;
+	}
+
+	@Override
+	public int getItemViewType(int position) {
+		// current menu type
+		if(position == 0){
+			return 0;
+		}
+
+		return 1;
 	}
 
 	@Override
@@ -76,6 +93,16 @@ public class ChatAllHistoryAdapter extends ArrayAdapter<EMConversation> {
 			convertView.setTag(holder);
 		}else {
 			holder = (ViewHolder) convertView.getTag();
+		}
+
+		if(position == 0){
+			holder.name.setText("收藏");
+			holder.message.setText("我收藏的人和收藏我的人");
+			holder.avatar.setImageResource(R.drawable.base_avatar_follow);
+			holder.unreadLabel.setVisibility(View.INVISIBLE);
+			holder.time.setVisibility(View.INVISIBLE);
+			holder.msgState.setVisibility(View.GONE);
+			return convertView;
 		}
 
 		// 获取与此用户/群组的会话
