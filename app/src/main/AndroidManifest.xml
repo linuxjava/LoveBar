@@ -82,6 +82,16 @@
             android:name=".im.chat.ShowBigImageActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar"/>
+        <!-- 收藏和被收藏 -->
+        <activity
+            android:name=".im.collect.CollectActivity_"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Black.NoTitleBar"/>
+
+        <!--<activity-->
+            <!--android:name=".im.collect.CollectFragment_"-->
+            <!--android:screenOrientation="portrait"-->
+            <!--android:theme="@android:style/Theme.Black.NoTitleBar"/>-->
 
         <uses-library android:name="android.test.runner"/>
 

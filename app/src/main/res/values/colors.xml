@@ -3,6 +3,8 @@
     <!--图片选择器-->
     <color name="camera_background">#ff353535</color>
     <color name="font_green">#3bbd79</color>
+    <color name="white">#FFFFFFFF</color>
+
 
     <color name="bottom_bar_normal_bg">#2D2F31</color>
     <color name="common_bottom_bar_normal_bg">#2d2f31</color>
@@ -17,7 +19,8 @@
     <color name="btn_gray_pressed_status">#b5b5b6</color>
     <color name="common_bg">#fcfcfc</color>
     <color name="error_item_color">#F6EBE6</color>
-    <color name="history_item_press">#FFEEEEEE</color>
+    <color name="history_item_press">#FFCCCCCC</color>
     <color name="history_item_del_bg">#FFF93F25</color>
+    <color name="holo_blue_dark">#ff0099cc</color>
 
 </resources>

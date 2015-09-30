@@ -1,16 +1,19 @@
 package xiao.love.bar.im.history;
 
+import android.animation.AnimatorInflater;
+import android.animation.LayoutTransition;
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.text.TextUtils;
 import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.BounceInterpolator;
+import android.view.animation.Transformation;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -20,7 +23,6 @@ import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMConversation;
-import com.easemob.chat.EMMessage;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
@@ -37,6 +39,8 @@ import xiao.love.bar.component.BaseFragment;
 import xiao.love.bar.component.util.DensityUtils;
 import xiao.love.bar.component.util.KeyBoardUtils;
 import xiao.love.bar.im.chat.ChatActivity;
+import xiao.love.bar.im.collect.CollectActivity_;
+import xiao.love.bar.im.collect.CollectFragment_;
 
 /**
  * Created by guochang on 2015/9/24.
@@ -56,7 +60,8 @@ public class ChatHistoryFragment extends BaseFragment {
     private AdapterView.OnItemClickListener mItemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            if(position == 0){//点击收藏
+            if (position == 0) {//点击收藏
+                startActivity(new Intent(mContext, CollectActivity_.class));
                 return;
             }
             EMConversation conversation = mAdapter.getItem(position);
@@ -73,10 +78,13 @@ public class ChatHistoryFragment extends BaseFragment {
         public boolean onMenuItemClick(int position, SwipeMenu swipeMenu, int index) {
             //删除会话
             EMConversation conversation = mAdapter.getItem(position);
-            if(conversation != null && !TextUtils.isEmpty(conversation.getUserName())) {
+
+            if (conversation != null && !TextUtils.isEmpty(conversation.getUserName())) {
                 EMChatManager.getInstance().deleteConversation(conversation.getUserName(), conversation.isGroup(), true);
                 //删除listview中的item, remove会自动notifyDataSetChanged
-                mAdapter.remove(conversation);
+                //mAdapter.remove(conversation);
+                deletePattern(mListView.getChildAt(position-mListView.getFirstVisiblePosition()), position);
+                //removeListItem(mListView.getChildAt(position-mListView.getFirstVisiblePosition()), position);
             }
             return false;
         }
@@ -99,6 +107,76 @@ public class ChatHistoryFragment extends BaseFragment {
         }
     };
 
+    protected void removeListItem(View rowView, final int position) {
+
+        final Animation animation = (Animation) AnimationUtils.loadAnimation(rowView.getContext(), R.anim.item_anim);
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            public void onAnimationStart(Animation animation) {}
+
+            public void onAnimationRepeat(Animation animation) {}
+
+            public void onAnimationEnd(Animation animation) {
+                mAdapter.remove(mAdapter.getItem(position));
+            }
+        });
+
+
+        rowView.startAnimation(animation);
+
+    }
+
+    private void deletePattern(final View view, final int position) {
+
+        Animation.AnimationListener al = new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mContext.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mAdapter.remove(mAdapter.getItem(1));
+                    }
+                });
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        };
+        collapse(view, al, position);
+    }
+
+    private void collapse(final View view, Animation.AnimationListener al, final int position) {
+        final int originHeight = view.getMeasuredHeight();
+
+        Animation animation = new Animation() {
+            @Override
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                if (interpolatedTime == 1.0f) {
+                    view.setVisibility(View.GONE);
+                } else {
+                    view.getLayoutParams().height = originHeight - (int) (originHeight * interpolatedTime);
+                    view.requestLayout();
+                }
+            }
+
+            @Override
+            public boolean willChangeBounds() {
+                return true;
+            }
+        };
+        if (al != null) {
+            animation.setAnimationListener(al);
+        }
+        animation.setDuration(10000);
+        view.startAnimation(animation);
+    }
+
     @AfterViews
     void init() {
         mContext = getActivity();
@@ -120,6 +198,7 @@ public class ChatHistoryFragment extends BaseFragment {
                 return false;
             }
         });
+
     }
 
     /**
@@ -195,6 +274,7 @@ public class ChatHistoryFragment extends BaseFragment {
 
     /**
      * 根据最后一条消息的时间排序
+     *
      * @param conversationList
      */
     private void sortConversationByLastChatTime(List<Pair<Long, EMConversation>> conversationList) {
@@ -214,15 +294,4 @@ public class ChatHistoryFragment extends BaseFragment {
         });
     }
 
-//    public class Conversation{
-//        //
-//        public int type;
-//        public String name;
-//        public String avatar;
-//        public String lastMessage;
-//        public String time;
-//        public int msgCount;
-//        public int unreadCount;
-//        public EMMessage.Status lastMessageStatus;
-//    }
 }

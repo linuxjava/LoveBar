@@ -83,4 +83,14 @@
         <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
         <item name="android:backgroundDimEnabled">true</item>
     </style>
+
+    <style name="tab_tv" parent="match_width_wrap_height">
+        <item name="android:layout_weight">1.0</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="tab_img" parent="wrap_width_match_height">
+        <item name="android:layout_weight">1.0</item>
+    </style>
 </resources>

@@ -22,7 +22,6 @@ import org.androidannotations.annotations.ViewById;
 
 import xiao.love.bar.component.BaseActivity;
 import xiao.love.bar.im.history.ChatHistoryFragment_;
-import xiao.love.bar.im.history.ContactFragment;
 import xiao.love.bar.im.history.ContactFragment_;
 import xiao.love.bar.im.history.Test2Fragment;
 import xiao.love.bar.im.hxlib.IMHelper;
