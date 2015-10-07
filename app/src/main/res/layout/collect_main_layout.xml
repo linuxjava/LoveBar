@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    style="@style/match_width_match_height"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -48,23 +48,21 @@
         </LinearLayout>
     </RelativeLayout>
 
-    <!--<android.support.v4.view.ViewPager-->
-        <!--android:id="@+id/viewpager"-->
-        <!--style="@style/match_width_match_height" />-->
+    <!--BGARefreshLayout中RecyclerView一定要设置为
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1"-->
     <cn.bingoogolapple.refreshlayout.BGARefreshLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/listview_refresh"
+        android:id="@+id/recyclerview_refresh"
         style="@style/match_width_match_height"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="@color/white">
+        android:background="@color/recyclerView_bg">
 
-        <ListView
-            android:id="@+id/listview"
-            android:layout_height="0dp"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerview"
             android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:layout_weight="1"
-            android:dividerHeight="0dp"
-            android:divider="@null" />
+            android:background="@color/recyclerView_bg"
+            android:scrollbars="vertical" />
     </cn.bingoogolapple.refreshlayout.BGARefreshLayout>
 </LinearLayout>

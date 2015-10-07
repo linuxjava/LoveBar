@@ -6,6 +6,8 @@
     <!--表情viewpager下面指示器margin-->
     <dimen name="point_margin">8dp</dimen>
 
+    <dimen name="avatar_size">54dp</dimen>
+
     <dimen name="height_top_bar">46dp</dimen>
     <dimen name="padding_search_bar">5dp</dimen>
     <dimen name="height_row_weixin">59dp</dimen>

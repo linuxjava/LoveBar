@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/common_bg"
+    style="@style/match_width_match_height"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -13,25 +12,31 @@
 
         <TextView
             android:id="@+id/message_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/wrap_width_wrap_height"
             android:layout_centerInParent="true"
             android:text="@string/session"
-            android:textColor="#fff"
+            android:textColor="@color/white"
             android:textSize="18sp" />
 
     </RelativeLayout>
 
     <include
-        android:id="@+id/rl_error_item"
+        android:id="@+id/error_item_rl"
         layout="@layout/chat_neterror_item"
         android:visibility="gone" />
 
-    <com.baoyz.swipemenulistview.SwipeMenuListView
-        android:id="@+id/list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:dividerHeight="0dp"
-        android:divider="@null" />
+    <cn.bingoogolapple.refreshlayout.BGARefreshLayout
+        android:id="@+id/recyclerview_refresh"
+        style="@style/match_width_wrap_height"
+        android:background="@color/recyclerView_bg">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/recyclerView_bg"
+            android:scrollbars="vertical" />
+    </cn.bingoogolapple.refreshlayout.BGARefreshLayout>
 
 </LinearLayout>

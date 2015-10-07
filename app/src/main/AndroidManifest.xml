@@ -25,10 +25,10 @@
     <application
         android:name=".LoveBarApp"
         android:allowBackup="true"
-        tools:replace="android:icon, android:theme"
         android:icon="@drawable/ic_main_launcher"
         android:label="@string/app_name"
-        android:theme="@android:style/Theme.Black.NoTitleBar" >
+        android:theme="@android:style/Theme.Black.NoTitleBar"
+        tools:replace="android:icon, android:theme" >
         <activity
             android:name=".LoginActivity_"
             android:label="@string/app_name"
@@ -88,11 +88,6 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar"/>
 
-        <!--<activity-->
-            <!--android:name=".im.collect.CollectFragment_"-->
-            <!--android:screenOrientation="portrait"-->
-            <!--android:theme="@android:style/Theme.Black.NoTitleBar"/>-->
-
         <uses-library android:name="android.test.runner"/>
 
         <!-- 设置环信应用的service、eceiver、appkey -->
@@ -122,5 +117,5 @@
     </application>
 
     <instrumentation android:name="android.test.InstrumentationTestRunner"
-        android:targetPackage="xiao.love.bar" android:label="aaa"/>
+        android:label="aaa" android:targetPackage="xiao.love.bar"/>
 </manifest>
