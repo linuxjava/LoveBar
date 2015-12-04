@@ -2,8 +2,6 @@ package xiao.love.bar.im.history;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -127,7 +125,7 @@ public class ChatHistoryFragment extends BaseFragment implements BGAOnItemChildC
         // 获取所有会话，包括陌生人
         Hashtable<String, EMConversation> conversations = EMChatManager.getInstance().getAllConversations();
         // 过滤掉messages size为0的conversation
-        /**c
+        /**
          * 如果在排序过程中有新消息收到，lastMsgTime会发生变化
          * 影响排序过程，Collection.sort会产生异常
          * 保证Conversation在Sort过程中最后一条消息的时间不变
@@ -151,7 +149,9 @@ public class ChatHistoryFragment extends BaseFragment implements BGAOnItemChildC
         }
 
         List<EMConversation> list = new ArrayList<EMConversation>();
+        //回话列表里，最顶部是"收藏"
         list.add(new EMConversation("收藏"));
+        //添加测试数据
 //        for (int i=0; i<15; i++){
 //            list.add(new EMConversation(i+""));
 //        }

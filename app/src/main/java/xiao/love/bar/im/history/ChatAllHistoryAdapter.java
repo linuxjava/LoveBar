@@ -40,7 +40,7 @@ import xiao.love.bar.im.hxlib.IMUtil;
  */
 public class ChatAllHistoryAdapter extends BGARecyclerViewAdapter<EMConversation> {
     private Context mContext;
-    //当前处于打开状态的item
+    //当前处于滑动打开状态的item
     private List<BGASwipeItemLayout> mOpenedSil = new ArrayList<>();
     public BGASwipeItemLayout.ViewGroupListener mViewGroupListener = new BGASwipeItemLayout.ViewGroupListener() {
         @Override
@@ -96,11 +96,11 @@ public class ChatAllHistoryAdapter extends BGARecyclerViewAdapter<EMConversation
             return;
         }
 
-		bgaViewHolderHelper.setVisibility(R.id.unread_msg_number, View.VISIBLE);
-		bgaViewHolderHelper.setVisibility(R.id.time, View.VISIBLE);
-		bgaViewHolderHelper.setVisibility(R.id.msg_state, View.VISIBLE);
+        bgaViewHolderHelper.setVisibility(R.id.unread_msg_number, View.VISIBLE);
+        bgaViewHolderHelper.setVisibility(R.id.time, View.VISIBLE);
+        bgaViewHolderHelper.setVisibility(R.id.msg_state, View.VISIBLE);
 
-		bgaViewHolderHelper.setText(R.id.name, conversation.getUserName());
+        bgaViewHolderHelper.setText(R.id.name, conversation.getUserName());
         bgaViewHolderHelper.setImageResource(R.id.avatar, R.drawable.default_avatar);
         if (conversation.getUnreadMsgCount() > 0) {
             // 显示与此用户的消息未读数
@@ -126,7 +126,7 @@ public class ChatAllHistoryAdapter extends BGARecyclerViewAdapter<EMConversation
     }
 
     /**
-     * 不管所有打开的item
+     * 关闭所有打开的item
      */
     public void closeOpenedSwipeItemLayoutWithAnim() {
         for (BGASwipeItemLayout sil : mOpenedSil) {

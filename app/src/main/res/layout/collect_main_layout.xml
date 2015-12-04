@@ -12,57 +12,26 @@
         android:paddingBottom="12.0dp"
         android:paddingTop="12.0dp">
 
-        <LinearLayout
-            style="@style/match_width_match_height"
-            android:layout_width="150.0dp"
+        <xiao.love.bar.component.segmentcontrol.SegmentControl
+            xmlns:segmentcontrol="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/segment_control"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:gravity="center">
-
-            <ImageView
-                android:id="@+id/tab_left_img"
-                style="@style/tab_img"
-                android:background="@drawable/ic_button_left" />
-
-            <ImageView
-                android:id="@+id/tab_right_img"
-                style="@style/tab_img"
-                android:background="@drawable/ic_button_right" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            style="@style/match_width_match_height"
-            android:layout_width="150.0dp"
-            android:layout_centerInParent="true"
-            android:gravity="center">
-
-            <TextView
-                android:id="@+id/tab_left_tv"
-                style="@style/tab_tv"
-                android:text="收藏" />
-
-            <TextView
-                android:id="@+id/tab_right_tv"
-                style="@style/tab_tv"
-                android:text="被收藏" />
-        </LinearLayout>
+            android:textSize="15sp"
+            segmentcontrol:texts="收藏|被收藏"
+            segmentcontrol:defaultTextColor="@color/white"
+            segmentcontrol:checkTextColor="@color/holo_blue_dark"
+            segmentcontrol:strokeColor="@color/white"
+            segmentcontrol:fillColor="@color/white"
+            segmentcontrol:cornerRadius="5dip"
+            segmentcontrol:direction="horizon"
+            segmentcontrol:horizonGap="12dp"
+            segmentcontrol:verticalGap="8dp"/>
     </RelativeLayout>
 
-    <!--BGARefreshLayout中RecyclerView一定要设置为
-    android:layout_width="match_parent"
-    android:layout_height="0dp"
-    android:layout_weight="1"-->
-    <cn.bingoogolapple.refreshlayout.BGARefreshLayout
-        android:id="@+id/recyclerview_refresh"
-        style="@style/match_width_match_height"
-        android:background="@color/recyclerView_bg">
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewPager"
+        style="@style/match_width_match_height"/>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recyclerview"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:background="@color/recyclerView_bg"
-            android:scrollbars="vertical" />
-    </cn.bingoogolapple.refreshlayout.BGARefreshLayout>
 </LinearLayout>

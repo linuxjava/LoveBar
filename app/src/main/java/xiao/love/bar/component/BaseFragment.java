@@ -17,7 +17,7 @@ public class BaseFragment extends AbstractFragment{
     //提示对话框和loading工具类
     protected DialogTool mDialogTool;
     //toast工具类
-    protected ToastTool mToastTool;
+    public ToastTool mToastTool;
     //图片加载工具类
     protected ImageLoadTool mImageLoadTool;
     //http工具类
@@ -28,6 +28,7 @@ public class BaseFragment extends AbstractFragment{
         super.onCreate(savedInstanceState);
 
         initComponent();
+
     }
 
     private void initComponent(){
