@@ -25,7 +25,6 @@ public abstract class BaseFragment <T, P extends BaseFragmentPresenter<T>> exten
         super.onDetach();
     }
 
-    @AfterViews
     void init(){
         if (mPresenter != null) {
             mPresenter.attach(getActivity());
