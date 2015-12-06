@@ -2,7 +2,12 @@ package xiao.love.bar.fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import org.androidannotations.annotations.AfterViews;
 
@@ -16,6 +21,14 @@ public abstract class BaseFragment <T, P extends BaseFragmentPresenter<T>> exten
      * 该页面对应的Presenter
      */
     protected P mPresenter;
+    /**
+     * 布局加载LayoutInflater
+     */
+    protected LayoutInflater mLayoutInflater;
+    /**
+     * 根视图
+     */
+    protected View mRootView;
 
     @Override
     public void onDetach() {
@@ -25,15 +38,24 @@ public abstract class BaseFragment <T, P extends BaseFragmentPresenter<T>> exten
         super.onDetach();
     }
 
-    void init(){
-        if (mPresenter != null) {
-            mPresenter.attach(getActivity());
-        }
+    @Override
+    public final View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                   Bundle savedInstanceState) {
+        mLayoutInflater = inflater;
+        mRootView = mLayoutInflater.inflate(getFragmentLayout(), container, false);
 
         initWidgets();
         initEventHandlers();
         setupOthers();
+        if (mPresenter != null) {
+            mPresenter.attach(getActivity());
+        }
+
+        return mRootView;
     }
+
+
+    protected abstract int getFragmentLayout();
 
     /**
      * 初始化子视图
