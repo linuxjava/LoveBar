@@ -1,6 +1,7 @@
 package xiao.love.bar.adapters;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -10,13 +11,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import xiao.love.bar.adapters.viewholders.BaseViewHolder;
+import xiao.love.bar.adapters.viewholders.XGCViewHolder;
 
 /**
  * Created by xiaoguochang on 2015/12/4.
  * 通用的Adapter，实现了getCount、getItem等方法,以及封装了getView的逻辑
  */
-public abstract class XGCBaseAdapter<T, H extends BaseViewHolder> extends BaseAdapter {
+public abstract class XGCViewAdapter<T, H extends XGCViewHolder> extends BaseAdapter {
     protected Context mContext = null;
     /**
      * 数据
@@ -35,7 +36,7 @@ public abstract class XGCBaseAdapter<T, H extends BaseViewHolder> extends BaseAd
      */
     private XGCOnItemChildCheckedChangeListener mOnItemChildCheckedChangeListener;
 
-    public XGCBaseAdapter(Context context) {
+    public XGCViewAdapter(Context context) {
         this.mContext = context;
     }
 
@@ -58,6 +59,7 @@ public abstract class XGCBaseAdapter<T, H extends BaseViewHolder> extends BaseAd
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
             if(getViewTypeCount() > 1){
+                //不同类型item的处理
                 Map<Integer, H> holders= createViewHolders();
                 int itemViewType = getItemViewType(position);
 

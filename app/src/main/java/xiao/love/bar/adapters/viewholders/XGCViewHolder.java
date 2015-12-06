@@ -23,7 +23,7 @@ import xiao.love.bar.component.resource.ViewFinder;
 /**
  * Created by xiaoguochang on 2015/12/4.
  */
-public abstract class BaseViewHolder implements ViewParser{
+public abstract class XGCViewHolder implements ViewParser{
     protected Context mContext;
     /**
      * 视图查找器
