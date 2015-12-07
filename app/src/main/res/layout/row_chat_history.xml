@@ -63,7 +63,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="7.0dp"
-                    android:layout_toLeftOf="@id/time"
+                    android:layout_toLeftOf="@+id/time"
                     android:ellipsize="end"
                     android:singleLine="true"
                     android:text="asdfasdf"

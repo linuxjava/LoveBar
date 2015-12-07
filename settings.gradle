@@ -1,1 +1,1 @@
-include ':app', ':loadingAlertDialog', ':BGAAdapter'
+include ':app', ':loadingAlertDialog', ':BGAAdapter', ':BGARefreshLayout'
