@@ -23,7 +23,7 @@ import xiao.love.bar.component.resource.ViewFinder;
 /**
  * Created by xiaoguochang on 2015/12/4.
  */
-public abstract class XGCViewHolder implements ViewParser{
+public abstract class XGCViewHolder implements View.OnClickListener, View.OnLongClickListener, CompoundButton.OnCheckedChangeListener{
     protected Context mContext;
     /**
      * 视图查找器
@@ -54,7 +54,6 @@ public abstract class XGCViewHolder implements ViewParser{
      */
     protected int mPosition;
 
-    @Override
     public View inflate(Context context, ViewGroup parent, boolean attachToRoot) {
         mContext = context;
         mParentView = parent;
