@@ -84,7 +84,7 @@
             android:theme="@android:style/Theme.Black.NoTitleBar"/>
         <!-- 收藏和被收藏 -->
         <activity
-            android:name=".im.collect.CollectActivity_"
+            android:name=".activities.impl.CollectActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar"/>
 

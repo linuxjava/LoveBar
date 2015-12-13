@@ -33,7 +33,7 @@ import xiao.love.bar.R;
 import xiao.love.bar.component.BaseFragment;
 import xiao.love.bar.component.util.KeyBoardUtils;
 import xiao.love.bar.im.chat.ChatActivity;
-import xiao.love.bar.im.collect.CollectActivity_;
+import xiao.love.bar.activities.impl.CollectActivity;
 
 /**
  * Created by guochang on 2015/9/24.
@@ -244,7 +244,7 @@ public class ChatHistoryFragment extends BaseFragment implements BGAOnItemChildC
     @Override
     public void onRVItemClick(ViewGroup parent, View itemView, int position) {
         if (position == 0) {//点击收藏
-            startActivity(new Intent(mContext, CollectActivity_.class));
+            startActivity(new Intent(mContext, CollectActivity.class));
             return;
         }
         EMConversation conversation = mAdapter.getItem(position);

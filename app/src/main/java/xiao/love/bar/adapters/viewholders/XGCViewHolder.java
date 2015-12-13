@@ -13,6 +13,7 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import butterknife.ButterKnife;
 import cn.bingoogolapple.androidcommon.adapter.BGAOnItemChildClickListener;
 import cn.bingoogolapple.androidcommon.adapter.BGAOnItemChildLongClickListener;
 import xiao.love.bar.adapters.XGCOnItemChildCheckedChangeListener;
@@ -61,6 +62,9 @@ public abstract class XGCViewHolder implements View.OnClickListener, View.OnLong
         // 设置tag
         mItemView.setTag(this);
         mViewFinder = new ViewFinder(mItemView);
+
+        //绑定视图
+        ButterKnife.bind(this, mItemView);
 
         initWidgets();
 

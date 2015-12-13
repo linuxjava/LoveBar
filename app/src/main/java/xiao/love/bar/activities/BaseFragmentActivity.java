@@ -7,12 +7,14 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
+import butterknife.ButterKnife;
+
 /**
  * Created by xiaoguochang on 2015/12/4.
  * 继承自FragmentActivity的Activity类型
  * Fragment的add、remove、replace、hide、show、detach
  */
-public class BaseFragmentActivity extends FragmentActivity {
+public abstract class BaseFragmentActivity extends FragmentActivity {
     /**
      * Fragment管理器
      */
@@ -30,7 +32,31 @@ public class BaseFragmentActivity extends FragmentActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mFragmentManager = getSupportFragmentManager();
+        setContentView(getLayout());
+
+        //绑定视图
+        ButterKnife.bind(this);
+
+        initWidgets();
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //解绑视图
+        ButterKnife.unbind(this);
+    }
+
+    /**
+     * 视图layout资源
+     * @return
+     */
+    protected abstract int getLayout();
+
+    /**
+     * 初始化视图
+     */
+    protected abstract void initWidgets();
 
     /*
      * [ 不要删除该函数 ],该函数的空实现修复了FragmentActivity中的bug

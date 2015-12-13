@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Checkable;
@@ -12,22 +13,29 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import cn.bingoogolapple.androidcommon.adapter.BGAOnRVItemClickListener;
-import cn.bingoogolapple.androidcommon.adapter.BGAOnRVItemLongClickListener;
+import butterknife.ButterKnife;
+import xiao.love.bar.R;
 import xiao.love.bar.adapters.XGCOnItemChildCheckedChangeListener;
 import xiao.love.bar.adapters.XGCOnItemChildClickListener;
 import xiao.love.bar.adapters.XGCOnItemChildLongClickListener;
+import xiao.love.bar.adapters.XGCOnRVItemClickListener;
+import xiao.love.bar.adapters.XGCOnRVItemLongClickListener;
+import xiao.love.bar.adapters.XGCRecyclerViewAdapter;
 import xiao.love.bar.component.resource.ViewFinder;
 
 /**
  * Created by xiaoguochang on 2015/12/6.
  */
-public abstract class XGCRecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener, CompoundButton.OnCheckedChangeListener{
+public abstract class XGCRecyclerViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnLongClickListener, CompoundButton.OnCheckedChangeListener {
     protected Context mContext;
     /**
      * 视图查找器
      */
     protected ViewFinder mViewFinder;
+    /**
+     * RecyclerViewAdapter
+     */
+    protected XGCRecyclerViewAdapter mAdapter;
     /**
      * ItemView视图的parent
      */
@@ -39,11 +47,11 @@ public abstract class XGCRecyclerViewHolder extends RecyclerView.ViewHolder impl
     /**
      * 整个item的点击监听
      */
-    protected BGAOnRVItemClickListener mOnRVItemClickListener;
+    protected XGCOnRVItemClickListener mOnRVItemClickListener;
     /**
      * 整个item的长按监听
      */
-    protected BGAOnRVItemLongClickListener mOnRVItemLongClickListener;
+    protected XGCOnRVItemLongClickListener mOnRVItemLongClickListener;
     /**
      * view页面activity或fragemnt对Item中子控件的点击回调监听
      */
@@ -56,11 +64,6 @@ public abstract class XGCRecyclerViewHolder extends RecyclerView.ViewHolder impl
      * view页面activity或fragemnt对Item中子控件的选择回调监听
      */
     protected XGCOnItemChildCheckedChangeListener mOnItemChildCheckedChangeListener;
-    /**
-     * 视图类型
-     */
-    public int mViewType = -9999;
-
 
     public XGCRecyclerViewHolder(Context context, ViewGroup parent, View itemView) {
         super(itemView);
@@ -71,25 +74,27 @@ public abstract class XGCRecyclerViewHolder extends RecyclerView.ViewHolder impl
         mItemView.setOnLongClickListener(this);
         mViewFinder = new ViewFinder(mItemView);
 
+        //绑定视图
+        ButterKnife.bind(this, mItemView);
+
         initWidgets();
     }
 
     /**
      * 初始化各个子视图
      */
-    protected void initWidgets() {
-
-    }
+    protected abstract void initWidgets();
 
     public <T extends View> T findViewById(int id) {
         return mViewFinder.findViewById(id);
     }
+
     /**
      * 设置item的点击事件监听器
      *
      * @param onRVItemClickListener
      */
-    public void setOnRVItemClickListener(BGAOnRVItemClickListener onRVItemClickListener) {
+    public void setOnRVItemClickListener(XGCOnRVItemClickListener onRVItemClickListener) {
         mOnRVItemClickListener = onRVItemClickListener;
     }
 
@@ -98,7 +103,7 @@ public abstract class XGCRecyclerViewHolder extends RecyclerView.ViewHolder impl
      *
      * @param onRVItemLongClickListener
      */
-    public void setOnRVItemLongClickListener(BGAOnRVItemLongClickListener onRVItemLongClickListener) {
+    public void setOnRVItemLongClickListener(XGCOnRVItemLongClickListener onRVItemLongClickListener) {
         mOnRVItemLongClickListener = onRVItemLongClickListener;
     }
 
@@ -133,10 +138,10 @@ public abstract class XGCRecyclerViewHolder extends RecyclerView.ViewHolder impl
 
     @Override
     public void onClick(View v) {
-        if(v.getId() == this.itemView.getId() && null != mOnRVItemClickListener){
+        if (v.getId() == this.itemView.getId() && null != mOnRVItemClickListener) {
             //整个item的点击回调
             mOnRVItemClickListener.onRVItemClick(mParentView, v, getAdapterPosition());
-        }else {
+        } else {
             if (mOnItemChildClickListener != null) {
                 mOnItemChildClickListener.onItemChildClick(mParentView, v, getAdapterPosition());
             }
@@ -147,7 +152,7 @@ public abstract class XGCRecyclerViewHolder extends RecyclerView.ViewHolder impl
     public boolean onLongClick(View v) {
         if (v.getId() == this.itemView.getId() && null != mOnRVItemLongClickListener) {
             return mOnRVItemLongClickListener.onRVItemLongClick(mParentView, v, getAdapterPosition());
-        }else {
+        } else {
             if (mOnItemChildLongClickListener != null) {
                 return mOnItemChildLongClickListener.onItemChildLongClick(mParentView, v, getAdapterPosition());
             }

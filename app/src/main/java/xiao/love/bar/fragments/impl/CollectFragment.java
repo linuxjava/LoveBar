@@ -1,48 +1,59 @@
-package xiao.love.bar.im.collect;
+package xiao.love.bar.fragments.impl;
 
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.EFragment;
-import org.androidannotations.annotations.ViewById;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.bingoogolapple.androidcommon.adapter.BGAOnItemChildClickListener;
-import cn.bingoogolapple.androidcommon.adapter.BGAOnRVItemClickListener;
+import butterknife.Bind;
 import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import xiao.love.bar.R;
-import xiao.love.bar.component.BaseFragment;
+import xiao.love.bar.adapters.XGCOnItemChildClickListener;
+import xiao.love.bar.adapters.XGCOnRVItemClickListener;
+import xiao.love.bar.adapters.impl.CollectAdapter;
+import xiao.love.bar.component.util.T;
+import xiao.love.bar.fragments.BaseFragment;
 
 /**
  * Created by xiaoguochang on 2015/12/3.
+ * 收藏和被收藏fragment
  */
-@EFragment(R.layout.collect_fg)
-public class CollectFragment extends BaseFragment implements BGARefreshLayout.BGARefreshLayoutDelegate, BGAOnItemChildClickListener, BGAOnRVItemClickListener {
+public class CollectFragment extends BaseFragment implements BGARefreshLayout.BGARefreshLayoutDelegate, XGCOnRVItemClickListener, XGCOnItemChildClickListener {
     private Context mContext;
-    @ViewById(R.id.recyclerview_refresh)
-    public BGARefreshLayout mRefreshLayout;
-    @ViewById(R.id.recyclerview)
-    public RecyclerView mRecyclerView;
+    @Bind(R.id.recyclerview_refresh)
+    BGARefreshLayout mRefreshLayout;
+    @Bind(R.id.recyclerview)
+    RecyclerView mRecyclerView;
 
     private CollectAdapter mAdapter;
 
-    @AfterViews
-    void init() {
+
+    @Override
+    protected int getLayout() {
+        return R.layout.collect_fg;
+    }
+
+    @Override
+    protected void initWidgets() {
         //构造测试数据
         List<Object> list = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 20; i++) {
             list.add(new Integer(i));
         }
 
         mContext = getActivity();
-        mAdapter = new CollectAdapter(mContext, mRecyclerView);
+//        mAdapter = new CollectAdapter(mContext, mRecyclerView);
+//        mAdapter.setOnItemChildClickListener(this);
+//        mAdapter.setOnRVItemClickListener(this);
+//        mAdapter.setDatas(list);
+
+        mAdapter = new CollectAdapter(mContext);
         mAdapter.setOnItemChildClickListener(this);
         mAdapter.setOnRVItemClickListener(this);
         mAdapter.setDatas(list);
@@ -91,14 +102,17 @@ public class CollectFragment extends BaseFragment implements BGARefreshLayout.BG
     }
 
     @Override
+    public void onRVItemClick(ViewGroup parent, View itemView, int position) {
+        T.showShort(mContext, position + "");
+    }
+
+    @Override
     public void onItemChildClick(ViewGroup parent, View childView, int position) {
+        T.showShort(mContext, position + "");
         if (childView.getId() == R.id.collect_img) {
             mAdapter.removeItem(position);
         }
     }
 
-    @Override
-    public void onRVItemClick(ViewGroup parent, View itemView, int position) {
 
-    }
 }

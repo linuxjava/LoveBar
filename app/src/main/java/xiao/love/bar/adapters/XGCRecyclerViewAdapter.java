@@ -3,35 +3,30 @@ package xiao.love.bar.adapters;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
-import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import cn.bingoogolapple.androidcommon.adapter.BGAOnItemChildClickListener;
-import cn.bingoogolapple.androidcommon.adapter.BGAOnRVItemClickListener;
-import cn.bingoogolapple.androidcommon.adapter.BGAOnRVItemLongClickListener;
-import cn.bingoogolapple.androidcommon.adapter.BGARecyclerViewHolder;
 import xiao.love.bar.adapters.viewholders.XGCRecyclerViewHolder;
 
 /**
  * Created by xiaoguochang on 2015/12/6.
  */
-public abstract class XGCRecyclerViewAdapter<T, H extends XGCRecyclerViewHolder> extends RecyclerView.Adapter<XGCRecyclerViewHolder>{
+public abstract class XGCRecyclerViewAdapter<M, VH extends XGCRecyclerViewHolder> extends RecyclerView.Adapter<VH> {
     protected Context mContext = null;
     /**
      * 数据
      */
-    private List<T> mDatas = new ArrayList<T>();
+    private List<M> mDatas = new ArrayList<M>();
     /**
      * 整个item的点击监听
      */
-    protected BGAOnRVItemClickListener mOnRVItemClickListener;
+    protected XGCOnRVItemClickListener mOnRVItemClickListener;
     /**
      * 整个item的长按监听
      */
-    protected BGAOnRVItemLongClickListener mOnRVItemLongClickListener;
+    protected XGCOnRVItemLongClickListener mOnRVItemLongClickListener;
     /**
      * view页面activity或fragemnt对Item中子控件的点击回调监听
      */
@@ -60,11 +55,10 @@ public abstract class XGCRecyclerViewAdapter<T, H extends XGCRecyclerViewHolder>
     }
 
     @Override
-    public XGCRecyclerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Map<Integer, H> holders = createViewHolders(mContext, parent, viewType);
-
-        H holder = holders.get(viewType);
-        holder.mViewType = viewType;
+    public VH onCreateViewHolder(ViewGroup parent, int viewType) {
+//        Map<Integer, VH> holders = createViewHolders(mContext, parent, viewType);
+//        VH holder = holders.get(viewType);
+        VH holder = createViewHolder(mContext, parent, viewType);
         //设置监听回调
         holder.setOnRVItemClickListener(mOnRVItemClickListener);
         holder.setOnRVItemLongClickListener(mOnRVItemLongClickListener);
@@ -78,7 +72,7 @@ public abstract class XGCRecyclerViewAdapter<T, H extends XGCRecyclerViewHolder>
     }
 
     @Override
-    public void onBindViewHolder(XGCRecyclerViewHolder holder, int position) {
+    public void onBindViewHolder(VH holder, int position) {
         //设置item数据
         setItemData(position, holder, getItem(position));
     }
@@ -86,9 +80,18 @@ public abstract class XGCRecyclerViewAdapter<T, H extends XGCRecyclerViewHolder>
     /**
      * 创建ViewHolder(viewItem视图类型不相同)
      * 包含不同类型视图时，需要为每一个视图构造一个ViewHolder
-     * @return Integer:视图的类型；H：每个视图所对应的ViewHolder
+     *
+     * @return Integer:视图的类型；VH：每个视图所对应的ViewHolder
      */
-    protected abstract Map<Integer, H> createViewHolders(Context context, ViewGroup parent, int viewType);
+    //protected abstract Map<Integer, VH> createViewHolders(Context context, ViewGroup parent, int viewType);
+
+    /**
+     * 创建ViewHolder(viewItem视图类型相同)
+     * 包含不同类型视图时，需要为每一个视图构造一个ViewHolder
+     *
+     * @return Integer:视图的类型；VH：每个视图所对应的ViewHolder
+     */
+    protected abstract VH createViewHolder(Context context, ViewGroup parent, int viewType);
 
     /**
      * 为item的孩子节点设置监听器，并不是每一个数据列表都要为item的子控件添加事件监听器，
@@ -96,16 +99,16 @@ public abstract class XGCRecyclerViewAdapter<T, H extends XGCRecyclerViewHolder>
      *
      * @param holder
      */
-    protected abstract void setItemChildListener(XGCRecyclerViewHolder holder);
+    protected abstract void setItemChildListener(VH holder);
 
     /**
      * 设置每项数据到View上
      *
      * @param position Item索引
-     * @param holder ViewHolder
-     * @param model 数据实体
+     * @param holder   ViewHolder
+     * @param model    数据实体
      */
-    protected abstract void setItemData(int position, XGCRecyclerViewHolder holder, T model);
+    protected abstract void setItemData(int position, VH holder, M model);
 
 
     /**
@@ -113,7 +116,7 @@ public abstract class XGCRecyclerViewAdapter<T, H extends XGCRecyclerViewHolder>
      *
      * @param onRVItemClickListener
      */
-    public void setOnRVItemClickListener(BGAOnRVItemClickListener onRVItemClickListener) {
+    public void setOnRVItemClickListener(XGCOnRVItemClickListener onRVItemClickListener) {
         mOnRVItemClickListener = onRVItemClickListener;
     }
 
@@ -122,7 +125,7 @@ public abstract class XGCRecyclerViewAdapter<T, H extends XGCRecyclerViewHolder>
      *
      * @param onRVItemLongClickListener
      */
-    public void setOnRVItemLongClickListener(BGAOnRVItemLongClickListener onRVItemLongClickListener) {
+    public void setOnRVItemLongClickListener(XGCOnRVItemLongClickListener onRVItemLongClickListener) {
         mOnRVItemLongClickListener = onRVItemLongClickListener;
     }
 
@@ -156,7 +159,7 @@ public abstract class XGCRecyclerViewAdapter<T, H extends XGCRecyclerViewHolder>
         mOnItemChildCheckedChangeListener = onItemChildCheckedChangeListener;
     }
 
-    public T getItem(int position) {
+    public M getItem(int position) {
         return mDatas.get(position);
     }
 
@@ -165,7 +168,7 @@ public abstract class XGCRecyclerViewAdapter<T, H extends XGCRecyclerViewHolder>
      *
      * @return
      */
-    public List<T> getDatas() {
+    public List<M> getDatas() {
         return mDatas;
     }
 
@@ -174,7 +177,7 @@ public abstract class XGCRecyclerViewAdapter<T, H extends XGCRecyclerViewHolder>
      *
      * @param datas
      */
-    public void addNewDatas(List<T> datas) {
+    public void addNewDatas(List<M> datas) {
         if (datas != null) {
             mDatas.addAll(0, datas);
             notifyItemRangeInserted(0, datas.size());
@@ -186,7 +189,7 @@ public abstract class XGCRecyclerViewAdapter<T, H extends XGCRecyclerViewHolder>
      *
      * @param datas
      */
-    public void addMoreDatas(List<T> datas) {
+    public void addMoreDatas(List<M> datas) {
         if (datas != null) {
             mDatas.addAll(mDatas.size(), datas);
             notifyItemRangeInserted(mDatas.size(), datas.size());
@@ -198,7 +201,7 @@ public abstract class XGCRecyclerViewAdapter<T, H extends XGCRecyclerViewHolder>
      *
      * @param datas
      */
-    public void setDatas(List<T> datas) {
+    public void setDatas(List<M> datas) {
         if (datas != null) {
             mDatas = datas;
         } else {
@@ -230,7 +233,7 @@ public abstract class XGCRecyclerViewAdapter<T, H extends XGCRecyclerViewHolder>
      *
      * @param model
      */
-    public void removeItem(T model) {
+    public void removeItem(M model) {
         removeItem(mDatas.indexOf(model));
     }
 
@@ -240,7 +243,7 @@ public abstract class XGCRecyclerViewAdapter<T, H extends XGCRecyclerViewHolder>
      * @param position
      * @param model
      */
-    public void addItem(int position, T model) {
+    public void addItem(int position, M model) {
         mDatas.add(position, model);
         notifyItemInserted(position);
     }
@@ -250,7 +253,7 @@ public abstract class XGCRecyclerViewAdapter<T, H extends XGCRecyclerViewHolder>
      *
      * @param model
      */
-    public void addFirstItem(T model) {
+    public void addFirstItem(M model) {
         addItem(0, model);
     }
 
@@ -259,7 +262,7 @@ public abstract class XGCRecyclerViewAdapter<T, H extends XGCRecyclerViewHolder>
      *
      * @param model
      */
-    public void addLastItem(T model) {
+    public void addLastItem(M model) {
         addItem(mDatas.size(), model);
     }
 
@@ -269,7 +272,7 @@ public abstract class XGCRecyclerViewAdapter<T, H extends XGCRecyclerViewHolder>
      * @param location
      * @param newModel
      */
-    public void setItem(int location, T newModel) {
+    public void setItem(int location, M newModel) {
         mDatas.set(location, newModel);
         notifyItemChanged(location);
     }
@@ -280,7 +283,7 @@ public abstract class XGCRecyclerViewAdapter<T, H extends XGCRecyclerViewHolder>
      * @param oldModel
      * @param newModel
      */
-    public void setItem(T oldModel, T newModel) {
+    public void setItem(M oldModel, M newModel) {
         setItem(mDatas.indexOf(oldModel), newModel);
     }
 
