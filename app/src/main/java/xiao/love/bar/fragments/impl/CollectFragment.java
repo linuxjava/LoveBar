@@ -19,6 +19,7 @@ import xiao.love.bar.adapters.XGCOnRVItemClickListener;
 import xiao.love.bar.adapters.XGCOnRVItemLongClickListener;
 import xiao.love.bar.adapters.impl.CollectAdapter;
 import xiao.love.bar.component.util.T;
+import xiao.love.bar.entity.TestData;
 import xiao.love.bar.fragments.BaseFragment;
 import xiao.love.bar.presenter.BaseFragmentPresenter;
 
@@ -45,9 +46,10 @@ public class CollectFragment extends BaseFragment implements BGARefreshLayout.BG
     @Override
     protected void initWidgets() {
         //构造测试数据
-        List<Object> list = new ArrayList<>();
+        List<TestData> list = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
-            list.add(new Integer(i));
+            TestData data = new TestData(i, i + "");
+            list.add(data);
         }
 
         mContext = getActivity();
