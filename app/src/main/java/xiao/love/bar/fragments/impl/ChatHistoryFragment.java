@@ -1,4 +1,4 @@
-package xiao.love.bar.im.history;
+package xiao.love.bar.fragments.impl;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -15,51 +15,60 @@ import android.widget.TextView;
 import com.easemob.chat.EMChatManager;
 import com.easemob.chat.EMConversation;
 
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.EFragment;
-import org.androidannotations.annotations.ViewById;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Hashtable;
 import java.util.List;
 
-import cn.bingoogolapple.androidcommon.adapter.BGAOnItemChildClickListener;
-import cn.bingoogolapple.androidcommon.adapter.BGAOnRVItemClickListener;
+import butterknife.Bind;
 import cn.bingoogolapple.refreshlayout.BGANormalRefreshViewHolder;
 import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import xiao.love.bar.R;
-import xiao.love.bar.component.BaseFragment;
-import xiao.love.bar.component.util.KeyBoardUtils;
-import xiao.love.bar.im.chat.ChatActivity;
 import xiao.love.bar.activities.impl.CollectActivity;
+import xiao.love.bar.adapters.XGCOnItemChildClickListener;
+import xiao.love.bar.adapters.XGCOnRVItemClickListener;
+import xiao.love.bar.adapters.impl.ChatAllHistoryAdapter;
+import xiao.love.bar.component.util.KeyBoardUtils;
+import xiao.love.bar.fragments.BaseFragment;
+import xiao.love.bar.im.chat.ChatActivity;
+import xiao.love.bar.presenter.BaseFragmentPresenter;
 
 /**
  * Created by guochang on 2015/9/24.
  */
-@EFragment(R.layout.fragment_conversation_history)
-public class ChatHistoryFragment extends BaseFragment implements BGAOnItemChildClickListener, BGARefreshLayout.BGARefreshLayoutDelegate, BGAOnRVItemClickListener {
-    @ViewById(R.id.recyclerview_refresh)
-    public BGARefreshLayout mRefreshLayout;
-    @ViewById(R.id.recyclerview)
-    public RecyclerView mRecyclerView;
-    @ViewById(R.id.error_item_rl)
-    public RelativeLayout mErrorItem;
-    @ViewById(R.id.tv_connect_errormsg)
-    public TextView mErrorText;
+public class ChatHistoryFragment extends BaseFragment implements BGARefreshLayout.BGARefreshLayoutDelegate,
+        XGCOnItemChildClickListener, XGCOnRVItemClickListener {
+    @Bind(R.id.recyclerview_refresh)
+    BGARefreshLayout mRefreshLayout;
+    @Bind(R.id.recyclerview)
+    RecyclerView mRecyclerView;
+    @Bind(R.id.error_item_rl)
+    RelativeLayout mErrorItem;
+    @Bind(R.id.tv_connect_errormsg)
+    TextView mErrorText;
 
     private Activity mContext;
     private List<EMConversation> mConversationList;
     private ChatAllHistoryAdapter mAdapter;
 
-    @AfterViews
-    void init() {
+
+    public TextView getErrorText() {
+        return mErrorText;
+    }
+
+    @Override
+    protected int getLayout() {
+        return R.layout.fragment_conversation_history;
+    }
+
+    @Override
+    protected void initWidgets() {
         mContext = getActivity();
         mConversationList = new ArrayList<EMConversation>();
         mConversationList.addAll(loadConversationsWithRecentChat());
 
-        mAdapter = new ChatAllHistoryAdapter(getActivity(), mRecyclerView);
+        mAdapter = new ChatAllHistoryAdapter(getActivity());
         mAdapter.setOnItemChildClickListener(this);
         mAdapter.setOnRVItemClickListener(this);
         mAdapter.setDatas(mConversationList);
@@ -81,6 +90,11 @@ public class ChatHistoryFragment extends BaseFragment implements BGAOnItemChildC
                 return false;
             }
         });
+    }
+
+    @Override
+    protected BaseFragmentPresenter createPresenter() {
+        return null;
     }
 
     /**
@@ -217,24 +231,6 @@ public class ChatHistoryFragment extends BaseFragment implements BGAOnItemChildC
     }
 
     /**
-     * 加载更多
-     *
-     * @param bgaRefreshLayout
-     * @return
-     */
-    @Override
-    public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout bgaRefreshLayout) {
-        new android.os.Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                mRefreshLayout.endLoadingMore();
-            }
-        }, 1000);
-
-        return true;
-    }
-
-    /**
      * recyclerview item点击
      *
      * @param parent
@@ -254,4 +250,24 @@ public class ChatHistoryFragment extends BaseFragment implements BGAOnItemChildC
         intent.putExtra("userId", username);
         startActivity(intent);
     }
+
+    /**
+     * 加载更多
+     *
+     * @param bgaRefreshLayout
+     * @return
+     */
+    @Override
+    public boolean onBGARefreshLayoutBeginLoadingMore(BGARefreshLayout bgaRefreshLayout) {
+        new android.os.Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mRefreshLayout.endLoadingMore();
+            }
+        }, 1000);
+
+        return true;
+    }
+
+
 }

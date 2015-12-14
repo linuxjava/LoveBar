@@ -73,7 +73,5 @@ public abstract class BaseFragment <T, P extends BaseFragmentPresenter<T>> exten
      *
      * @return
      */
-    protected P createPresenter() {
-        return null;
-    }
+    protected abstract P createPresenter();
 }

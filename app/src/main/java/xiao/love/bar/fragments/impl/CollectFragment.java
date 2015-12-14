@@ -16,15 +16,18 @@ import cn.bingoogolapple.refreshlayout.BGARefreshLayout;
 import xiao.love.bar.R;
 import xiao.love.bar.adapters.XGCOnItemChildClickListener;
 import xiao.love.bar.adapters.XGCOnRVItemClickListener;
+import xiao.love.bar.adapters.XGCOnRVItemLongClickListener;
 import xiao.love.bar.adapters.impl.CollectAdapter;
 import xiao.love.bar.component.util.T;
 import xiao.love.bar.fragments.BaseFragment;
+import xiao.love.bar.presenter.BaseFragmentPresenter;
 
 /**
  * Created by xiaoguochang on 2015/12/3.
  * 收藏和被收藏fragment
  */
-public class CollectFragment extends BaseFragment implements BGARefreshLayout.BGARefreshLayoutDelegate, XGCOnRVItemClickListener, XGCOnItemChildClickListener {
+public class CollectFragment extends BaseFragment implements BGARefreshLayout.BGARefreshLayoutDelegate,
+        XGCOnRVItemClickListener, XGCOnRVItemLongClickListener, XGCOnItemChildClickListener {
     private Context mContext;
     @Bind(R.id.recyclerview_refresh)
     BGARefreshLayout mRefreshLayout;
@@ -48,14 +51,11 @@ public class CollectFragment extends BaseFragment implements BGARefreshLayout.BG
         }
 
         mContext = getActivity();
-//        mAdapter = new CollectAdapter(mContext, mRecyclerView);
-//        mAdapter.setOnItemChildClickListener(this);
-//        mAdapter.setOnRVItemClickListener(this);
-//        mAdapter.setDatas(list);
 
         mAdapter = new CollectAdapter(mContext);
         mAdapter.setOnItemChildClickListener(this);
         mAdapter.setOnRVItemClickListener(this);
+        mAdapter.setOnRVItemLongClickListener(this);
         mAdapter.setDatas(list);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(mContext);
@@ -66,6 +66,11 @@ public class CollectFragment extends BaseFragment implements BGARefreshLayout.BG
         BGANormalRefreshViewHolder viewHolder = new BGANormalRefreshViewHolder(mContext, false);
         mRefreshLayout.setRefreshViewHolder(viewHolder);
         mRefreshLayout.setDelegate(this);
+    }
+
+    @Override
+    protected BaseFragmentPresenter createPresenter() {
+        return null;
     }
 
     /**
@@ -115,4 +120,9 @@ public class CollectFragment extends BaseFragment implements BGARefreshLayout.BG
     }
 
 
+    @Override
+    public boolean onRVItemLongClick(ViewGroup parent, View itemView, int position) {
+        T.showShort(mContext, position + "");
+        return true;
+    }
 }

@@ -1,4 +1,4 @@
-package xiao.love.bar.im.history;
+package xiao.love.bar.fragments.impl;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

@@ -4,18 +4,15 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.androidannotations.annotations.Click;
-
-import xiao.love.bar.R;
+import xiao.love.bar.adapters.XGCRecyclerViewAdapter;
 import xiao.love.bar.adapters.impl.CollectAdapter;
 import xiao.love.bar.adapters.viewholders.XGCRecyclerViewHolder;
 
 /**
- * Created by xiaoguochang on 2015/12/7.
+ * Created by xiaoguochang on 2015/12/14.
  */
-public class CollectHolder extends XGCRecyclerViewHolder {
-
-    public CollectHolder(Context context, CollectAdapter adapter, ViewGroup parent, View itemView) {
+public class ChatAllHistoryHolder  extends XGCRecyclerViewHolder {
+    public ChatAllHistoryHolder(Context context, XGCRecyclerViewAdapter adapter, ViewGroup parent, View itemView) {
         super(context, adapter, parent, itemView);
     }
 
@@ -23,6 +20,4 @@ public class CollectHolder extends XGCRecyclerViewHolder {
     protected void initWidgets() {
 
     }
-
-
 }

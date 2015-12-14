@@ -65,11 +65,12 @@ public abstract class XGCRecyclerViewHolder extends RecyclerView.ViewHolder impl
      */
     protected XGCOnItemChildCheckedChangeListener mOnItemChildCheckedChangeListener;
 
-    public XGCRecyclerViewHolder(Context context, ViewGroup parent, View itemView) {
+    public XGCRecyclerViewHolder(Context context, XGCRecyclerViewAdapter adapter, ViewGroup parent, View itemView) {
         super(itemView);
         mContext = context;
         mParentView = parent;
         mItemView = itemView;
+        mAdapter = adapter;
         mItemView.setOnClickListener(this);
         mItemView.setOnLongClickListener(this);
         mViewFinder = new ViewFinder(mItemView);

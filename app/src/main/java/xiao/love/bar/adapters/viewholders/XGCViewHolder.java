@@ -3,7 +3,6 @@ package xiao.love.bar.adapters.viewholders;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.ColorRes;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,8 +13,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import butterknife.ButterKnife;
-import cn.bingoogolapple.androidcommon.adapter.BGAOnItemChildClickListener;
-import cn.bingoogolapple.androidcommon.adapter.BGAOnItemChildLongClickListener;
 import xiao.love.bar.adapters.XGCOnItemChildCheckedChangeListener;
 import xiao.love.bar.adapters.XGCOnItemChildClickListener;
 import xiao.love.bar.adapters.XGCOnItemChildLongClickListener;
@@ -24,7 +21,7 @@ import xiao.love.bar.component.resource.ViewFinder;
 /**
  * Created by xiaoguochang on 2015/12/4.
  */
-public abstract class XGCViewHolder implements View.OnClickListener, View.OnLongClickListener, CompoundButton.OnCheckedChangeListener{
+public abstract class XGCViewHolder implements View.OnClickListener, View.OnLongClickListener, CompoundButton.OnCheckedChangeListener {
     protected Context mContext;
     /**
      * 视图查找器
@@ -217,6 +214,7 @@ public abstract class XGCViewHolder implements View.OnClickListener, View.OnLong
 
     /**
      * 设置对应id的控件的CharSequence
+     *
      * @param viewId
      * @param text
      * @param type
@@ -240,6 +238,7 @@ public abstract class XGCViewHolder implements View.OnClickListener, View.OnLong
 
     /**
      * 设置视图是否可见
+     *
      * @param viewId
      * @param visibility
      */
@@ -260,6 +259,7 @@ public abstract class XGCViewHolder implements View.OnClickListener, View.OnLong
 
     /**
      * 设置ImageView的Bitmap
+     *
      * @param viewId
      * @param bitmap
      */
@@ -270,6 +270,7 @@ public abstract class XGCViewHolder implements View.OnClickListener, View.OnLong
 
     /**
      * 设置ImageView的Drawable
+     *
      * @param viewId
      * @param drawable
      */
@@ -330,6 +331,7 @@ public abstract class XGCViewHolder implements View.OnClickListener, View.OnLong
 
     /**
      * 是否可点击
+     *
      * @param viewId
      * @param b
      */

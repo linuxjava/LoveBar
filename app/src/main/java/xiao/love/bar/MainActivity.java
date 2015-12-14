@@ -2,7 +2,6 @@ package xiao.love.bar;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -21,9 +20,9 @@ import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.ViewById;
 
 import xiao.love.bar.component.BaseActivity;
-import xiao.love.bar.im.history.ChatHistoryFragment_;
-import xiao.love.bar.im.history.ContactFragment_;
-import xiao.love.bar.im.history.Test2Fragment;
+import xiao.love.bar.fragments.impl.ChatHistoryFragment;
+import xiao.love.bar.fragments.impl.ContactFragment;
+import xiao.love.bar.fragments.impl.Test2Fragment;
 import xiao.love.bar.im.hxlib.IMHelper;
 
 @EActivity(R.layout.activity_main)
@@ -36,7 +35,7 @@ public class MainActivity extends BaseActivity implements EMEventListener {
     TextView mUnreadContactLable;
 
     private Fragment[] mFragments;
-    private ChatHistoryFragment_ mChatHistoryFragment;
+    private ChatHistoryFragment mChatHistoryFragment;
     private Button[] mTabs;
     // 当前fragment的index
     private int mCurrentTabIndex;
@@ -47,7 +46,7 @@ public class MainActivity extends BaseActivity implements EMEventListener {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    mChatHistoryFragment.mErrorItem.setVisibility(View.GONE);
+                    mChatHistoryFragment.getErrorText().setVisibility(View.GONE);
                 }
             });
         }
@@ -65,11 +64,11 @@ public class MainActivity extends BaseActivity implements EMEventListener {
                     } else if (error == EMError.CONNECTION_CONFLICT) {
                         // 显示帐号在其他设备登陆dialog
                     } else {
-                        mChatHistoryFragment.mErrorItem.setVisibility(View.VISIBLE);
+                        mChatHistoryFragment.getErrorText().setVisibility(View.VISIBLE);
                         if (NetUtils.hasNetwork(MainActivity.this))
-                            mChatHistoryFragment.mErrorText.setText(st1);
+                            mChatHistoryFragment.getErrorText().setText(st1);
                         else
-                            mChatHistoryFragment.mErrorText.setText(st2);
+                            mChatHistoryFragment.getErrorText().setText(st2);
                     }
                 }
             });
@@ -125,8 +124,8 @@ public class MainActivity extends BaseActivity implements EMEventListener {
 
         EMChatManager.getInstance().addConnectionListener(mConnectionListener);
 
-        mChatHistoryFragment = new ChatHistoryFragment_();
-        mFragments = new Fragment[] {mChatHistoryFragment, new ContactFragment_(), new Test2Fragment() };
+        mChatHistoryFragment = new ChatHistoryFragment();
+        mFragments = new Fragment[] {mChatHistoryFragment, new ContactFragment(), new Test2Fragment() };
         // 添加显示第一个fragment
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.fragment_container, mFragments[0])
