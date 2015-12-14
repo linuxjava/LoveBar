@@ -4,9 +4,6 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 
-import org.androidannotations.annotations.Click;
-
-import xiao.love.bar.R;
 import xiao.love.bar.adapters.impl.CollectAdapter;
 import xiao.love.bar.adapters.viewholders.XGCRecyclerViewHolder;
 

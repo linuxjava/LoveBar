@@ -1,15 +1,10 @@
 package xiao.love.bar.fragments;
 
-import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import org.androidannotations.annotations.AfterViews;
 
 import butterknife.ButterKnife;
 import xiao.love.bar.presenter.BaseFragmentPresenter;
@@ -17,7 +12,7 @@ import xiao.love.bar.presenter.BaseFragmentPresenter;
 /**
  * Created by xiaoguochang on 2015/12/3.
  */
-public abstract class BaseFragment <T, P extends BaseFragmentPresenter<T>> extends Fragment {
+public abstract class BaseFragment<T, P extends BaseFragmentPresenter<T>> extends Fragment {
     /**
      * 该页面对应的Presenter
      */
@@ -59,6 +54,7 @@ public abstract class BaseFragment <T, P extends BaseFragmentPresenter<T>> exten
 
     /**
      * 视图layout资源
+     *
      * @return
      */
     protected abstract int getLayout();

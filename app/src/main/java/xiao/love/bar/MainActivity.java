@@ -15,23 +15,20 @@ import com.easemob.chat.EMConversation;
 import com.easemob.chat.EMMessage;
 import com.easemob.util.NetUtils;
 
-import org.androidannotations.annotations.AfterViews;
-import org.androidannotations.annotations.EActivity;
-import org.androidannotations.annotations.ViewById;
-
+import butterknife.Bind;
+import xiao.love.bar.activities.BaseFragmentActivity;
 import xiao.love.bar.component.BaseActivity;
 import xiao.love.bar.fragments.impl.ChatHistoryFragment;
 import xiao.love.bar.fragments.impl.ContactFragment;
 import xiao.love.bar.fragments.impl.Test2Fragment;
 import xiao.love.bar.im.hxlib.IMHelper;
 
-@EActivity(R.layout.activity_main)
-public class MainActivity extends BaseActivity implements EMEventListener {
+public class MainActivity extends BaseFragmentActivity implements EMEventListener {
     // 未读消息textview
-    @ViewById(R.id.unread_msg_number_tv)
+    @Bind(R.id.unread_msg_number_tv)
     TextView mUnreadLabel;
     // 未读通讯录textview
-    @ViewById(R.id.unread_contact_number_tv)
+    @Bind(R.id.unread_contact_number_tv)
     TextView mUnreadContactLable;
 
     private Fragment[] mFragments;
@@ -110,11 +107,13 @@ public class MainActivity extends BaseActivity implements EMEventListener {
         EMChatManager.getInstance().removeConnectionListener(mConnectionListener);
     }
 
-    /**
-     * 初始化组件
-     */
-    @AfterViews
-    void init() {
+    @Override
+    protected int getLayout() {
+        return R.layout.activity_main;
+    }
+
+    @Override
+    protected void initWidgets() {
         mTabs = new Button[3];
         mTabs[0] = (Button) findViewById(R.id.conversation_btn);
         mTabs[1] = (Button) findViewById(R.id.contact_btn);

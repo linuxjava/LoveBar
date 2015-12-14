@@ -41,17 +41,17 @@ dependencies {
 }
 
 /*********************android注解配置***************************/
-apply plugin: 'android-apt'
-
-dependencies {
-    def AAVersion = '3.3.2'
-    apt "org.androidannotations:androidannotations:$AAVersion"
-    compile "org.androidannotations:androidannotations-api:$AAVersion"
-}
-
-apt {
-    arguments {
-        androidManifestFile variant.outputs[0].processResources.manifestFile
-        resourcePackageName 'xiao.love.bar'
-    }
-}
+//apply plugin: 'android-apt'
+//
+//dependencies {
+//    def AAVersion = '3.3.2'
+//    apt "org.androidannotations:androidannotations:$AAVersion"
+//    compile "org.androidannotations:androidannotations-api:$AAVersion"
+//}
+//
+//apt {
+//    arguments {
+//        androidManifestFile variant.outputs[0].processResources.manifestFile
+//        resourcePackageName 'xiao.love.bar'
+//    }
+//}
