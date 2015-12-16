@@ -9,8 +9,8 @@ import xiao.love.bar.im.hxlib.IMHelper;
 /**
  * Created by guochang on 2015/8/9.
  */
-public class LoveBarApp extends Application{
-    public static LoveBarApp sAppInstance;
+public class LoveApp extends Application{
+    public static LoveApp sAppInstance;
 
     @Override
     public void onCreate() {

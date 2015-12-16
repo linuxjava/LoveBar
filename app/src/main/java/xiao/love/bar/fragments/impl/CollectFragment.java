@@ -29,7 +29,6 @@ import xiao.love.bar.presenter.BaseFragmentPresenter;
  */
 public class CollectFragment extends BaseFragment implements BGARefreshLayout.BGARefreshLayoutDelegate,
         XGCOnRVItemClickListener, XGCOnRVItemLongClickListener, XGCOnItemChildClickListener {
-    private Context mContext;
     @Bind(R.id.recyclerview_refresh)
     BGARefreshLayout mRefreshLayout;
     @Bind(R.id.recyclerview)
@@ -51,8 +50,6 @@ public class CollectFragment extends BaseFragment implements BGARefreshLayout.BG
             TestData data = new TestData(i, i + "");
             list.add(data);
         }
-
-        mContext = getActivity();
 
         mAdapter = new CollectAdapter(mContext);
         mAdapter.setOnItemChildClickListener(this);

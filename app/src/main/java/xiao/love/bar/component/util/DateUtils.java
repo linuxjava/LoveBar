@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 
-import xiao.love.bar.LoveBarApp;
+import xiao.love.bar.LoveApp;
 
 /**
  * Created by guochang on 2015/3/7.
@@ -68,7 +68,7 @@ public class DateUtils {
     }
 
     public static String getTimestampString(Date messageDate) {
-        Locale curLocale = LoveBarApp.sAppInstance.getResources().getConfiguration().locale;
+        Locale curLocale = LoveApp.sAppInstance.getResources().getConfiguration().locale;
 
         String languageCode = curLocale.getLanguage();
 

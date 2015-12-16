@@ -1,5 +1,7 @@
 package xiao.love.bar.fragments;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -13,6 +15,7 @@ import xiao.love.bar.presenter.BaseFragmentPresenter;
  * Created by xiaoguochang on 2015/12/3.
  */
 public abstract class BaseFragment<T, P extends BaseFragmentPresenter<T>> extends Fragment {
+    protected Activity mContext;
     /**
      * 该页面对应的Presenter
      */
@@ -42,11 +45,12 @@ public abstract class BaseFragment<T, P extends BaseFragmentPresenter<T>> extend
         mLayoutInflater = inflater;
         mRootView = mLayoutInflater.inflate(getLayout(), container, false);
 
+        mContext = getActivity();
         //绑定视图
         ButterKnife.bind(this, mRootView);
         initWidgets();
         if (mPresenter != null) {
-            mPresenter.attach(getActivity());
+            mPresenter.attach(mContext);
         }
 
         return mRootView;

@@ -1,4 +1,4 @@
-package xiao.love.bar;
+package xiao.love.bar.activities.impl;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -16,11 +16,14 @@ import com.easemob.chat.EMMessage;
 import com.easemob.util.NetUtils;
 
 import butterknife.Bind;
+import butterknife.OnClick;
+import xiao.love.bar.R;
 import xiao.love.bar.activities.BaseFragmentActivity;
-import xiao.love.bar.component.BaseActivity;
+import xiao.love.bar.component.resource.ResTool;
 import xiao.love.bar.fragments.impl.ChatHistoryFragment;
 import xiao.love.bar.fragments.impl.ContactFragment;
-import xiao.love.bar.fragments.impl.Test2Fragment;
+import xiao.love.bar.fragments.impl.HomeFragment;
+import xiao.love.bar.fragments.impl.MyFragment;
 import xiao.love.bar.im.hxlib.IMHelper;
 
 public class MainActivity extends BaseFragmentActivity implements EMEventListener {
@@ -30,12 +33,16 @@ public class MainActivity extends BaseFragmentActivity implements EMEventListene
     // 未读通讯录textview
     @Bind(R.id.unread_contact_number_tv)
     TextView mUnreadContactLable;
-
+    @Bind({R.id.home_btn, R.id.contact_btn, R.id.conversation_btn, R.id.my_btn})
+    Button[] mTabs;
+    //所有Fragment页面
     private Fragment[] mFragments;
+    // 历史聊天页面的index
+    private int mChatHistoryTabIndex = 2;
+    //历史聊天页面
     private ChatHistoryFragment mChatHistoryFragment;
-    private Button[] mTabs;
     // 当前fragment的index
-    private int mCurrentTabIndex;
+    private int mCurrentTabIndex = 0;
     //IM连接监听
     private EMConnectionListener mConnectionListener = new EMConnectionListener() {
         @Override
@@ -43,16 +50,16 @@ public class MainActivity extends BaseFragmentActivity implements EMEventListene
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    mChatHistoryFragment.getErrorText().setVisibility(View.GONE);
+                    if(mCurrentTabIndex == mChatHistoryTabIndex) {
+                        //tab显示历史聊天页面时，才显示信息提示
+                        mChatHistoryFragment.getErrorText().setVisibility(View.GONE);
+                    }
                 }
             });
         }
 
         @Override
         public void onDisconnected(final int error) {
-            final String st1 = getResources().getString(R.string.can_not_connect_chat_server_connection);
-            final String st2 = getResources().getString(R.string.the_current_network);
-
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -61,16 +68,17 @@ public class MainActivity extends BaseFragmentActivity implements EMEventListene
                     } else if (error == EMError.CONNECTION_CONFLICT) {
                         // 显示帐号在其他设备登陆dialog
                     } else {
-                        mChatHistoryFragment.getErrorText().setVisibility(View.VISIBLE);
-                        if (NetUtils.hasNetwork(MainActivity.this))
-                            mChatHistoryFragment.getErrorText().setText(st1);
-                        else
-                            mChatHistoryFragment.getErrorText().setText(st2);
+                        if(mCurrentTabIndex == 2) {
+                            //tab显示历史聊天页面时，才显示信息提示
+                            mChatHistoryFragment.getErrorText().setVisibility(View.VISIBLE);
+                            if (NetUtils.hasNetwork(MainActivity.this))
+                                mChatHistoryFragment.getErrorText().setText(ResTool.getString(mContext, R.string.can_not_connect_chat_server_connection));
+                            else
+                                mChatHistoryFragment.getErrorText().setText(ResTool.getString(mContext, R.string.the_current_network));
+                        }
                     }
                 }
             });
-
-
         }
     };
 
@@ -114,49 +122,40 @@ public class MainActivity extends BaseFragmentActivity implements EMEventListene
 
     @Override
     protected void initWidgets() {
-        mTabs = new Button[3];
-        mTabs[0] = (Button) findViewById(R.id.conversation_btn);
-        mTabs[1] = (Button) findViewById(R.id.contact_btn);
-        mTabs[2] = (Button) findViewById(R.id.setting_btn);
         // 把第一个tab设为选中状态
-        mTabs[0].setSelected(true);
-
-        EMChatManager.getInstance().addConnectionListener(mConnectionListener);
+        mTabs[mCurrentTabIndex].setSelected(true);
 
         mChatHistoryFragment = new ChatHistoryFragment();
-        mFragments = new Fragment[] {mChatHistoryFragment, new ContactFragment(), new Test2Fragment() };
-        // 添加显示第一个fragment
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.fragment_container, mFragments[0])
-                .add(R.id.fragment_container, mFragments[1])
-                .hide(mFragments[1])
-                .show(mFragments[0])
-                .commit();
+        mFragments = new Fragment[] {new HomeFragment(), new ContactFragment(), mChatHistoryFragment, new MyFragment() };
+        //设置fragment的容器
+        setFragmentContainerId(R.id.fragment_container);
+        // 添加并显示首页fragment
+        addFragment(mFragments[0]);
+        //添加IM连接状态监听
+        EMChatManager.getInstance().addConnectionListener(mConnectionListener);
     }
 
-    public void onTabClicked(View v) {
+    @OnClick({R.id.home_btn, R.id.contact_btn, R.id.conversation_btn, R.id.my_btn})
+    public void onTabClick(View v) {
         int index = 0;
         switch (v.getId()) {
-            case R.id.conversation_btn:
+            case R.id.home_btn:
                 index = 0;
                 break;
             case R.id.contact_btn:
                 index = 1;
                 break;
-            case R.id.setting_btn:
+            case R.id.conversation_btn:
                 index = 2;
+                break;
+            case R.id.my_btn:
+                index = 3;
                 break;
         }
 
-        if (mCurrentTabIndex == index) {
-
-        } else {
-            FragmentTransaction trx = getSupportFragmentManager().beginTransaction();
-            trx.hide(mFragments[mCurrentTabIndex]);
-            if (!mFragments[index].isAdded()) {
-                trx.add(R.id.fragment_container, mFragments[index]);
-            }
-            trx.show(mFragments[index]).commit();
+        if (mCurrentTabIndex != index) {
+            // 添加并显示fragment
+            showFragment(mFragments[index]);
 
             mTabs[mCurrentTabIndex].setSelected(false);
             // 把当前tab设为选中状态
@@ -194,7 +193,7 @@ public class MainActivity extends BaseFragmentActivity implements EMEventListene
             public void run() {
                 // 刷新bottom bar消息未读数
                 updateUnreadLabel();
-                if (mCurrentTabIndex == 0) {
+                if (mCurrentTabIndex == mChatHistoryTabIndex) {
                     // 当前页面如果为聊天历史页面，刷新此页面
                     if (mChatHistoryFragment != null) {
                         mChatHistoryFragment.refresh();

@@ -7,10 +7,10 @@ import android.text.TextUtils;
 import java.util.Iterator;
 import java.util.Map;
 
-import xiao.love.bar.LoveBarApp;
+import xiao.love.bar.LoveApp;
 
 public class BaseSp {
-    protected Context mContext = LoveBarApp.sAppInstance;
+    protected Context mContext = LoveApp.sAppInstance;
 
     public void putString(SharedPreferences.Editor editor, String key, String value){
         if(editor == null || TextUtils.isEmpty(key)){

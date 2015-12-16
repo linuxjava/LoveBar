@@ -48,7 +48,6 @@ public class ChatHistoryFragment extends BaseFragment implements BGARefreshLayou
     @Bind(R.id.tv_connect_errormsg)
     TextView mErrorText;
 
-    private Activity mContext;
     private List<EMConversation> mConversationList;
     private ChatAllHistoryAdapter mAdapter;
 
@@ -64,7 +63,6 @@ public class ChatHistoryFragment extends BaseFragment implements BGARefreshLayou
 
     @Override
     protected void initWidgets() {
-        mContext = getActivity();
         mConversationList = new ArrayList<EMConversation>();
         mConversationList.addAll(loadConversationsWithRecentChat());
 

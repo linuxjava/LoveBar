@@ -18,7 +18,7 @@ import com.easemob.util.EasyUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import xiao.love.bar.MainActivity;
+import xiao.love.bar.activities.impl.MainActivity;
 import xiao.love.bar.im.hxlib.controller.HXSDKHelper;
 import xiao.love.bar.im.hxlib.model.DefaultHXSDKModel;
 import xiao.love.bar.im.hxlib.model.HXNotifier;

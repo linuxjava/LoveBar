@@ -1,5 +1,6 @@
 package xiao.love.bar.activities;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,6 +16,7 @@ import butterknife.ButterKnife;
  * Fragment的add、remove、replace、hide、show、detach
  */
 public abstract class BaseFragmentActivity extends FragmentActivity {
+    protected Context mContext;
     /**
      * Fragment管理器
      */
@@ -34,6 +36,7 @@ public abstract class BaseFragmentActivity extends FragmentActivity {
         mFragmentManager = getSupportFragmentManager();
         setContentView(getLayout());
 
+        mContext = this;
         //绑定视图
         ButterKnife.bind(this);
 
@@ -87,24 +90,15 @@ public abstract class BaseFragmentActivity extends FragmentActivity {
 
     /**
      * 添加fragment到mFragmentContainer容器中
-     * @param fragment
+     *
+     * @param fragment 要添加的Fragment
      */
     public void addFragment(Fragment fragment) {
         checkContainer();
-        addFragment(mFragmentContainer, fragment);
-    }
-
-    /**
-     * 添加fragment到container容器中
-     *
-     * @param container 用于放置fragment的布局id
-     * @param fragment 要添加的Fragment
-     */
-    public void addFragment(int container, Fragment fragment) {
         FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
         if (!isFragmentAdded(fragment)) {
             fragmentTransaction
-                    .add(container, fragment,
+                    .add(mFragmentContainer, fragment,
                             fragment.getClass().getName()).commitAllowingStateLoss();
             mCurrentFragment = fragment;
         } else {
@@ -113,23 +107,12 @@ public abstract class BaseFragmentActivity extends FragmentActivity {
     }
 
     /**
-     * mFragmentContainer布局中显示Fragment，并且把上一个隐藏
+     *显示fragment
      *
      * @param fragmentShow
      */
     public void showFragment(Fragment fragmentShow) {
         checkContainer();
-        showFragment(mFragmentContainer, fragmentShow);
-    }
-
-    /**
-     * 将fragmentShow显示在一个新的container上,而不覆盖mFragmentContainer。
-     * 这种情况适用于Fragment中又嵌套Fragment
-     *
-     * @param container
-     * @param fragmentShow
-     */
-    public void showFragment(int container, Fragment fragmentShow) {
         if (mCurrentFragment != fragmentShow) {
             FragmentTransaction transaction = mFragmentManager.beginTransaction();
             if (mCurrentFragment != null) {
@@ -137,9 +120,9 @@ public abstract class BaseFragmentActivity extends FragmentActivity {
                 transaction.hide(mCurrentFragment);
             }
             // 然后再显示传递进来的Fragment
-            if (mFragmentManager.findFragmentByTag(fragmentShow.getClass().getName()) == null) {
+            if (!isFragmentAdded(fragmentShow)) {
                 transaction
-                        .add(container, fragmentShow, fragmentShow.getClass().getName());
+                        .add(mFragmentContainer, fragmentShow, fragmentShow.getClass().getName());
             } else {
                 transaction.show(fragmentShow);
             }
@@ -151,21 +134,13 @@ public abstract class BaseFragmentActivity extends FragmentActivity {
     /**
      * 替换容器mFragmentContainer中的fragment
      * @param fragment
-     */
-    public void replaceFragment(Fragment fragment) {
-        checkContainer();
-        replaceFragment(mFragmentContainer, fragment, false);
-    }
-
-    /**
-     * 替换容器mFragmentContainer中的fragment
-     * @param fragment
      * @param isAddToBackStack
      */
-    public void replaceFragment(int container, Fragment fragment, boolean isAddToBackStack) {
+    public void replaceFragment(Fragment fragment, boolean isAddToBackStack) {
+        checkContainer();
         if (mCurrentFragment != fragment) {
             FragmentTransaction transaction = mFragmentManager.beginTransaction();
-            transaction.replace(container, fragment);
+            transaction.replace(mFragmentContainer, fragment);
             if (isAddToBackStack) {
                 transaction.addToBackStack(null);
             }

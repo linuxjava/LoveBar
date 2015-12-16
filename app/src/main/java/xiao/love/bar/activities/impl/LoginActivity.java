@@ -1,4 +1,4 @@
-package xiao.love.bar;
+package xiao.love.bar.activities.impl;
 
 import android.content.Intent;
 import android.view.View;
@@ -8,6 +8,8 @@ import com.easemob.EMCallBack;
 import com.easemob.chat.EMChatManager;
 
 import butterknife.Bind;
+import butterknife.OnClick;
+import xiao.love.bar.R;
 import xiao.love.bar.activities.BaseFragmentActivity;
 import xiao.love.bar.component.util.L;
 
@@ -31,7 +33,8 @@ public class LoginActivity extends BaseFragmentActivity {
 
     }
 
-    public void onClickLogin(View v) {
+    @OnClick(R.id.login)
+    public void onLogin() {
         String userName = mUserNameEdt.getText().toString().trim();
         String password = mPwdEdt.getText().toString().trim();
         EMChatManager.getInstance().login(userName, password, new EMCallBack() {
