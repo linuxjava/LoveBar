@@ -25,12 +25,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import xiao.love.bar.component.CommonInfo;
+import xiao.love.bar.component.util.AppUtils;
 import xiao.love.bar.memory.db.dao.BlackListDB;
 import xiao.love.bar.memory.db.dao.ContactDB;
 import xiao.love.bar.memory.db.model.BlackList;
 import xiao.love.bar.memory.db.model.Contact;
-import xiao.love.bar.memory.sp.IMSp;
+import xiao.love.bar.memory.sp.impl.IMSp;
 
 /**
  * HuanXin default SDK Model implementation
@@ -133,7 +133,7 @@ public class DefaultHXSDKModel extends HXSDKModel {
 
     @Override
     public String getAppProcessName() {
-        return CommonInfo.getInstance().mAppPackageName;
+        return AppUtils.getPackageName(mContext);
     }
 
     public void setGroupsSynced(boolean synced) {

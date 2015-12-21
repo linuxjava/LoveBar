@@ -12,7 +12,7 @@ import android.view.animation.TranslateAnimation;
 /**
  * Created by guochang on 2015/1/9.
  */
-public class AnimationUtil {
+public class AnimationUtils {
     /**
      * listview item逐个显示动画
      * @return

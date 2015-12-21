@@ -1,4 +1,4 @@
-package xiao.love.bar.memory.sp.base;
+package xiao.love.bar.memory.sp;
 
 import android.content.Context;
 import android.content.SharedPreferences;

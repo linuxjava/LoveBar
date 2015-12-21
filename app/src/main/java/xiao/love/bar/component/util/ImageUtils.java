@@ -3,31 +3,167 @@ package xiao.love.bar.component.util;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.LinearGradient;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.PixelFormat;
 import android.graphics.PorterDuffXfermode;
-import android.graphics.Shader.TileMode;
+import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.util.TypedValue;
 
-public class BitmapUtil {
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+/**
+ * Created by guochang on 2014/7/27.
+ */
+public class ImageUtils {
+
+    /**
+     * 从资源id获得图片的Drawable
+     * @param c
+     * @param id
+     * @return
+     */
+    public static Drawable getDrawableFromResourceId(Context c, int id) {
+        return bitmapToDrawable(getBitmapFromResourceId(c, id));
+    }
+
+    /**
+     * 从资源id获得图片的Bitmap
+     * @param c
+     * @param id
+     * @return
+     */
+    public static Bitmap getBitmapFromResourceId(Context c, int id) {
+        return BitmapFactory.decodeResource(c.getResources(), id);
+    }
+
+    /**
+     * 将Bitmap转化为Drawable
+     * @param bm
+     * @return
+     */
+    public static Drawable bitmapToDrawable(Bitmap bm) {
+        BitmapDrawable bd= new BitmapDrawable(bm);
+        return bd;
+    }
+
+    /**
+     * 将Drawable转化为Bitmap
+     * @param bm
+     * @return
+     */
+    public static Bitmap drawableToBitmap(Drawable bm) {
+        BitmapDrawable bd= (BitmapDrawable) bm;
+        return bd.getBitmap();
+    }
+
+//    /**
+//     * bitmap转字节
+//     * @param bm
+//     * @return
+//     */
+//    public static byte[] Bitmap2Bytes(Bitmap bm){
+//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//        bm.compress(Bitmap.CompressFormat.PNG, 100, baos);
+//        return baos.toByteArray();
+//    }
+
+    /**
+     * 将手机中的文件转换为Bitmap类型
+     * @param path
+     * @return
+     */
+    public static Bitmap getBitmapFromFile(String path) {
+        try {
+            return BitmapFactory.decodeFile(path);
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
+    /**
+     * 读取bitmap中字节数组
+     * @param bitmap
+     * @return
+     */
+    public static byte[] Bitmap2Bytes(Bitmap bitmap){
+        if(bitmap == null)
+            return null;
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+
+        try {
+            out.flush();
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return out.toByteArray();
+    }
+
+    /**
+     * 读取图片文件中字节数组
+     * @param path
+     * @return
+     */
+    public static byte[] getBytesFromFile(String path){
+        Bitmap bitmap = getBitmapFromFile(path);
+        return Bitmap2Bytes(bitmap);
+    }
+
+    // 通过文件头来判断是否gif
+    public static boolean isGifByFile(File file) {
+        try {
+            int length = 10;
+            InputStream is = new FileInputStream(file);
+            byte[] data = new byte[length];
+            is.read(data);
+            String type = getType(data);
+            is.close();
+
+            if (type.equals("gif")) {
+                return true;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    private static String getType(byte[] data) {
+        String type = "";
+        if (data[1] == 'P' && data[2] == 'N' && data[3] == 'G') {
+            type = "png";
+        } else if (data[0] == 'G' && data[1] == 'I' && data[2] == 'F') {
+            type = "gif";
+        } else if (data[6] == 'J' && data[7] == 'F' && data[8] == 'I'
+                && data[9] == 'F') {
+            type = "jpg";
+        }
+        return type;
+    }
+
+    /**
+     * 创建bitmap的倒影
+     * @param c
+     * @param resId
+     * @return
+     */
     public static Bitmap createReflectedBitmapById(Context c, int resId) {
-        //Drawable drawable = c.getResources().getDrawable(resId);
-        //if (drawable instanceof BitmapDrawable) {
-            //Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
         Bitmap bitmap = decodeResource(c.getResources(), resId);
-        Bitmap reflectedBitmap = BitmapUtil.createReflectedBitmap(c, bitmap);
+        Bitmap reflectedBitmap = createReflectedBitmap(c, bitmap);
 
-            return reflectedBitmap;
-        //}
-
-        //return null;
+        return reflectedBitmap;
     }
 
     public static Bitmap decodeResource(Resources resources, int id) {
@@ -37,7 +173,7 @@ public class BitmapUtil {
         int sampleSize = computeSampleSize(opts, -1, (int) (200 * 1024));
         opts.inJustDecodeBounds = false;
         opts.inDither = false;
-        opts.inPreferredConfig = Config.ARGB_8888;
+        opts.inPreferredConfig = Bitmap.Config.ARGB_8888;
         //L.d("sampleSize=" + sampleSize);
         opts.inSampleSize = sampleSize;
         return BitmapFactory.decodeResource(resources, id, opts);
@@ -84,12 +220,18 @@ public class BitmapUtil {
         }
     }
 
+    /**
+     * 创建bitmap的倒影
+     * @param c
+     * @param srcBitmap
+     * @return
+     */
     public static Bitmap createReflectedBitmap(Context c, Bitmap srcBitmap) {
         if (null == srcBitmap) {
             return null;
         }
 
-        // The gap between the reflection bitmap and original bitmap. 
+        // The gap between the reflection bitmap and original bitmap.
         final int REFLECTION_GAP = (int) (15 * c.getResources().getDisplayMetrics().density);
 
         int srcWidth = srcBitmap.getWidth();
@@ -124,7 +266,7 @@ public class BitmapUtil {
             Bitmap bitmapWithReflection = Bitmap.createBitmap(
                     reflectionWidth,
                     srcHeight + reflectionHeight + REFLECTION_GAP,
-                    Config.ARGB_8888);
+                    Bitmap.Config.ARGB_8888);
 
             if (null == bitmapWithReflection) {
                 return null;
@@ -148,7 +290,7 @@ public class BitmapUtil {
                     bitmapWithReflection.getHeight() + REFLECTION_GAP,
                     0x70FFFFFF,
                     0x00FFFFFF,
-                    TileMode.MIRROR);
+                    Shader.TileMode.MIRROR);
             paint.setShader(shader);
             paint.setXfermode(new PorterDuffXfermode(android.graphics.PorterDuff.Mode.DST_IN));
 
@@ -166,53 +308,5 @@ public class BitmapUtil {
         }
 
         return null;
-    }
-
-    /**
-     * Load bitmap file from sd card.
-     *
-     * @param strPath The bitmap file path.
-     * @return The Bitmap object, the returned value may be null.
-     */
-    public static Bitmap drawableToBitmap(Drawable drawable) {
-        if (null == drawable) {
-            return null;
-        }
-
-        int width = drawable.getIntrinsicWidth();
-        int height = drawable.getIntrinsicHeight();
-
-        return drawableToBitmap(drawable, width, height);
-    }
-
-    /**
-     * Load bitmap file from sd card.
-     *
-     * @param strPath The bitmap file path.
-     * @return The Bitmap object, the returned value may be null.
-     */
-    public static Bitmap drawableToBitmap(Drawable drawable, int width, int height) {
-        if (null == drawable || width <= 0 || height <= 0) {
-            return null;
-        }
-
-        Config config = (drawable.getOpacity() != PixelFormat.OPAQUE) ? Config.ARGB_8888 : Config.RGB_565;
-
-        Bitmap bitmap = null;
-
-        try {
-            bitmap = Bitmap.createBitmap(width, height, config);
-            if (null != bitmap) {
-                Canvas canvas = new Canvas(bitmap);
-                drawable.setBounds(0, 0, width, height);
-                drawable.draw(canvas);
-            }
-        } catch (OutOfMemoryError e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return bitmap;
     }
 }

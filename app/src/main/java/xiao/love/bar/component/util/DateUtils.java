@@ -25,6 +25,7 @@ public class DateUtils {
         SimpleDateFormat dateFormat = new SimpleDateFormat(TIME_PATTERN);
         return dateFormat.format(new Date(System.currentTimeMillis()));
     }
+
     /**
      * 判断当前日期是星期几
      *
@@ -47,7 +48,7 @@ public class DateUtils {
             dayForWeek = c.get(Calendar.DAY_OF_WEEK) - 1;
         }
 
-        switch (dayForWeek){
+        switch (dayForWeek) {
             case 1:
                 return "周一";
             case 2:
@@ -85,42 +86,42 @@ public class DateUtils {
             format = "HH:mm";
 
             if (hour > 17) {
-                if(isChinese){
+                if (isChinese) {
                     format = "晚上 hh:mm";
                 }
 
-            }else if(hour >= 0 && hour <= 6){
-                if(isChinese){
+            } else if (hour >= 0 && hour <= 6) {
+                if (isChinese) {
                     format = "凌晨 hh:mm";
                 }
             } else if (hour > 11 && hour <= 17) {
-                if(isChinese){
+                if (isChinese) {
                     format = "下午 hh:mm";
                 }
 
             } else {
-                if(isChinese){
+                if (isChinese) {
                     format = "上午 hh:mm";
                 }
             }
         } else if (isYesterday(messageTime)) {
-            if(isChinese){
+            if (isChinese) {
                 format = "昨天 HH:mm";
-            }else{
+            } else {
                 format = "MM-dd HH:mm";
             }
 
         } else {
-            if(isChinese){
+            if (isChinese) {
                 format = "M月d日 HH:mm";
-            }else{
+            } else {
                 format = "MM-dd HH:mm";
             }
         }
 
-        if(isChinese){
+        if (isChinese) {
             return new SimpleDateFormat(format, Locale.CHINA).format(messageDate);
-        }else{
+        } else {
             return new SimpleDateFormat(format, Locale.US).format(messageDate);
         }
     }
@@ -138,14 +139,14 @@ public class DateUtils {
     private static boolean isSameDay(long inputTime) {
 
         TimeInfo tStartAndEndTime = getTodayStartAndEndTime();
-        if(inputTime>tStartAndEndTime.getStartTime()&&inputTime<tStartAndEndTime.getEndTime())
+        if (inputTime > tStartAndEndTime.getStartTime() && inputTime < tStartAndEndTime.getEndTime())
             return true;
         return false;
     }
 
     private static boolean isYesterday(long inputTime) {
         TimeInfo yStartAndEndTime = getYesterdayStartAndEndTime();
-        if(inputTime>yStartAndEndTime.getStartTime()&&inputTime<yStartAndEndTime.getEndTime())
+        if (inputTime > yStartAndEndTime.getStartTime() && inputTime < yStartAndEndTime.getEndTime())
             return true;
         return false;
     }
@@ -160,8 +161,8 @@ public class DateUtils {
         }
         return date;
     }
+
     /**
-     *
      * @param timeLength Millisecond
      * @return
      */
@@ -177,8 +178,8 @@ public class DateUtils {
         // return String.format("%02d:%02d:%02d", hour, minute, second);
         return String.format("%02d:%02d", minute, second);
     }
+
     /**
-     *
      * @param timeLength second
      * @return
      */
@@ -194,7 +195,6 @@ public class DateUtils {
         // return String.format("%02d:%02d:%02d", hour, minute, second);
         return String.format("%02d:%02d", minute, second);
     }
-
 
 
     public static TimeInfo getYesterdayStartAndEndTime() {
@@ -271,9 +271,10 @@ public class DateUtils {
 
     /**
      * endtime为今天
+     *
      * @return
      */
-    public static TimeInfo getCurrentMonthStartAndEndTime(){
+    public static TimeInfo getCurrentMonthStartAndEndTime() {
         Calendar calendar1 = Calendar.getInstance();
         calendar1.set(Calendar.DATE, 1);
         calendar1.set(Calendar.HOUR_OF_DAY, 0);
@@ -296,7 +297,7 @@ public class DateUtils {
         return info;
     }
 
-    public static TimeInfo getLastMonthStartAndEndTime(){
+    public static TimeInfo getLastMonthStartAndEndTime() {
         Calendar calendar1 = Calendar.getInstance();
         calendar1.add(Calendar.MONTH, -1);
         calendar1.set(Calendar.DATE, 1);
@@ -314,7 +315,7 @@ public class DateUtils {
         calendar2.set(Calendar.MINUTE, 59);
         calendar2.set(Calendar.SECOND, 59);
         calendar2.set(Calendar.MILLISECOND, 999);
-        calendar2.roll(Calendar.DATE,  - 1 );
+        calendar2.roll(Calendar.DATE, -1);
         Date endDate = calendar2.getTime();
         long endTime = endDate.getTime();
         TimeInfo info = new TimeInfo();

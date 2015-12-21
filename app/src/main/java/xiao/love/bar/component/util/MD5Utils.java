@@ -5,7 +5,7 @@ import java.security.MessageDigest;
 /**
  * Created by guochang on 2015/5/18.
  */
-public class MD5Util {
+public class MD5Utils {
     public static String String2MD5(String inStr) {
         MessageDigest md5 = null;
         try {

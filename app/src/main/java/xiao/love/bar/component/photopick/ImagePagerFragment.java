@@ -22,7 +22,7 @@ import pl.droidsonroids.gif.GifImageView;
 import uk.co.senab.photoview.PhotoView;
 import xiao.love.bar.R;
 import xiao.love.bar.component.image.ImageLoadTool;
-import xiao.love.bar.component.util.ImageUtil;
+import xiao.love.bar.component.util.ImageUtils;
 
 /**
  * Created by guochang on 2015/8/11.
@@ -94,7 +94,7 @@ public class ImagePagerFragment extends Fragment{
                 }
 
                 donutProgress.setVisibility(View.INVISIBLE);
-                if (ImageUtil.isGifByFile(file)) {
+                if (ImageUtils.isGifByFile(file)) {
                     Uri uri1 = Uri.fromFile(file);
                     gifImageView.setImageURI(uri1);
                     gifImageView.setVisibility(View.VISIBLE);

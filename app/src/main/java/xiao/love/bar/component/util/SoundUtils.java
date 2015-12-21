@@ -9,7 +9,7 @@ import android.os.Vibrator;
 /**
  * Created by guochang on 2015/4/17.
  */
-public class SoundUtil {
+public class SoundUtils {
     public static void playSound(Context c, int resId){
         MediaPlayer mediaPlayer = MediaPlayer.create(c, resId);
         mediaPlayer = new MediaPlayer();

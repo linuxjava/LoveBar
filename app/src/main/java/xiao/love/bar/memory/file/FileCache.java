@@ -1,4 +1,4 @@
-package xiao.love.bar.memory.file.base;
+package xiao.love.bar.memory.file;
 
 import android.content.Context;
 import android.text.TextUtils;

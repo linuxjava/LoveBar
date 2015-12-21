@@ -1,9 +1,9 @@
-package xiao.love.bar.memory.sp;
+package xiao.love.bar.memory.sp.impl;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import xiao.love.bar.memory.sp.base.BaseSp;
+import xiao.love.bar.memory.sp.BaseSp;
 
 
 /**

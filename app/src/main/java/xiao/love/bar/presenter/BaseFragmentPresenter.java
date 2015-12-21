@@ -1,6 +1,5 @@
 package xiao.love.bar.presenter;
 
-import xiao.love.bar.component.BaseFragment;
 
 /**
  * Created by xiaoguochang on 2015/12/3.
