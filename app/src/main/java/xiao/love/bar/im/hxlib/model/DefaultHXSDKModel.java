@@ -26,11 +26,11 @@ import java.util.List;
 import java.util.Map;
 
 import xiao.love.bar.component.util.AppUtils;
-import xiao.love.bar.memory.db.dao.BlackListDB;
-import xiao.love.bar.memory.db.dao.ContactDB;
-import xiao.love.bar.memory.db.model.BlackList;
-import xiao.love.bar.memory.db.model.Contact;
-import xiao.love.bar.memory.sp.impl.IMSp;
+import xiao.love.bar.storage.db.dao.BlackListDB;
+import xiao.love.bar.storage.db.dao.ContactDB;
+import xiao.love.bar.storage.db.model.BlackList;
+import xiao.love.bar.storage.db.model.Contact;
+import xiao.love.bar.storage.sp.impl.IMSp;
 
 /**
  * HuanXin default SDK Model implementation
