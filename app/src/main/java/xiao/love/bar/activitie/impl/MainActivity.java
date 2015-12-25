@@ -24,6 +24,7 @@ import xiao.love.bar.fragment.impl.ContactFragment;
 import xiao.love.bar.fragment.impl.HomeFragment;
 import xiao.love.bar.fragment.impl.MyFragment;
 import xiao.love.bar.im.hxlib.IMHelper;
+import xiao.love.bar.test.TestDialog;
 
 public class MainActivity extends BaseFragmentActivity implements EMEventListener {
     // 未读消息textview
@@ -121,6 +122,8 @@ public class MainActivity extends BaseFragmentActivity implements EMEventListene
 
     @Override
     protected void initWidgets() {
+        TestDialog.test(mContext);
+
         // 把第一个tab设为选中状态
         mTabs[mCurrentTabIndex].setSelected(true);
 

@@ -1,11 +1,8 @@
-package xiao.love.bar.component.dialog;
+package com.gitonway.lee.niftymodaldialogeffects.lib;
+
 
 import android.content.Context;
 import android.view.View;
-
-import com.gitonway.lee.niftymodaldialogeffects.lib.Effectstype;
-import com.gitonway.lee.niftymodaldialogeffects.lib.NiftyAlertDialog;
-import com.gitonway.lee.niftymodaldialogeffects.lib.NiftyLoadingDialog;
 
 /**
  * Created by guochang on 2015/8/11.
@@ -14,9 +11,10 @@ import com.gitonway.lee.niftymodaldialogeffects.lib.NiftyLoadingDialog;
 public class DialogTool {
     private static NiftyAlertDialog alertDialog;
     private static NiftyLoadingDialog loadingDialog;
+    private static YearMonthDayDialog mYearMonthDayDialog;
 
-    public static void showAlertDialog(Context context){
-        if(alertDialog != null && alertDialog.isShowing()){
+    public static void showAlertDialog(Context context) {
+        if (alertDialog != null && alertDialog.isShowing()) {
             return;
         }
 
@@ -46,14 +44,14 @@ public class DialogTool {
                 .show();
     }
 
-    public static void dismissAlertDialog(){
-        if(alertDialog != null) {
+    public static void dismissAlertDialog() {
+        if (alertDialog != null) {
             alertDialog.dismiss();
         }
     }
 
-    public static void showLoadingDialog(Context context){
-        if(loadingDialog != null && loadingDialog.isShowing()){
+    public static void showLoadingDialog(Context context) {
+        if (loadingDialog != null && loadingDialog.isShowing()) {
             return;
         }
 
@@ -61,9 +59,18 @@ public class DialogTool {
         loadingDialog.isMaterial(true).setMsg("加载中...").isCancelable(false).show();
     }
 
-    public static void dismissLoadingDialog(){
-        if(loadingDialog != null) {
+    public static void dismissLoadingDialog() {
+        if (loadingDialog != null) {
             loadingDialog.dismiss();
         }
+    }
+
+    public static void showYearMonthDayDialog(Context context) {
+        mYearMonthDayDialog = new YearMonthDayDialog(context, 2015, 12, 23);
+        mYearMonthDayDialog.show();
+    }
+
+    public static void dismissYearMonthDayDialog() {
+        mYearMonthDayDialog.dismiss();
     }
 }
