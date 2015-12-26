@@ -1,1 +1,1 @@
-include ':app', ':loadingAlertDialog', ':BGARefreshLayout'
+include ':app', ':loadingAlertDialog', ':BGARefreshLayout', ':datetimepicker-library', ':materialDialog-library'

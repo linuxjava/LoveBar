@@ -18,13 +18,14 @@ import butterknife.Bind;
 import butterknife.OnClick;
 import xiao.love.bar.R;
 import xiao.love.bar.activitie.BaseFragmentActivity;
+import xiao.love.bar.component.dialog.HeightPickerDialog;
+import xiao.love.bar.component.dialog.ProvinceCityPickerDialog;
 import xiao.love.bar.component.resource.ResTool;
 import xiao.love.bar.fragment.impl.ChatHistoryFragment;
 import xiao.love.bar.fragment.impl.ContactFragment;
 import xiao.love.bar.fragment.impl.HomeFragment;
 import xiao.love.bar.fragment.impl.MyFragment;
 import xiao.love.bar.im.hxlib.IMHelper;
-import xiao.love.bar.test.TestDialog;
 
 public class MainActivity extends BaseFragmentActivity implements EMEventListener {
     // 未读消息textview
@@ -122,7 +123,8 @@ public class MainActivity extends BaseFragmentActivity implements EMEventListene
 
     @Override
     protected void initWidgets() {
-        TestDialog.test(mContext);
+        new HeightPickerDialog(mContext).show();
+        //new ProvinceCityPickerDialog(mContext).show();
 
         // 把第一个tab设为选中状态
         mTabs[mCurrentTabIndex].setSelected(true);

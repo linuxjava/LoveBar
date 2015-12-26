@@ -11,7 +11,6 @@ import android.view.View;
 public class DialogTool {
     private static NiftyAlertDialog alertDialog;
     private static NiftyLoadingDialog loadingDialog;
-    private static YearMonthDayDialog mYearMonthDayDialog;
 
     public static void showAlertDialog(Context context) {
         if (alertDialog != null && alertDialog.isShowing()) {
@@ -63,14 +62,5 @@ public class DialogTool {
         if (loadingDialog != null) {
             loadingDialog.dismiss();
         }
-    }
-
-    public static void showYearMonthDayDialog(Context context) {
-        mYearMonthDayDialog = new YearMonthDayDialog(context, 2015, 12, 23);
-        mYearMonthDayDialog.show();
-    }
-
-    public static void dismissYearMonthDayDialog() {
-        mYearMonthDayDialog.dismiss();
     }
 }

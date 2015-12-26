@@ -7,23 +7,17 @@
     android:background="@android:color/white">
 
     <NumberPicker
-        android:id="@+id/year"
+        android:id="@+id/picker_first"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:descendantFocusability="blocksDescendants" />
+        android:descendantFocusability="blocksDescendants"
+        android:layout_marginRight="20.0dp"/>
 
     <NumberPicker
-        android:id="@+id/month"
+        android:id="@+id/picker_second"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="15.0dp"
-        android:layout_marginRight="15.0dp"
-        android:descendantFocusability="blocksDescendants" />
-
-    <NumberPicker
-        android:id="@+id/day"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_marginLeft="20.0dp"
         android:descendantFocusability="blocksDescendants" />
 </LinearLayout>
 
