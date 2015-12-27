@@ -13,8 +13,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import xiao.love.bar.storage.db.model.BlackList;
+import xiao.love.bar.storage.db.model.City;
 import xiao.love.bar.storage.db.model.Contact;
 import xiao.love.bar.storage.db.model.NameValuePair;
+import xiao.love.bar.storage.db.model.Province;
+import xiao.love.bar.storage.db.model.Zone;
 
 /**
  * Created by guochang on 2015/8/9.
@@ -54,6 +57,12 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.createTable(connectionSource, Contact.class);
             //黑名单
             TableUtils.createTable(connectionSource, BlackList.class);
+            //省
+            TableUtils.createTable(connectionSource, Province.class);
+            //市
+            TableUtils.createTable(connectionSource, City.class);
+            //区
+            TableUtils.createTable(connectionSource, Zone.class);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -65,6 +74,9 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.dropTable(connectionSource, NameValuePair.class, true);
             TableUtils.dropTable(connectionSource, Contact.class, true);
             TableUtils.dropTable(connectionSource, BlackList.class, true);
+            TableUtils.dropTable(connectionSource, Province.class, true);
+            TableUtils.dropTable(connectionSource, City.class, true);
+            TableUtils.dropTable(connectionSource, Zone.class, true);
         } catch (SQLException e) {
             e.printStackTrace();
         }
