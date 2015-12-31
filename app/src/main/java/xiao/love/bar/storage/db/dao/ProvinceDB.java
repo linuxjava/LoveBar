@@ -80,6 +80,16 @@ public class ProvinceDB {
         return null;
     }
 
+    public synchronized List<Province> queryForAll(){
+        try {
+            return mDao.queryForAll();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     /**
      * 初始化省数据
      */

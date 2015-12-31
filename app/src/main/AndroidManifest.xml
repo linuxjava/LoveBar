@@ -45,13 +45,15 @@
             android:screenOrientation="portrait">
         </activity>
 
-        <!--图片选择器-->
+        <!--图片选择器，注：图片选择器必须要有actionbar-->
         <activity
             android:name=".component.photopick.PhotoPickActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"/>
 
         <activity
             android:name=".component.photopick.PhotoPickDetailActivity"
+            android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
             android:screenOrientation="portrait"/>
 
         <!--IM相关-->

@@ -1,1 +1,7 @@
-include ':app', ':loadingAlertDialog', ':BGARefreshLayout', ':datetimepicker-library', ':materialDialog-library'
+include ':app'
+include ':pickerview-library'
+include ':loadingAlertDialog'
+include ':BGARefreshLayout'
+include ':datetimepicker-library'
+include ':FlycoAnimation-library'
+include ':FlycoDialog-library'

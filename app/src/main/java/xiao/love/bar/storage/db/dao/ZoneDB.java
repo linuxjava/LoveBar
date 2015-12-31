@@ -70,6 +70,16 @@ public class ZoneDB {
         }
     }
 
+    public synchronized List<Zone> queryByCityID(int cityID) {
+        try {
+            return mDao.queryBuilder().where().eq("cityID", cityID).query();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     public synchronized Zone queryById(int zoneID) {
         try {
             return mDao.queryForId(zoneID);

@@ -88,7 +88,7 @@ public class MoreLayout implements View.OnClickListener {
      */
     private void takePicture() {
         if (!SDCardUtils.isSDCardEnable()) {
-            String st = mActivity.getResources().getString(R.string.sd_card_does_not_exist);
+            String st = mActivity.getResources().getString(R.string.toast_sdcard_not_exist);
             Toast.makeText(mActivity, st, Toast.LENGTH_SHORT).show();
             return;
         }

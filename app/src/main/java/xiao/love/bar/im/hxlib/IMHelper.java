@@ -106,7 +106,7 @@ public class IMHelper extends HXSDKHelper {
                 case EventReadAck:
                     message.setAcked(true);
                     break;
-                // below is just giving a example to show a cmd toast, the app should not follow this
+                // below is just giving a example to showPickerDialog a cmd toast, the app should not follow this
                 // so be careful of this
                 case EventNewCMDMessage: {
                     //获取消息body

@@ -253,10 +253,10 @@ public class BaiduMapActivity extends Activity {
 //			String action = intent.getAction();
 //			if (action.equals(SDKInitializer.SDK_BROADTCAST_ACTION_STRING_PERMISSION_CHECK_ERROR)) {
 //				String str = getResources().getString(R.string.please_check);
-//				Toast.makeText(mContext, str, Toast.LENGTH_SHORT).show();
+//				Toast.makeText(mContext, str, Toast.LENGTH_SHORT).showPickerDialog();
 //			} else if (action.equals(SDKInitializer.SDK_BROADCAST_ACTION_STRING_NETWORK_ERROR)) {
 //				String str = getResources().getString(R.string.Network_error);
-//				Toast.makeText(mContext, str, Toast.LENGTH_SHORT).show();
+//				Toast.makeText(mContext, str, Toast.LENGTH_SHORT).showPickerDialog();
 //			}
 //		}
 //	};
@@ -333,7 +333,7 @@ public class BaiduMapActivity extends Activity {
 //			}
 //		});
 //
-//		progressDialog.show();
+//		progressDialog.showPickerDialog();
 //
 //		mLocClient = new LocationClient(this);
 //		mLocClient.registerLocationListener(myListener);

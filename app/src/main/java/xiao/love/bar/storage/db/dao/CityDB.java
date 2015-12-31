@@ -70,9 +70,29 @@ public class CityDB {
         }
     }
 
-    public synchronized City queryById(int cityID) {
+    public synchronized City queryById(int cityID){
         try {
             return mDao.queryForId(cityID);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public synchronized List<City> queryByProvinceID(int provinceID) {
+        try {
+            return mDao.queryBuilder().where().eq("provinceID", provinceID).query();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public synchronized List<City> queryForAll(){
+        try {
+            return mDao.queryForAll();
         } catch (SQLException e) {
             e.printStackTrace();
         }

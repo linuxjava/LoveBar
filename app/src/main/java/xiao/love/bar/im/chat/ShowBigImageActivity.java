@@ -67,11 +67,11 @@ public class ShowBigImageActivity extends Activity {
 		Uri uri = getIntent().getParcelableExtra("uri");
 		String remotepath = getIntent().getExtras().getString("remotepath");
 		String secret = getIntent().getExtras().getString("secret");
-		EMLog.d(TAG, "show big image uri:" + uri + " remotepath:" + remotepath);
+		EMLog.d(TAG, "showPickerDialog big image uri:" + uri + " remotepath:" + remotepath);
 
 		//本地存在，直接显示本地的图片
 		if (uri != null && new File(uri.getPath()).exists()) {
-			EMLog.d(TAG, "showbigimage file exists. directly show it");
+			EMLog.d(TAG, "showbigimage file exists. directly showPickerDialog it");
 			DisplayMetrics metrics = new DisplayMetrics();
 			getWindowManager().getDefaultDisplay().getMetrics(metrics);
 			// int screenWidth = metrics.widthPixels;

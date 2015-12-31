@@ -13,7 +13,7 @@ import butterknife.ButterKnife;
 /**
  * Created by xiaoguochang on 2015/12/4.
  * 继承自FragmentActivity的Activity类型
- * Fragment的add、remove、replace、hide、show、detach
+ * Fragment的add、remove、replace、hide、showPickerDialog、detach
  */
 public abstract class BaseFragmentActivity extends FragmentActivity {
     protected Context mContext;

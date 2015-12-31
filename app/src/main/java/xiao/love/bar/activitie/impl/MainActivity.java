@@ -18,17 +18,12 @@ import butterknife.Bind;
 import butterknife.OnClick;
 import xiao.love.bar.R;
 import xiao.love.bar.activitie.BaseFragmentActivity;
-import xiao.love.bar.component.dialog.HeightPickerDialog;
-import xiao.love.bar.component.dialog.ProvinceCityPickerDialog;
 import xiao.love.bar.component.resource.ResTool;
 import xiao.love.bar.fragment.impl.ChatHistoryFragment;
 import xiao.love.bar.fragment.impl.ContactFragment;
 import xiao.love.bar.fragment.impl.HomeFragment;
 import xiao.love.bar.fragment.impl.MyFragment;
 import xiao.love.bar.im.hxlib.IMHelper;
-import xiao.love.bar.storage.db.dao.CityDB;
-import xiao.love.bar.storage.db.dao.ProvinceDB;
-import xiao.love.bar.storage.db.dao.ZoneDB;
 
 public class MainActivity extends BaseFragmentActivity implements EMEventListener {
     // 未读消息textview
@@ -54,7 +49,7 @@ public class MainActivity extends BaseFragmentActivity implements EMEventListene
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    if(mCurrentTabIndex == mChatHistoryTabIndex) {
+                    if (mCurrentTabIndex == mChatHistoryTabIndex) {
                         //tab显示历史聊天页面时，才显示信息提示
                         mChatHistoryFragment.getErrorText().setVisibility(View.GONE);
                     }
@@ -72,7 +67,7 @@ public class MainActivity extends BaseFragmentActivity implements EMEventListene
                     } else if (error == EMError.CONNECTION_CONFLICT) {
                         // 显示帐号在其他设备登陆dialog
                     } else {
-                        if(mCurrentTabIndex == 2) {
+                        if (mCurrentTabIndex == 2) {
                             //tab显示历史聊天页面时，才显示信息提示
                             mChatHistoryFragment.getErrorText().setVisibility(View.VISIBLE);
                             if (NetUtils.hasNetwork(MainActivity.this))
@@ -85,11 +80,6 @@ public class MainActivity extends BaseFragmentActivity implements EMEventListene
             });
         }
     };
-
-    private void test() {
-        //测试相册
-        //PhotoPickTest.test(this);
-    }
 
     @Override
     protected void onResume() {
@@ -126,15 +116,11 @@ public class MainActivity extends BaseFragmentActivity implements EMEventListene
 
     @Override
     protected void initWidgets() {
-        //new HeightPickerDialog(mContext).show();
-        //new ProvinceCityPickerDialog(mContext).show();
-
-
         // 把第一个tab设为选中状态
         mTabs[mCurrentTabIndex].setSelected(true);
 
         mChatHistoryFragment = new ChatHistoryFragment();
-        mFragments = new Fragment[] {new HomeFragment(), new ContactFragment(), mChatHistoryFragment, new MyFragment() };
+        mFragments = new Fragment[]{new HomeFragment(), new ContactFragment(), mChatHistoryFragment, new MyFragment()};
         //设置fragment的容器
         setFragmentContainerId(R.id.fragment_container);
         // 添加并显示首页fragment

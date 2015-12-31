@@ -1083,7 +1083,7 @@ public class MessageAdapter extends BaseAdapter {
 
     /*
      * chat sdk will automatic download thumbnail image for the image message we
-     * need to register callback show the download progress
+     * need to register callback showPickerDialog the download progress
      * 下载消息(图片和语音)
      */
     private void downloadMsg(final EMMessage message, final ViewHolder holder) {

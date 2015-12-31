@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
@@ -36,8 +37,9 @@ import xiao.love.bar.R;
 
 
 public class PhotoPickActivity extends ActionBarActivity implements LoaderManager.LoaderCallbacks<Cursor> {
-
+    //最大图片数
     public static final String EXTRA_MAX = "EXTRA_MAX";
+    //启动图片选择器时，已选择中的图片
     public static final String EXTRA_PICKED = "EXTRA_PICKED"; // mPickData
     private int mMaxPick = 6;
 
