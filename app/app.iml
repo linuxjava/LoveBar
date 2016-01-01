@@ -113,7 +113,8 @@
     <orderEntry type="library" exported="" name="locSDK_6.13" level="project" />
     <orderEntry type="module" module-name="BGARefreshLayout" exported="" />
     <orderEntry type="module" module-name="loadingAlertDialog" exported="" />
+    <orderEntry type="module" module-name="FlycoDialog-library" exported="" />
+    <orderEntry type="module" module-name="pickerview-library" exported="" />
     <orderEntry type="module" module-name="datetimepicker-library" exported="" />
-    <orderEntry type="module" module-name="materialDialog-library" exported="" />
   </component>
 </module>

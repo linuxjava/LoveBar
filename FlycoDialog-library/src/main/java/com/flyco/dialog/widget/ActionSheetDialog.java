@@ -112,8 +112,8 @@ public class ActionSheetDialog extends BottomBaseDialog<ActionSheetDialog> {
         TranslateAnimation animation = new TranslateAnimation(Animation.RELATIVE_TO_SELF, 0f, Animation.RELATIVE_TO_SELF,
                 0f, Animation.RELATIVE_TO_SELF, 6f, Animation.RELATIVE_TO_SELF, 0);
         animation.setInterpolator(new DecelerateInterpolator());
-        animation.setDuration(350);
-        animation.setStartOffset(150);
+        animation.setDuration(300);
+        animation.setStartOffset(0);
 
         mLac = new LayoutAnimationController(animation, 0.12f);
         mLac.setInterpolator(new DecelerateInterpolator());
