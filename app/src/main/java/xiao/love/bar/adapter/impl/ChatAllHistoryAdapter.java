@@ -30,7 +30,7 @@ import java.util.List;
 
 import xiao.love.bar.R;
 import xiao.love.bar.adapter.XGCRecyclerViewAdapter;
-import xiao.love.bar.adapter.viewholders.impl.ChatAllHistoryHolder;
+import xiao.love.bar.adapter.viewholder.impl.ChatAllHistoryHolder;
 import xiao.love.bar.component.resource.ResTool;
 import xiao.love.bar.component.util.DateUtils;
 import xiao.love.bar.component.widget.BGASwipeItemLayout;
@@ -61,7 +61,7 @@ public class ChatAllHistoryAdapter extends XGCRecyclerViewAdapter<EMConversation
 
     @Override
     protected ChatAllHistoryHolder createViewHolder(Context context, ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(mContext).inflate(R.layout.row_chat_history, parent, false);
+        View itemView = LayoutInflater.from(mContext).inflate(R.layout.item_chat_history, parent, false);
         return new ChatAllHistoryHolder(context, this, parent, itemView, viewType);
     }
 
@@ -89,47 +89,47 @@ public class ChatAllHistoryAdapter extends XGCRecyclerViewAdapter<EMConversation
                 closeOpenedSwipeItemLayoutWithAnim();
             }
         });
-        holder.setItemChildClickListener(R.id.item_swipe_delete);
+        holder.setItemChildClickListener(R.id.img_swipe_delete);
     }
 
     @Override
     protected void setItemData(int position, ChatAllHistoryHolder holder, EMConversation conversation) {
         if (position == 0) {
             ((BGASwipeItemLayout) (holder.itemView)).setSwipeAble(false);
-            holder.setText(R.id.name, "收藏");
-            holder.setText(R.id.message, "我收藏的人和收藏我的人");
-            holder.setImageResource(R.id.avatar, R.drawable.base_avatar_follow);
-            holder.setVisibility(R.id.unread_msg_number, View.INVISIBLE);
-            holder.setVisibility(R.id.time, View.INVISIBLE);
-            holder.setVisibility(R.id.msg_state, View.GONE);
+            holder.setText(R.id.text_name, "收藏");
+            holder.setText(R.id.text_message, "我收藏的人和收藏我的人");
+            holder.setImageResource(R.id.img_avatar, R.drawable.base_avatar_follow);
+            holder.setVisibility(R.id.text_unread_msg_number, View.INVISIBLE);
+            holder.setVisibility(R.id.text_time, View.INVISIBLE);
+            holder.setVisibility(R.id.img_msg_state, View.GONE);
             return;
         }
 
-        holder.setVisibility(R.id.unread_msg_number, View.VISIBLE);
-        holder.setVisibility(R.id.time, View.VISIBLE);
-        holder.setVisibility(R.id.msg_state, View.VISIBLE);
+        holder.setVisibility(R.id.text_unread_msg_number, View.VISIBLE);
+        holder.setVisibility(R.id.text_time, View.VISIBLE);
+        holder.setVisibility(R.id.img_msg_state, View.VISIBLE);
 
-        holder.setText(R.id.name, conversation.getUserName());
-        holder.setImageResource(R.id.avatar, R.drawable.default_avatar);
+        holder.setText(R.id.text_name, conversation.getUserName());
+        holder.setImageResource(R.id.img_avatar, R.drawable.ic_love_default_avatar);
         if (conversation.getUnreadMsgCount() > 0) {
             // 显示与此用户的消息未读数
-            holder.setText(R.id.unread_msg_number, String.valueOf(conversation.getUnreadMsgCount()));
-            holder.setVisibility(R.id.unread_msg_number, View.VISIBLE);
+            holder.setText(R.id.text_unread_msg_number, String.valueOf(conversation.getUnreadMsgCount()));
+            holder.setVisibility(R.id.text_unread_msg_number, View.VISIBLE);
         } else {
-            holder.setVisibility(R.id.unread_msg_number, View.INVISIBLE);
+            holder.setVisibility(R.id.text_unread_msg_number, View.INVISIBLE);
         }
 
         if (conversation.getMsgCount() != 0) {
             // 把最后一条消息的内容作为item的message内容
             EMMessage lastMessage = conversation.getLastMessage();
-            holder.setText(R.id.message, EmojiParse.parseString(mContext, getMessageDigest(lastMessage, mContext)),
+            holder.setText(R.id.text_message, EmojiParse.parseString(mContext, getMessageDigest(lastMessage, mContext)),
                     TextView.BufferType.SPANNABLE);
 
-            holder.setText(R.id.time, DateUtils.getTimestampString(new Date(lastMessage.getMsgTime())));
+            holder.setText(R.id.text_time, DateUtils.getTimestampString(new Date(lastMessage.getMsgTime())));
             if (lastMessage.direct == EMMessage.Direct.SEND && lastMessage.status == EMMessage.Status.FAIL) {
-                holder.setVisibility(R.id.msg_state, View.VISIBLE);
+                holder.setVisibility(R.id.img_msg_state, View.VISIBLE);
             } else {
-                holder.setVisibility(R.id.msg_state, View.GONE);
+                holder.setVisibility(R.id.img_msg_state, View.GONE);
             }
         }
     }

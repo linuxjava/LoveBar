@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
-import xiao.love.bar.adapter.viewholders.XGCRecyclerViewHolder;
+import xiao.love.bar.adapter.viewholder.XGCRecyclerViewHolder;
 
 /**
  * Created by xiaoguochang on 2015/12/6.

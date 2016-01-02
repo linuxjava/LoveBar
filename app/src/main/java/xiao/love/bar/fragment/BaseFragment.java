@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import butterknife.ButterKnife;
-import xiao.love.bar.presenter.BaseFragmentPresenter;
+import xiao.love.bar.mvppresenter.BaseFragmentPresenter;
 
 /**
  * Created by xiaoguochang on 2015/12/3.

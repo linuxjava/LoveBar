@@ -10,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import xiao.love.bar.adapter.viewholders.XGCViewHolder;
+import xiao.love.bar.adapter.viewholder.XGCViewHolder;
 
 /**
  * Created by xiaoguochang on 2015/12/4.

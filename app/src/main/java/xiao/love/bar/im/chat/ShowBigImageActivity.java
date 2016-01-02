@@ -63,7 +63,7 @@ public class ShowBigImageActivity extends Activity {
 
 		image = (PhotoView) findViewById(R.id.image);
 		loadLocalPb = (ProgressBar) findViewById(R.id.pb_load_local);
-		default_res = getIntent().getIntExtra("default_image", R.drawable.default_avatar);
+		default_res = getIntent().getIntExtra("default_image", R.drawable.ic_love_default_avatar);
 		Uri uri = getIntent().getParcelableExtra("uri");
 		String remotepath = getIntent().getExtras().getString("remotepath");
 		String secret = getIntent().getExtras().getString("secret");

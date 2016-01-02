@@ -20,7 +20,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.text.ClipboardManager;
@@ -54,10 +53,8 @@ import com.easemob.exceptions.EaseMobException;
 import java.util.List;
 
 import xiao.love.bar.R;
-import xiao.love.bar.component.AbstractActivity;
 import xiao.love.bar.component.BaseActivity;
 import xiao.love.bar.component.util.KeyBoardUtils;
-import xiao.love.bar.component.util.L;
 import xiao.love.bar.component.util.T;
 import xiao.love.bar.im.chat.emoji.EmojiLayout;
 import xiao.love.bar.im.chat.emoji.EmojiParse;
@@ -295,7 +292,7 @@ public class ChatActivity extends BaseActivity implements OnClickListener, EMEve
 
         //设置聊天对象的昵称
         toChatUsername = getIntent().getStringExtra("userId");
-        UserUtils.setUserNick(toChatUsername, (TextView) findViewById(R.id.name));
+        UserUtils.setUserNick(toChatUsername, (TextView) findViewById(R.id.text_name));
     }
 
     /**

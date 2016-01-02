@@ -1,6 +1,7 @@
 package xiao.love.bar.component.util;
 
 import android.content.Context;
+import android.view.Gravity;
 import android.widget.Toast;
 
 //Toast统一管理类
@@ -89,4 +90,20 @@ public class T
             Toast.makeText(context, message, duration).show();
     }
 
+
+    public static void showBottom(Context context, int messageId) {
+        String message = context.getString(messageId);
+        showBottom(context, message);
+    }
+
+    public static void showBottom(Context context, String msg) {
+        Toast toast = Toast.makeText(context, msg, Toast.LENGTH_SHORT);
+        toast.show();
+    }
+
+    public static void showMiddle(Context context, String msg) {
+        Toast toast = Toast.makeText(context, msg, Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.CENTER, 0, 0);
+        toast.show();
+    }
 }

@@ -14,7 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import cn.bmob.v3.BmobObject;
+import cn.bmob.v3.listener.SaveListener;
 import xiao.love.bar.component.util.FileUtils;
+import xiao.love.bar.component.util.L;
+import xiao.love.bar.entity.BmobProvince;
 import xiao.love.bar.storage.db.base.DatabaseHelper;
 import xiao.love.bar.storage.db.model.BlackList;
 import xiao.love.bar.storage.db.model.Province;
@@ -105,6 +109,42 @@ public class ProvinceDB {
             insert(list);
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * 初始化bmob后台省数据库
+     */
+    public synchronized void initBmob(){
+        List<Province> list = queryForAll();
+        List<BmobObject> bmobList = new ArrayList<>();
+
+        for (Province province : list){
+            BmobProvince bmobProvince = new BmobProvince();
+            bmobProvince.setProvinceID(province.getProvinceID());
+            bmobProvince.setProvince(province.getProvince());
+            bmobList.add(bmobProvince);
+        }
+
+        for (int i=0; i<bmobList.size(); i=i+50) {
+            List<BmobObject> subList;
+            if(i + 50 >= bmobList.size()) {
+                subList = bmobList.subList(i, bmobList.size());
+            }else {
+                subList = bmobList.subList(i, i + 50);
+            }
+
+            new BmobObject().insertBatch(mContext, subList, new SaveListener() {
+                @Override
+                public void onSuccess() {
+                    L.d("Province批量添加成功");
+                }
+
+                @Override
+                public void onFailure(int code, String msg) {
+                    L.d("Province批量添加失败:");
+                }
+            });
         }
     }
 }

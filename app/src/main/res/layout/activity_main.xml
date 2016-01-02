@@ -1,67 +1,66 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/match_width_match_height">
+    style="@style/width_match_height_match">
 
     <LinearLayout
-        android:id="@+id/main_bottom_ll"
+        android:id="@+id/ll_bottom_tab"
         android:layout_width="match_parent"
         android:layout_height="52dp"
         android:layout_alignParentBottom="true"
-        android:background="@color/bottom_bar_normal_bg"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
         <RelativeLayout
-            android:id="@+id/home_rl"
+            android:id="@+id/rl_home"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1">
 
             <Button
-                android:id="@+id/home_btn"
-                style="@style/main_tab_btn"
+                android:id="@+id/btn_home"
+                style="@style/btn_main_bottom_tab"
                 android:text="首页" />
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/contact_rl"
+            android:id="@+id/rl_contact"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1">
 
             <Button
-                android:id="@+id/contact_btn"
-                style="@style/main_tab_btn"
-                android:drawableTop="@drawable/tab_contact_list_bg"
+                android:id="@+id/btn_contact"
+                style="@style/btn_main_bottom_tab"
+                android:drawableTop="@drawable/selector_tab_contact_bg"
                 android:text="朋友" />
 
             <TextView
-                android:id="@+id/unread_contact_number_tv"
-                style="@style/wrap_width_wrap_height"
+                android:id="@+id/text_unread_contact_number"
+                style="@style/width_wrap_height_wrap"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="10dp"
-                android:background="@drawable/unread_dot"
-                android:visibility="invisible"/>
+                android:background="@drawable/ic_love_unread_dot"
+                android:visibility="invisible" />
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/conversation_rl"
+            android:id="@+id/rl_conversation"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1">
 
             <Button
-                android:id="@+id/conversation_btn"
-                style="@style/main_tab_btn"
-                android:drawableTop="@drawable/tab_chat_bg"
+                android:id="@+id/btn_conversation"
+                style="@style/btn_main_bottom_tab"
+                android:drawableTop="@drawable/selector_tab_chat_bg"
                 android:text="会话" />
 
             <TextView
-                android:id="@+id/unread_msg_number_tv"
-                style="@style/wrap_width_wrap_height"
+                android:id="@+id/text_unread_msg_number"
+                style="@style/width_wrap_height_wrap"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="1dp"
-                android:background="@drawable/unread_count_bg"
+                android:background="@drawable/ic_love_unread_count_bg"
                 android:gravity="center"
                 android:text="7"
                 android:textColor="@android:color/white"
@@ -70,20 +69,20 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/my_rl"
+            android:id="@+id/rl_my"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1">
 
             <Button
-                android:id="@+id/my_btn"
-                style="@style/main_tab_btn"
+                android:id="@+id/btn_my"
+                style="@style/btn_main_bottom_tab"
                 android:text="我的" />
         </RelativeLayout>
     </LinearLayout>
 
     <RelativeLayout
-        android:id="@+id/fragment_container"
-        style="@style/match_width_match_height"
-        android:layout_above="@id/main_bottom_ll" />
+        android:id="@+id/rl_container"
+        style="@style/width_match_height_match"
+        android:layout_above="@id/ll_bottom_tab" />
 </RelativeLayout>

@@ -16,14 +16,14 @@ public class UserUtils {
      * @param username
      */
     public static void setUserAvatar(Context context, String username, ImageView imageView) {
-        imageView.setImageResource(R.drawable.default_avatar);
+        imageView.setImageResource(R.drawable.ic_love_default_avatar);
     }
 
     /**
      * 设置当前用户头像
      */
     public static void setCurrentUserAvatar(Context context, ImageView imageView) {
-        imageView.setImageResource(R.drawable.default_avatar);
+        imageView.setImageResource(R.drawable.ic_love_default_avatar);
     }
 
     /**

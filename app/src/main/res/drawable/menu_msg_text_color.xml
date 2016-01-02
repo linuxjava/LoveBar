@@ -3,5 +3,5 @@
     <item android:color="#99cc00" android:state_pressed="true" />
     <item android:color="#99cc00" android:state_focused="true"/>
     <item android:color="#99cc00" android:state_selected="true"/>
-    <item android:color="@color/top_bar_normal_bg" />
+    <item android:color="@color/c_top_bar_bg" />
 </selector>

@@ -7,7 +7,7 @@ import android.view.View;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import xiao.love.bar.component.net.NetworkCallback;
+import xiao.love.bar.net.NetworkCallback;
 
 /**
  * Created by guochang on 2015/8/13.

@@ -1,41 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/match_width_match_height"
-    android:background="@color/white"
+    style="@style/width_match_height_match"
+    android:background="@android:color/white"
     android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/height_top_bar"
-        android:background="@color/top_bar_normal_bg"
+        android:background="@color/c_top_bar_bg"
         android:gravity="center_vertical">
 
         <TextView
-            android:id="@+id/message_title"
-            style="@style/wrap_width_wrap_height"
+            android:id="@+id/text_title"
+            style="@style/width_wrap_height_wrap"
             android:layout_centerInParent="true"
             android:text="@string/session"
-            android:textColor="@color/white"
+            android:textColor="@android:color/white"
             android:textSize="18sp" />
 
     </RelativeLayout>
 
     <include
-        android:id="@+id/error_item_rl"
-        layout="@layout/chat_neterror_item"
+        android:id="@+id/rl_error_hint"
+        layout="@layout/include_chat_net_error_hint"
         android:visibility="gone" />
 
     <cn.bingoogolapple.refreshlayout.BGARefreshLayout
         android:id="@+id/recyclerview_refresh"
-        style="@style/match_width_wrap_height"
-        android:background="@color/recyclerView_bg">
+        style="@style/width_match_height_wrap"
+        android:background="@color/c_recyclerview_bg">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerview"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:background="@color/recyclerView_bg"
+            android:background="@color/c_recyclerview_bg"
             android:scrollbars="vertical" />
     </cn.bingoogolapple.refreshlayout.BGARefreshLayout>
 

@@ -10,13 +10,13 @@
         android:id="@+id/top_bar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/height_top_bar"
-        android:background="@color/top_bar_normal_bg"
+        android:background="@color/c_top_bar_bg"
         android:gravity="center_vertical" >
 
         <include layout="@layout/commom_back_btn" />
 
         <TextView
-            android:id="@+id/name"
+            android:id="@+id/text_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"

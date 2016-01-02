@@ -10,7 +10,7 @@ import android.widget.CursorAdapter;
 import android.widget.ImageView;
 
 import xiao.love.bar.R;
-import xiao.love.bar.component.image.ImageLoadTool;
+import xiao.love.bar.component.imageloader.ImageLoadTool;
 
 /**
  * Created by chenchao on 15/5/6.

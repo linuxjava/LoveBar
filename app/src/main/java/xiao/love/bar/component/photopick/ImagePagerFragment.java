@@ -21,7 +21,7 @@ import java.io.File;
 import pl.droidsonroids.gif.GifImageView;
 import uk.co.senab.photoview.PhotoView;
 import xiao.love.bar.R;
-import xiao.love.bar.component.image.ImageLoadTool;
+import xiao.love.bar.component.imageloader.ImageLoadTool;
 import xiao.love.bar.component.util.ImageUtils;
 
 /**

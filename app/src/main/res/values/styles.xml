@@ -1,30 +1,29 @@
 <resources>
-    <style name="match_width_match_height">
+    <style name="width_match_height_match">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">match_parent</item>
     </style>
 
-    <style name="match_width_wrap_height">
+    <style name="width_match_height_wrap">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
 
-    <style name="wrap_width_match_height">
+    <style name="width_wrap_height_match">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">match_parent</item>
     </style>
 
-    <style name="wrap_width_wrap_height">
+    <style name="width_wrap_height_wrap">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
-
 
     <!--主页底部tab-->
-    <style name="main_tab_btn" parent="match_width_match_height">
+    <style name="btn_main_bottom_tab" parent="width_match_height_match">
         <item name="android:paddingBottom">2.0dp</item>
         <item name="android:paddingTop">7.0dp</item>
-        <item name="android:textColor">@color/main_botton_text_color</item>
+        <item name="android:textColor">@color/main_bottom_text_color</item>
         <item name="android:textSize">12sp</item>
         <item name="android:background">@drawable/main_bottom_item_bg</item>
         <item name="android:scaleType">matrix</item>

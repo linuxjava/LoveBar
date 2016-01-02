@@ -21,6 +21,13 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!--bmob所需权限-->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_LOGS"/>
 
     <application
         android:name=".LoveApp"
@@ -30,7 +37,7 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         tools:replace="android:icon, android:theme" >
         <activity
-            android:name=".activitie.impl.LoginActivity"
+            android:name=".activity.login.LoginActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -41,7 +48,7 @@
         </activity>
 
         <activity
-            android:name=".activitie.impl.MainActivity"
+            android:name=".activity.MainActivity"
             android:screenOrientation="portrait">
         </activity>
 
@@ -86,7 +93,7 @@
             android:theme="@android:style/Theme.Black.NoTitleBar"/>
         <!-- 收藏和被收藏 -->
         <activity
-            android:name=".activitie.impl.CollectActivity"
+            android:name=".activity.im.CollectActivity"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Black.NoTitleBar"/>
 

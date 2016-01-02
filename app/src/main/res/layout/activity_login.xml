@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/width_match_height_match"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/edit_username"
+        style="@style/width_match_height_wrap"
+        android:text="xiaoguochang" />
+
+    <EditText
+        android:id="@+id/edit_password"
+        style="@style/width_match_height_wrap"
+        android:text="test" />
+
+    <Button
+        android:id="@+id/btn_login"
+        style="@style/width_match_height_wrap"
+        android:text="登陆" />
+</LinearLayout>

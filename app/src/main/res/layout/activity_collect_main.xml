@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/width_match_height_match"
+    android:background="@android:color/white"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="55.0dp"
+        android:background="@color/c_holo_blue_dark"
+        android:orientation="horizontal"
+        android:paddingBottom="12.0dp"
+        android:paddingTop="12.0dp">
+
+        <xiao.love.bar.component.segmentcontrol.SegmentControl
+            xmlns:segmentcontrol="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/segment_control"
+            style="@style/width_wrap_height_wrap"
+            android:layout_centerInParent="true"
+            android:textSize="15sp"
+            segmentcontrol:texts="收藏|被收藏"
+            segmentcontrol:defaultTextColor="@android:color/white"
+            segmentcontrol:checkTextColor="@color/c_holo_blue_dark"
+            segmentcontrol:strokeColor="@android:color/white"
+            segmentcontrol:fillColor="@android:color/white"
+            segmentcontrol:cornerRadius="5dip"
+            segmentcontrol:direction="horizon"
+            segmentcontrol:horizonGap="12dp"
+            segmentcontrol:verticalGap="8dp"/>
+    </RelativeLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewPager"
+        style="@style/width_match_height_match"/>
+
+</LinearLayout>

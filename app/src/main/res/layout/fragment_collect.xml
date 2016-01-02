@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/width_match_height_match"
+    android:orientation="vertical">
+    <!--BGARefreshLayout中RecyclerView一定要设置为
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"-->
+    <cn.bingoogolapple.refreshlayout.BGARefreshLayout
+        android:id="@+id/recyclerview_refresh"
+        style="@style/width_match_height_match"
+        android:background="@color/c_recyclerview_bg">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="@color/c_recyclerview_bg"
+            android:scrollbars="vertical" />
+    </cn.bingoogolapple.refreshlayout.BGARefreshLayout>
+</LinearLayout>

@@ -3,12 +3,13 @@ package xiao.love.bar;
 import android.app.Application;
 import android.content.Context;
 
-import xiao.love.bar.component.image.ImageLoadTool;
+import cn.bmob.v3.Bmob;
+import xiao.love.bar.component.imageloader.ImageLoadTool;
+import xiao.love.bar.config.Config;
 import xiao.love.bar.im.hxlib.IMHelper;
 import xiao.love.bar.storage.db.dao.CityDB;
 import xiao.love.bar.storage.db.dao.ProvinceDB;
 import xiao.love.bar.storage.db.dao.ZoneDB;
-import xiao.love.bar.storage.db.model.Contact;
 
 /**
  * Created by guochang on 2015/8/9.
@@ -31,7 +32,7 @@ public class LoveApp extends Application{
         ImageLoadTool.getInstance().init(mContext);
         //im初始化
         new IMHelper().onInit(mContext);
-
+        Bmob.initialize(mContext, Config.BMOB_APP_ID);
         initDB();
     }
 
@@ -39,6 +40,10 @@ public class LoveApp extends Application{
      * 初始化DB
      */
     private void initDB(){
+        //ProvinceDB.getInstance(mContext).initBmob();
+        //CityDB.getInstance(mContext).initBmob();
+        //ZoneDB.getInstance(mContext).initBmob();
+
         new Thread(new Runnable() {
             @Override
             public void run() {

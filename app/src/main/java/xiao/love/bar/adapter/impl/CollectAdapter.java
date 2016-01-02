@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 
 import xiao.love.bar.R;
 import xiao.love.bar.adapter.XGCRecyclerViewAdapter;
-import xiao.love.bar.adapter.viewholders.impl.CollectHolder;
+import xiao.love.bar.adapter.viewholder.impl.CollectHolder;
 import xiao.love.bar.entity.TestData;
 
 /**
@@ -22,17 +22,17 @@ public class CollectAdapter extends XGCRecyclerViewAdapter<TestData, CollectHold
 
     @Override
     protected CollectHolder createViewHolder(Context context, ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(mContext).inflate(R.layout.collect_item, parent, false);
+        View itemView = LayoutInflater.from(mContext).inflate(R.layout.item_collect, parent, false);
         return new CollectHolder(context, this, parent, itemView, viewType);
     }
 
     @Override
     protected void setItemChildListener(CollectHolder holder) {
-        holder.setItemChildClickListener(R.id.collect_img);
+        holder.setItemChildClickListener(R.id.img_collect);
     }
 
     @Override
     protected void setItemData(int position, CollectHolder holder, TestData model) {
-        holder.setText(R.id.name, model.content);
+        holder.setText(R.id.text_name, model.content);
     }
 }

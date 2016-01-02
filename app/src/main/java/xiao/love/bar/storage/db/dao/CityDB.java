@@ -14,7 +14,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import cn.bmob.v3.BmobObject;
+import cn.bmob.v3.listener.SaveListener;
 import xiao.love.bar.component.util.FileUtils;
+import xiao.love.bar.component.util.L;
+import xiao.love.bar.entity.BmobCity;
+import xiao.love.bar.entity.BmobProvince;
 import xiao.love.bar.storage.db.base.DatabaseHelper;
 import xiao.love.bar.storage.db.model.City;
 import xiao.love.bar.storage.db.model.Province;
@@ -116,5 +121,44 @@ public class CityDB {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 初始化bmob后台城市数据库
+     */
+    public synchronized void initBmob(){
+        List<City> list = queryForAll();
+        List<BmobObject> bmobList = new ArrayList<>();
+
+        for (City city : list){
+            BmobCity bmobCity = new BmobCity();
+            bmobCity.setProvinceID(city.getProvinceID());
+            bmobCity.setCityID(city.getCityID());
+            bmobCity.setCity(city.getCity());
+            bmobList.add(bmobCity);
+        }
+
+        for (int i=0; i<bmobList.size(); i=i+50) {
+            List<BmobObject> subList;
+            if(i + 50 >= bmobList.size()) {
+                subList = bmobList.subList(i, bmobList.size());
+            }else {
+                subList = bmobList.subList(i, i + 50);
+            }
+
+            new BmobObject().insertBatch(mContext, subList, new SaveListener() {
+                @Override
+                public void onSuccess() {
+                    L.d("city批量添加成功");
+                }
+
+                @Override
+                public void onFailure(int code, String msg) {
+                    L.d("city批量添加失败:");
+                }
+            });
+        }
+
+
     }
 }
