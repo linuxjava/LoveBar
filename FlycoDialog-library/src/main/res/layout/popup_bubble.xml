@@ -6,8 +6,8 @@
 
     <com.flyco.dialog.view.TriangleView
         android:id="@+id/triangle_view"
-        android:layout_width="24dp"
-        android:layout_height="12dp"/>
+        android:layout_width="12dp"
+        android:layout_height="6dp"/>
 
     <LinearLayout
         android:id="@+id/ll_content"

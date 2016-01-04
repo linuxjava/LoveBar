@@ -29,6 +29,10 @@ public class BubblePopup extends InternalBasePopup<BubblePopup> {
     private int mCornerRadius;
     private int mMarginLeft;
     private int mMarginRight;
+    //顶部显示时，弹窗与mWrappedView顶部之间的距离
+    private int mTopOffset;
+    //底部显示时，弹窗与mWrappedView底部之间的距离
+    private int mBottomOffset;
 
     public BubblePopup(Context context, View wrappedView) {
         super(context);
@@ -66,17 +70,27 @@ public class BubblePopup extends InternalBasePopup<BubblePopup> {
         mTriangleView.setGravity(mGravity == Gravity.TOP ? Gravity.BOTTOM : Gravity.TOP);
     }
 
+    public BubblePopup setTopOffset(int mTopOffset) {
+        this.mTopOffset = mTopOffset;
+        return this;
+    }
+
+    public BubblePopup setBottomOffset(int mBottomOffset) {
+        this.mBottomOffset = mBottomOffset;
+        return this;
+    }
+
     @Override
     public void onLayoutObtain() {
         ViewHelper.setX(mTriangleView, mX - mTriangleView.getWidth() / 2);
 
         if (mGravity == Gravity.TOP) {
-            int y = mY - mTriangleView.getHeight();
+            int y = mY - mTriangleView.getHeight() - mTopOffset;
             ViewHelper.setY(mTriangleView, y);
             ViewHelper.setY(mLlContent, y - mLlContent.getHeight());
         } else {
-            ViewHelper.setY(mTriangleView, mY);
-            ViewHelper.setY(mLlContent, mY + mTriangleView.getHeight());
+            ViewHelper.setY(mTriangleView, mY + mBottomOffset);
+            ViewHelper.setY(mLlContent, mY + mBottomOffset + mTriangleView.getHeight());
         }
 
         /**
