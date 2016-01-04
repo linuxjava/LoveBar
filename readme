@@ -2,4 +2,5 @@ BGARefreshLayout:刷新库（因为BGARefreshLayout依赖的recyclerview版本�
 loadingAlertDialog：各种动画对话框库，库中有使用演示代码
 datetimepicker-library：日期选择库
 pickerview-library：滚轮风格选择器，已将源代码的View改为dialog的形式
-FlycoAnimation-library和FlycoDialog-library：包含各种动画的dialog和popupmenu
+FlycoAnimation-library和FlycoDialog-library：包含各种动画的dialog和popupmenu，其中FlycoDialog-library中的
+BubblePopup类修改可以设置其偏移
