@@ -73,4 +73,8 @@ public abstract class BaseFragment<T, P extends BaseFragmentPresenter<T>> extend
      * @return
      */
     protected abstract P createPresenter();
+
+    protected View getView(int id){
+        return mRootView.findViewById(id);
+    }
 }

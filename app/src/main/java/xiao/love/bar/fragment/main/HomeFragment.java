@@ -1,12 +1,17 @@
 package xiao.love.bar.fragment.main;
 
+import android.widget.TextView;
+
+import butterknife.Bind;
 import butterknife.OnClick;
 import xiao.love.bar.R;
+import xiao.love.bar.component.dialog.CityPopup;
 import xiao.love.bar.component.dialog.CityZonePickerDialog;
 import xiao.love.bar.component.dialog.HeigthPickerDialog;
 import xiao.love.bar.component.dialog.HeigthRangePickerDialog;
 import xiao.love.bar.component.dialog.PhotoPickerManager;
 import xiao.love.bar.component.dialog.ProvinceCityPickerDialog;
+import xiao.love.bar.component.util.T;
 import xiao.love.bar.fragment.BaseFragment;
 import xiao.love.bar.mvppresenter.BaseFragmentPresenter;
 
@@ -14,6 +19,11 @@ import xiao.love.bar.mvppresenter.BaseFragmentPresenter;
  * Created by xiaoguochang on 2015/12/15.
  */
 public class HomeFragment extends BaseFragment {
+    @Bind(R.id.text_city)
+    TextView mCityText;//城市切换
+    //城市切换Popup
+    private CityPopup mCityPopup;
+
     @Override
     protected int getLayout() {
         return R.layout.fragment_home;
@@ -71,6 +81,22 @@ public class HomeFragment extends BaseFragment {
     @OnClick(R.id.btn_test4)
     public void onClickTest4(){
         PhotoPickerManager.getInstance(mContext).showPickerDialog();
+    }
+
+    @OnClick(R.id.text_city)
+    public void onClickTest5(){
+        if(mCityPopup == null) {
+            mCityPopup = new CityPopup(mContext, mCityText);
+        }
+        mCityPopup.setSelectListener(new CityPopup.Callback() {
+            @Override
+            public void onOptionsSelect(int cityID, String cityName) {
+                T.showShort(mContext, cityID + ":" + cityName);
+                mCityText.setText(cityName);
+                mCityText.setTag(cityID);
+            }
+        });
+        mCityPopup.show();
     }
 
     @Override

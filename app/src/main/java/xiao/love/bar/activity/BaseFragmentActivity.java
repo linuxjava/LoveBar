@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.view.View;
 
 import butterknife.ButterKnife;
 
@@ -48,6 +49,10 @@ public abstract class BaseFragmentActivity extends FragmentActivity {
         super.onDestroy();
         //解绑视图
         ButterKnife.unbind(this);
+    }
+
+    protected View getView(int id){
+        return findViewById(id);
     }
 
     /**

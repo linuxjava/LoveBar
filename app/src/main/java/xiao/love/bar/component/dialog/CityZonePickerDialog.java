@@ -23,7 +23,7 @@ import xiao.love.bar.storage.db.model.Zone;
  */
 public class CityZonePickerDialog {
     private static CityZonePickerDialog sInstance;
-    private int[] mCityIDArray = {1, 3, 200, 190, 297, 105, 159, 63, 78};
+    public static final int[] mCityIDArray = {1, 3, 200, 190, 297, 105, 159, 63, 78};
     private Context mContext;
     private OptionsPickerView mPickerView;
     private ArrayList<City> mCityList;

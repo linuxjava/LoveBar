@@ -11,6 +11,9 @@ public class ResTool {
         return context.getString(resId);
     }
 
+    public static int getColor(Context context, int resId){
+        return context.getResources().getColor(resId);
+    }
 
     public static int getLayoutId(Context paramContext, String paramString) {
         return paramContext.getResources().getIdentifier(paramString, "layout", paramContext.getPackageName());

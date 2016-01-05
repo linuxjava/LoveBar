@@ -37,6 +37,9 @@ public class LoginActivity extends BaseFragmentActivity {
 
     @OnClick(R.id.btn_login)
     public void onLogin() {
+//        Intent intent = new Intent(mContext, MainActivity.class);
+//        startActivity(intent);
+
         String userName = mUserNameEdit.getText().toString().trim();
         String password = mPwdEdit.getText().toString().trim();
         EMChatManager.getInstance().login(userName, password, new EMCallBack() {

@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.text.ClipboardManager;
@@ -53,7 +54,6 @@ import com.easemob.exceptions.EaseMobException;
 import java.util.List;
 
 import xiao.love.bar.R;
-import xiao.love.bar.component.BaseActivity;
 import xiao.love.bar.component.util.KeyBoardUtils;
 import xiao.love.bar.component.util.T;
 import xiao.love.bar.im.chat.emoji.EmojiLayout;
@@ -67,7 +67,7 @@ import xiao.love.bar.im.widget.PasteEditText;
 /**
  * 聊天页面
  */
-public class ChatActivity extends BaseActivity implements OnClickListener, EMEventListener {
+public class ChatActivity extends FragmentActivity implements OnClickListener, EMEventListener {
     public static final int REQUEST_CODE_EMPTY_HISTORY = 2;
     public static final int REQUEST_CODE_CONTEXT_MENU = 3;
     public static final int REQUEST_CODE_MAP = 4;
